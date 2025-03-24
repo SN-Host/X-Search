@@ -43,6 +43,8 @@ namespace XSearch_WinForms
             Close();
 
             // Search.
+
+            //await Task.Run(delegate { session.Searcher.PullSearch(); });
             await session.Searcher.PullSearch();
         }
     }

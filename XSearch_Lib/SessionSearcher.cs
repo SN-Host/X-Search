@@ -1,10 +1,17 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Net;
+using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Support.UI;
+using static System.Collections.Specialized.BitVector32;
 using static XSearch_Lib.SearchHandler;
 using static XSearch_Lib.Strings;
 
@@ -49,6 +56,11 @@ namespace XSearch_Lib
         /// Event when a new message should be logged about a search in this session.
         /// </summary>
         public event SearchLogHandler OnNewSearchMessage = delegate { };
+        
+        /// <summary>
+        /// List of webdrivers currently in use by the program.
+        /// </summary>
+        private static List<IWebDriver> webDrivers = new List<IWebDriver>(); 
 
         /// <summary>
         /// Total tasks to complete in the current search process.
@@ -70,6 +82,14 @@ namespace XSearch_Lib
         public SessionSearcher(Session session)
         {
             Session = session;
+        }
+
+        ~SessionSearcher()
+        {
+            foreach (IWebDriver driver in webDrivers)
+            {
+                TerminateDriver(driver);
+            }
         }
 
         // PROPERTIES //
@@ -128,14 +148,28 @@ namespace XSearch_Lib
         public async Task PullSearch()
         {
             // Do not pull if requirements aren't satisfied.
-            if (!PullRequirementsSatisfied())
+            /*if (!PullRequirementsSatisfied())
             {
                 return;
             }
+            */
 
             CurrentlyPulling = true;
 
 
+
+            //FirefoxDriver driver = CreateFirefoxDriver();
+            ChromeDriver chromeDriver = CreateChromeDriver();
+
+            // TODO: Add a trycatch here to generically catch errors.
+
+            SearchDomain(Session.DomainProfile.ActiveDomains.ElementAt(0), chromeDriver);
+
+            //driver.Quit();
+
+            TerminateDriver(chromeDriver);
+
+            /*
 
             // Fetch any new search listings.
             List<Task> tasks = new List<Task>();
@@ -145,6 +179,7 @@ namespace XSearch_Lib
             // Attempt to fetch the titles of all currently pulled search listings without titles.
             await TryUpdateSearchListingTitles();
 
+            */
             CurrentlyPulling = false;
 
             // Currently won't work as expected - our async methods are beginning as soon as they're loaded into an IEnumerable. This will need to change.
@@ -153,11 +188,59 @@ namespace XSearch_Lib
         }
 
         /// <summary>
+        /// Creates a Firefox driver with the default settings used by the program.
+        /// </summary>
+        /// <returns></returns>
+        public FirefoxDriver CreateFirefoxDriver()
+        {
+            FirefoxOptions ffOptions = new FirefoxOptions();
+            //ffOptions.AddArgument("-headless");
+
+            FirefoxDriverService ffDriverService = FirefoxDriverService.CreateDefaultService();
+            ffDriverService.HideCommandPromptWindow = true;
+
+            FirefoxDriver driver = new FirefoxDriver(ffDriverService, ffOptions);
+
+            webDrivers.Add(driver);
+
+            return driver;
+        }
+
+        public ChromeDriver CreateChromeDriver()
+        {
+            ChromeOptions cOptions = new ChromeOptions();
+            //ffOptions.AddArgument("-headless");
+
+            ChromeDriverService cDriverService = ChromeDriverService.CreateDefaultService();
+            cDriverService.HideCommandPromptWindow = true;
+
+            ChromeDriver driver = new ChromeDriver(cDriverService, cOptions);
+
+            webDrivers.Add(driver);
+
+            return driver;
+        }
+        
+        /// <summary>
+        /// Ensures an IWebDriver is properly disposed of.
+        /// </summary>
+        /// <param name="driver">The webDriver to dispose.</param>
+        public void TerminateDriver(IWebDriver driver)
+        {
+            driver.Quit();
+            if (webDrivers.Contains(driver))
+            {
+                webDrivers.Remove(driver);
+            }
+        }
+
+        /// <summary>
         /// Determines if a pull can be made, calling event handlers to warn about the failed pull attempt.
         /// </summary>
         /// <returns>True if a pull can be made, false otherwise.</returns>
         public bool PullRequirementsSatisfied()
         {
+
             // Pull already in progress.
             if (CurrentlyPulling)
             {
@@ -190,6 +273,247 @@ namespace XSearch_Lib
             return true;
         }
 
+        public void SearchDomain(Domain domain, IWebDriver driver)
+        {
+            string searchUrl = domain.GetResolvedSearchUrl(SearchTerm, 1);
+
+            bool result = Uri.TryCreate(searchUrl, UriKind.Absolute, out Uri? testUri)
+            && (testUri?.Scheme == Uri.UriSchemeHttp || testUri?.Scheme == Uri.UriSchemeHttps);
+
+            // If the search URL pattern was invalid, don't proceed with this domain.
+            if (!result)
+            {
+                OnNewSearchMessage(this, new SearchLogArgs($"Search url {searchUrl} for domain {domain} was invalid. Skipping."));
+                return;
+            }
+
+            //Go to the webpage.
+            driver.Navigate().GoToUrl(searchUrl);
+            
+            driver.Manage().Window.Maximize();
+
+            string currentPageSearchHandle = driver.CurrentWindowHandle;
+
+            /*
+            IWebElement revealed = driver.FindElement(By.TagName("a"));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+            wait.Until(d => revealed.Displayed);
+            */
+
+            // Find all listing links.
+
+            List<string> visitedLinks = new List<string>();
+            List<string> collectedTitles = new List<string>();
+            List<string> collectedUrls = new List<string>();
+
+            new WebDriverWait(driver, TimeSpan.FromSeconds(30)).Until(
+                        d => GetMatchingDomainLinks(driver, domain).Any());
+
+            List<IWebElement> linksToCheck = GetMatchingDomainLinks(driver, domain);
+
+            System.Diagnostics.Debug.WriteLine($"links: {linksToCheck.Count}");
+
+
+            while (linksToCheck.Count > 0)
+            {
+                int i = 0;
+                /*
+                for (i = 0; i < linksToCheck.Count; i++)
+                {
+                    if (linksToCheck[i].Displayed)
+                    {
+                        break;
+                    }
+                }
+                */
+            //}
+            //for (int i = 0; i < linksToCheck.Count; i++)
+            //{
+                //List<string> hrefs = GetMatchingDomainLinks(driver, domain).Select(x => x.GetAttribute("href")).ToList();
+
+                /*
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
+                wait.Until(d => revealed.Displayed);
+
+                WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("element_id")));
+                System.Diagnostics.Debug.WriteLine($"hrefs[{i}]: {hrefs[i]}");
+                */
+
+                string href = linksToCheck[i].GetAttribute("href");
+
+                if (!visitedLinks.Contains(href))
+                {
+                    IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                    //js.ExecuteScript("arguments[0].scrollIntoView(true);", linksToCheck[i]);
+                    //js.ExecuteScript("window.scrollBy(0, -2);");
+
+                    /*
+                    List<IWebElement> currentElements = GetMatchingDisplayedDomainLinks(driver, domain);
+                    linksToCheck.AddRange(currentElements.Where(x => !visitedLinks.Contains(x.GetAttribute("href"))));
+                     }*/
+
+                    js.ExecuteScript("arguments[0].focus();", linksToCheck[i]);
+
+                    new Actions(driver)
+                    .KeyDown(Keys.LeftControl)
+                    .KeyDown(Keys.Enter)
+                    .KeyUp(Keys.Enter)
+                    //.Click(linksToCheck[i])
+                    .KeyUp(Keys.LeftControl)
+                    .Build()
+                    .Perform();
+
+                    /*
+                    js.ExecuteScript("arguments[0].click();", linksToCheck[i]);
+
+                    new Actions(driver)
+                    .KeyUp(Keys.LeftControl)
+                    .Build()
+                    .Perform();
+                    */
+
+                    IList<string> otherWindowHandles = new List<string>(driver.WindowHandles).Where(x => x != currentPageSearchHandle).ToList();
+                    foreach (string windowHandle in otherWindowHandles)
+                    {
+                        driver.SwitchTo().Window(windowHandle);
+                        /*new WebDriverWait(driver, TimeSpan.FromSeconds(30)).Until(
+                            d => ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState")?.Equals("complete") ?? false);*/
+
+                        
+                        new WebDriverWait(driver, TimeSpan.FromSeconds(30)).Until(
+                            d => !string.IsNullOrEmpty(d.Title) && !string.IsNullOrEmpty(d.Url));
+
+                        visitedLinks.Add(href);
+                        collectedTitles.Add(driver.Title);
+                        collectedUrls.Add(driver.Url);
+
+                        driver.Close();
+                    }
+                }
+
+                /*
+                if (!ElementCompletelyVisible(driver, linksToCheck[i]))
+                {*/
+
+                driver.SwitchTo().Window(currentPageSearchHandle);
+
+                linksToCheck.RemoveAt(i);
+
+                if (linksToCheck.Count == 0)
+                {
+                    linksToCheck = GetMatchingDomainLinks(driver, domain).Where(x => !visitedLinks.Contains(x.GetAttribute("href"))).ToList();
+                }
+            }
+
+            foreach (string title in collectedTitles)
+            {
+                System.Diagnostics.Debug.WriteLine(title);
+            }
+
+            /*
+            foreach (var link in links.Values)
+            {
+                System.Diagnostics.Debug.WriteLine($"coords: {link.Location.X}, {link.Location.Y}");
+
+                IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                js.ExecuteScript("arguments[0].scrollIntoView(true);", link);
+
+                if (!link.Displayed || !link.Enabled)
+                {
+                    continue;
+                }
+                try
+                {
+                    new Actions(driver)
+                    .ScrollToElement(link)
+                    .KeyDown(Keys.LeftControl)
+                    .Click(link)
+                    .KeyUp(Keys.LeftControl)
+                    .Build()
+                    .Perform();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"error: {link.Location.X}, {link.Location.Y}");
+                    continue;
+                }
+            }
+            */
+
+        }
+
+        public bool ElementCompletelyVisible(IWebDriver driver, IWebElement element)
+        {
+            int elementLeftBound = element.Location.X;
+            int elementTopBound = element.Location.Y;
+            int elementWidth = element.Size.Width;
+            int elementHeight = element.Size.Height;
+            int elementRightBound = elementLeftBound + elementWidth;
+            int elementBottomBound = elementTopBound + elementHeight;
+            
+            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+            long winUpperBound = (long)js.ExecuteScript("return window.pageYOffset", element);
+            long winLeftBound = (long)js.ExecuteScript("return window.pageXOffset", element);
+            long winWidth = (long)js.ExecuteScript("return document.documentElement.clientWidth", element);
+            long winHeight = (long)js.ExecuteScript("return document.documentElement.clientHeight", element);
+            long winRightBound = winLeftBound + winWidth;
+            long winBottomBound = winUpperBound + winHeight;
+
+            return 
+                winLeftBound <= elementLeftBound &&
+                winRightBound >= elementRightBound &&
+                winUpperBound <= elementTopBound &&
+                winBottomBound >= elementBottomBound;
+        }
+
+        /// <summary>
+        /// Returns a list of all links on a webdriver's page that match domain listing URL patterns.
+        /// </summary>
+        /// <param name="driver">The webdriver to find elements on.</param>
+        /// <param name="domain">The domain to use the listing pattern from.</param>
+        /// <returns></returns>
+        public List<IWebElement> GetMatchingDomainLinks(IWebDriver driver, Domain domain)
+        {
+            List<IWebElement> allLinks = driver.FindElements(By.TagName("a")).ToList();
+            allLinks = allLinks.OrderBy(x => x.Location.Y).ToList();
+            List<IWebElement> matchingLinks = new List<IWebElement>();
+            List<string> hrefs = new List<string>();
+
+            // Early exit if no links were found.
+            if (!allLinks.Any())
+            {
+                return matchingLinks;
+            }
+
+            // Determine which links should be returned from those found.
+            foreach (IWebElement link in allLinks)
+            {
+                // Don't return any links without href attributes.
+                if (!(link.GetAttribute("href") is string href))
+                {
+                    continue;
+                }
+
+                // Don't return any links that don't match the listing URL pattern.
+                if (!Regex.IsMatch(href, domain.ListingUrlPattern))
+                {
+                    continue;
+                }
+
+                /*
+                // Don't return any links that aren't completely in view.
+                if (!ElementCompletelyVisible(driver, link))
+                {
+                    continue;
+                }*/
+
+                // Only add those links that have passed all conditions.
+                matchingLinks.Add(link);
+                hrefs.Add(href);
+            }
+
+            return matchingLinks;
+        }
         public async Task PullFromSearchPages()
         {
             _currentSearchTask = Log_Header_SearchPagePulling;

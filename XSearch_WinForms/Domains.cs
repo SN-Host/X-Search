@@ -95,40 +95,15 @@ namespace XSearch_WinForms
             Domain craigsList = new Domain(SearchUrlPatternRejected)
             {
                 Label = "Craigslist",
-                ListingUrlPattern = $"/cto/d/",
+                ListingUrlPattern = $"/d/",
                 SearchUrlPattern = $"https://houston.craigslist.org/search/cta?query={Domain.URL_SEARCHTERM_PLACEHOLDER_PATTERN}#search=2~gallery~{Domain.URL_PAGECOUNT_PLACEHOLDER_PATTERN}",
                 PageCountMultiplier = 5
             };
-
-            Program.CurrentSession.DomainProfile.Domains.Add(eBay);
-            Program.CurrentSession.DomainProfile.Domains.Add(craigsList);
-
-            // Ensure that only members of Domain corresponding to items in our displayedColumns list render.
-
-            foreach (DataGridViewColumn column in mainDataGridView.Columns)
-            {
-                if (!displayedColumns.Contains(column.DataPropertyName))
-                {
-                    column.Visible = false;
-                }
-            }
-
-            // Below are some domains I've tested but fail to return search results for reasons specified.
-            // I am hoping that switching to Selenium Webdriver will allow me to overcome at least most of these.
-
-            // This domain filters my requests using cloudflare.
-            Domain zillow = new Domain(SearchUrlPatternRejected)
-            {
-                Label = "Zillow",
-                ListingUrlPattern = $"/homedetails/",
-                SearchUrlPattern = $"https://www.zillow.com/houston-tx-77041/{Domain.URL_PAGECOUNT_PLACEHOLDER_PATTERN}_p/?searchQueryState=%7B%22pagination%22%3A%7B%22currentPage%22%3A2%7D%2C%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3A-95.66721740551758%2C%22east%22%3A-95.46637359448242%2C%22south%22%3A29.805973092052174%2C%22north%22%3A29.94053580720247%7D%2C%22regionSelection%22%3A%5B%7B%22regionId%22%3A91690%2C%22regionType%22%3A7%7D%5D%2C%22filterState%22%3A%7B%22sort%22%3A%7B%22value%22%3A%22globalrelevanceex%22%7D%2C%22beds%22%3A%7B%22min%22%3A2%7D%2C%22baths%22%3A%7B%22min%22%3A2%7D%7D%2C%22isListVisible%22%3Atrue%2C%22mapZoom%22%3A13%2C%22usersSearchTerm%22%3A%22Houston%20TX%2077041%22%7D",
-            };
-
             // This domain filters my requests using cloudflare.
             Domain offerUp = new Domain(SearchUrlPatternRejected)
             {
                 Label = "Offerup",
-                ListingUrlPattern = $"/cto/d/",
+                ListingUrlPattern = $"/item/detail/",
                 SearchUrlPattern = $"https://offerup.com/search?q={Domain.URL_SEARCHTERM_PLACEHOLDER_PATTERN}",
             };
             // This domain fails to return results, giving an System.Net.Http.HttpRequestException: 'An error occurred while sending the request.' The host is "forcibly closing the connection."
@@ -138,6 +113,13 @@ namespace XSearch_WinForms
                 ListingUrlPattern = $"/vehicledetail/",
                 SearchUrlPattern = $"\r\nhttps://www.cars.com/shopping/results/?_unused_include_shippable=&_unused_keyword=&_unused_list_price_max=&_unused_list_price_min=&_unused_makes[]=&_unused_maximum_distance=&_unused_mileage_max=&_unused_models[]=&_unused_monthly_payment=&_unused_stock_type=&_unused_year_min=&_unused_zip=&dealer_id=&include_shippable=true&keyword=&list_price_max=&list_price_min=&makes[]=toyota&maximum_distance=50&mileage_max=&models[]=toyota-camry&monthly_payment=&page={Domain.URL_PAGECOUNT_PLACEHOLDER_PATTERN}&page_size=20&sort=best_match_desc&stock_type=used&year_max=2010&year_min=&zip=77041",
             };
+            // This domain filters my requests using cloudflare.
+            Domain zillow = new Domain(SearchUrlPatternRejected)
+            {
+                Label = "Zillow",
+                ListingUrlPattern = $"/homedetails/",
+                SearchUrlPattern = $"https://www.zillow.com/houston-tx-77041/{Domain.URL_PAGECOUNT_PLACEHOLDER_PATTERN}_p/?searchQueryState=%7B%22pagination%22%3A%7B%22currentPage%22%3A2%7D%2C%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3A-95.66721740551758%2C%22east%22%3A-95.46637359448242%2C%22south%22%3A29.805973092052174%2C%22north%22%3A29.94053580720247%7D%2C%22regionSelection%22%3A%5B%7B%22regionId%22%3A91690%2C%22regionType%22%3A7%7D%5D%2C%22filterState%22%3A%7B%22sort%22%3A%7B%22value%22%3A%22globalrelevanceex%22%7D%2C%22beds%22%3A%7B%22min%22%3A2%7D%2C%22baths%22%3A%7B%22min%22%3A2%7D%7D%2C%22isListVisible%22%3Atrue%2C%22mapZoom%22%3A13%2C%22usersSearchTerm%22%3A%22Houston%20TX%2077041%22%7D",
+            };
             // This returns the same error as the Cars.com domain.
             Domain edmunds = new Domain(SearchUrlPatternRejected)
             {
@@ -145,7 +127,6 @@ namespace XSearch_WinForms
                 ListingUrlPattern = $"/vin/",
                 SearchUrlPattern = $"https://www.edmunds.com/inventory/srp.html?inventorytype=used%2Ccpo&make=toyota&model=toyota|camry&pagenumber={Domain.URL_PAGECOUNT_PLACEHOLDER_PATTERN}",
             };
-
             // This domain quietly rejects my requests.
             Domain autotrader = new Domain(SearchUrlPatternRejected)
             {
@@ -168,6 +149,30 @@ namespace XSearch_WinForms
                 ListingUrlPattern = $"/jobs/view/",
                 SearchUrlPattern = $"https://www.linkedin.com/jobs/search?keywords={Domain.URL_SEARCHTERM_PLACEHOLDER_PATTERN}&location=Houston&geoId=103743442&position=1&pageNum={Domain.URL_PAGECOUNT_PLACEHOLDER_PATTERN}",
             };
+
+            Program.CurrentSession.DomainProfile.Domains.Add(eBay);
+            Program.CurrentSession.DomainProfile.Domains.Add(craigsList);
+            Program.CurrentSession.DomainProfile.Domains.Add(offerUp);
+            Program.CurrentSession.DomainProfile.Domains.Add(carsCom);
+            Program.CurrentSession.DomainProfile.Domains.Add(zillow);
+            Program.CurrentSession.DomainProfile.Domains.Add(edmunds);
+            Program.CurrentSession.DomainProfile.Domains.Add(autotrader);
+            Program.CurrentSession.DomainProfile.Domains.Add(indeed);
+            Program.CurrentSession.DomainProfile.Domains.Add(linkedin);
+
+            // Ensure that only members of Domain corresponding to items in our displayedColumns list render.
+
+            foreach (DataGridViewColumn column in mainDataGridView.Columns)
+            {
+                if (!displayedColumns.Contains(column.DataPropertyName))
+                {
+                    column.Visible = false;
+                }
+            }
+
+            // Below are some domains I've tested but fail to return search results for reasons specified.
+            // I am hoping that switching to Selenium Webdriver will allow me to overcome at least most of these.
+
             // This domain does not return the expected search page.
             Domain autotempest = new Domain(SearchUrlPatternRejected)
             {

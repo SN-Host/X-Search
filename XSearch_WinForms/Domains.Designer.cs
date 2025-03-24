@@ -81,7 +81,7 @@
             dataGridViewPanel.Location = new Point(165, 0);
             dataGridViewPanel.Name = "dataGridViewPanel";
             dataGridViewPanel.Padding = new Padding(10);
-            dataGridViewPanel.Size = new Size(817, 468);
+            dataGridViewPanel.Size = new Size(817, 475);
             dataGridViewPanel.TabIndex = 5;
             // 
             // mainDataGridView
@@ -119,7 +119,7 @@
             mainDataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             mainDataGridView.ShowCellErrors = false;
             mainDataGridView.ShowRowErrors = false;
-            mainDataGridView.Size = new Size(797, 448);
+            mainDataGridView.Size = new Size(797, 455);
             mainDataGridView.TabIndex = 2;
             // 
             // activeDataGridViewColumn
@@ -289,10 +289,10 @@
             editorPanel.Controls.Add(controlContainerPanel);
             editorPanel.Controls.Add(domainEditorHeaderLabel);
             editorPanel.Dock = DockStyle.Bottom;
-            editorPanel.Location = new Point(165, 468);
+            editorPanel.Location = new Point(165, 475);
             editorPanel.Name = "editorPanel";
             editorPanel.Padding = new Padding(5);
-            editorPanel.Size = new Size(817, 187);
+            editorPanel.Size = new Size(817, 180);
             editorPanel.TabIndex = 6;
             // 
             // controlContainerPanel
@@ -302,7 +302,7 @@
             controlContainerPanel.Location = new Point(5, 35);
             controlContainerPanel.Name = "controlContainerPanel";
             controlContainerPanel.Padding = new Padding(5);
-            controlContainerPanel.Size = new Size(807, 147);
+            controlContainerPanel.Size = new Size(807, 140);
             controlContainerPanel.TabIndex = 7;
             // 
             // domainFieldsPanel
@@ -315,7 +315,7 @@
             domainFieldsPanel.Dock = DockStyle.Fill;
             domainFieldsPanel.Location = new Point(5, 5);
             domainFieldsPanel.Name = "domainFieldsPanel";
-            domainFieldsPanel.Size = new Size(797, 137);
+            domainFieldsPanel.Size = new Size(797, 130);
             domainFieldsPanel.TabIndex = 14;
             // 
             // pageCountMultiplierPanel

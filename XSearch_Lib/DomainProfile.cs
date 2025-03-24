@@ -16,5 +16,7 @@ namespace XSearch_Lib
         /// </summary>
         public BindingList<Domain> Domains { get; set; } = new BindingList<Domain>();
 
+        public IEnumerable<Domain> ActiveDomains => Domains.Where(x => x.Active);
+
     }
 }
