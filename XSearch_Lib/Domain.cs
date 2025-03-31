@@ -1,6 +1,8 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Data;
 using System.Net.Mail;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace XSearch_Lib
@@ -14,6 +16,7 @@ namespace XSearch_Lib
 
         /// <summary>
         /// Placeholder pattern for search URL page count.
+        /// Largely deprecated.
         /// </summary>
         public const string URL_PAGECOUNT_PLACEHOLDER_PATTERN = "<<pageCount>>";
 
@@ -25,19 +28,19 @@ namespace XSearch_Lib
         /// <summary>
         /// Generic title for any error-handling tooltips that weren't given a more specific title.
         /// </summary>
-        public const string TOOLTIP_TITLE_GENERIC_ERROR = "Error";
+        public const string TOOLTIP_TITLE_GENERIC_ERROR = "Invalid tooltip title";
 
         /// <summary>
         /// Generic body for any error-handling tooltips that weren't given a more specific body.
         /// </summary>
-        public const string TOOLTIP_BODY_GENERIC_ERROR = "Invalid data.";
+        public const string TOOLTIP_BODY_GENERIC_ERROR = "Invalid tooltip body text.";
 
         /// <summary>
         /// Defines the placeholder patterns expected by search patterns.
+        /// Used to be larger and a strict requirement, but is now merely a suggestion for flexibility.
         /// </summary>
         private static readonly HashSet<string> RequiredSearchPlaceholderPatterns =
         [
-            URL_PAGECOUNT_PLACEHOLDER_PATTERN,
             URL_SEARCHTERM_PLACEHOLDER_PATTERN
         ];
 
@@ -55,11 +58,6 @@ namespace XSearch_Lib
         /// </summary>
         public event DomainErrorHandler OnSearchUrlPatternRejected = delegate { };
 
-        /// <summary>
-        /// Event to raise when a listing URL pattern is rejected.
-        /// </summary>
-        public event DomainErrorHandler OnListingUrlPatternRejected = delegate { };
-
         // PROPERTIES //
 
         /// <summary>
@@ -71,12 +69,6 @@ namespace XSearch_Lib
         /// User readable label for this domain.
         /// </summary>
         public string Label { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Holds data pertaining to the domain's expected search URL pattern.
-        /// </summary>
-        [Browsable(false)]
-        public PatternedString SearchUrlPatternedString { get; set; }
 
         /// <summary>
         /// Gets or sets the search URL pattern, containing all placeholders necessary for searching. 
@@ -100,10 +92,22 @@ namespace XSearch_Lib
         public string ListingUrlPattern { get; set; } = string.Empty;
 
         /// <summary>
+        /// Holds data pertaining to the domain's expected search URL pattern.
+        /// </summary>
+        [Browsable(false)]
+        public PatternedString SearchUrlPatternedString { get; set; }
+
+        /// <summary>
         /// Gets or sets the page count multiplier. This applies a multiplier to any page count placeholders when this domain is being handled.
         /// Useful for websites that track result delivery by gallery count, such as Craigslist.
         /// </summary>
+        [Browsable (false)]
         public decimal PageCountMultiplier { get; set; } = 1;
+
+        /// <summary>
+        /// List of xpath queries that should be run to find clickable elements that will hopefully yield more results on a given domain when no more search results can be found.
+        /// </summary>
+        public BindingList<string> NoSearchResultsXpath { get; set; } = new BindingList<string>();
 
         /// <summary>
         /// Default constructor, requiring a GUI handler for when a search URL pattern is rejected.
@@ -119,20 +123,34 @@ namespace XSearch_Lib
         /// <summary>
         /// Builds a search URL for this domain given a search term and page count.
         /// </summary>
-        /// <param name="searchTerm">The search term to substitute.</param>
-        /// <param name="pageCount">The page count to substitute.</param>
-        /// <returns></returns>
-        public string GetResolvedSearchUrl(string searchTerm, int pageCount)
+        /// <param name="searchTerm">The search term to substitute. Spaces serve as delimiters in the case of multiple placeholders being given.</param>
+        /// <returns>The search URL with all placeholders resolved.</returns>
+        public string GetResolvedSearchUrl(string searchTerm)
         {
             string resolvedSearchUrl = SearchUrlPattern;
 
-            // Replace search term placeholder.
-            resolvedSearchUrl = resolvedSearchUrl.Replace(URL_SEARCHTERM_PLACEHOLDER_PATTERN, searchTerm);
+            // Determine the separate words were in our search term, delimited by a space.
+            string[] delimitedTerms = searchTerm.Split(" ");
 
-            // Replace pageCount placeholder.
-            resolvedSearchUrl = resolvedSearchUrl.Replace(URL_PAGECOUNT_PLACEHOLDER_PATTERN, (pageCount * PageCountMultiplier).ToString());
+            // Determine the count of search term placeholders in the search URL pattern given for this domain.
+            int placeholdersInUrl = Regex.Matches(resolvedSearchUrl, URL_SEARCHTERM_PLACEHOLDER_PATTERN).Count;
 
-            return resolvedSearchUrl;
+            // If there's a discrepancy in the number of placeholders in the URL pattern or the query,
+            // we'll use the original search term to fill in all placeholders.
+            if (placeholdersInUrl != delimitedTerms.Length)
+            {
+                delimitedTerms = [searchTerm];
+            }
+
+            // Define our escape term for Regex to interpret literally; the placeholder pattern.
+            string escape = Regex.Escape(URL_SEARCHTERM_PLACEHOLDER_PATTERN);
+
+            // Replace each instance of the placeholder pattern with delimited search terms of the appropriate index.
+            int termIndex = 0;
+            string result = Regex.Replace(SearchUrlPattern, escape, (m) => delimitedTerms[termIndex + 1 >= delimitedTerms.Length ? termIndex : termIndex++]);
+
+            // Return what we've come up with.
+            return result;
         }
 
     }

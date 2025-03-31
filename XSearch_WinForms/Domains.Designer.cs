@@ -37,6 +37,7 @@
             domainLabelDataGridViewColumn = new DataGridViewTextBoxColumn();
             searchUrlPatternDataGridViewColumn = new DataGridViewTextBoxColumn();
             listingUrlPatternDataGridViewColumn = new DataGridViewTextBoxColumn();
+            XpathPostSearch = new DataGridViewComboBoxColumn();
             controlPanel = new Panel();
             loadDomainsButton = new Button();
             saveDomainsButton = new Button();
@@ -47,9 +48,14 @@
             editorPanel = new Panel();
             controlContainerPanel = new Panel();
             domainFieldsPanel = new Panel();
-            pageCountMultiplierPanel = new Panel();
-            pageCountMultiplierNumericUpDown = new NumericUpDown();
-            pageCountMultiplierLabel = new Label();
+            xpathEditorPanel = new Panel();
+            xpathEditorTextBox = new TextBox();
+            xpathEditorContainerPanelTop = new Panel();
+            xpathEditorComboBox = new ComboBox();
+            xpathButtonsPanel = new Panel();
+            deleteXpathButton = new Button();
+            addNewXpathButton = new Button();
+            xpathEditorLabel = new Label();
             listingUrlPanel = new Panel();
             listingUrlTextBox = new TextBox();
             listingUrlLabel = new Label();
@@ -60,15 +66,17 @@
             labelTextBox = new TextBox();
             labelLabel = new Label();
             domainEditorHeaderLabel = new Label();
-            mainTooltip = new ToolTip(components);
+            errorTooltip = new ToolTip(components);
+            infoToolTip = new ToolTip(components);
             dataGridViewPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)mainDataGridView).BeginInit();
             controlPanel.SuspendLayout();
             editorPanel.SuspendLayout();
             controlContainerPanel.SuspendLayout();
             domainFieldsPanel.SuspendLayout();
-            pageCountMultiplierPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pageCountMultiplierNumericUpDown).BeginInit();
+            xpathEditorPanel.SuspendLayout();
+            xpathEditorContainerPanelTop.SuspendLayout();
+            xpathButtonsPanel.SuspendLayout();
             listingUrlPanel.SuspendLayout();
             searchUrlPanel.SuspendLayout();
             labelPanel.SuspendLayout();
@@ -81,7 +89,7 @@
             dataGridViewPanel.Location = new Point(165, 0);
             dataGridViewPanel.Name = "dataGridViewPanel";
             dataGridViewPanel.Padding = new Padding(10);
-            dataGridViewPanel.Size = new Size(817, 475);
+            dataGridViewPanel.Size = new Size(817, 420);
             dataGridViewPanel.TabIndex = 5;
             // 
             // mainDataGridView
@@ -103,7 +111,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
             mainDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             mainDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            mainDataGridView.Columns.AddRange(new DataGridViewColumn[] { activeDataGridViewColumn, domainLabelDataGridViewColumn, searchUrlPatternDataGridViewColumn, listingUrlPatternDataGridViewColumn });
+            mainDataGridView.Columns.AddRange(new DataGridViewColumn[] { activeDataGridViewColumn, domainLabelDataGridViewColumn, searchUrlPatternDataGridViewColumn, listingUrlPatternDataGridViewColumn, XpathPostSearch });
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = Color.FromArgb(230, 230, 245);
             dataGridViewCellStyle2.Font = new Font("Segoe UI Variable Text Semibold", 11.25F, FontStyle.Bold);
@@ -119,8 +127,9 @@
             mainDataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             mainDataGridView.ShowCellErrors = false;
             mainDataGridView.ShowRowErrors = false;
-            mainDataGridView.Size = new Size(797, 455);
+            mainDataGridView.Size = new Size(797, 400);
             mainDataGridView.TabIndex = 2;
+            mainDataGridView.SelectionChanged += mainDataGridView_SelectionChanged;
             // 
             // activeDataGridViewColumn
             // 
@@ -146,7 +155,7 @@
             searchUrlPatternDataGridViewColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             searchUrlPatternDataGridViewColumn.DataPropertyName = "SearchUrlPattern";
             searchUrlPatternDataGridViewColumn.FillWeight = 75F;
-            searchUrlPatternDataGridViewColumn.HeaderText = "Search URL pattern";
+            searchUrlPatternDataGridViewColumn.HeaderText = "Starting URL";
             searchUrlPatternDataGridViewColumn.Name = "searchUrlPatternDataGridViewColumn";
             searchUrlPatternDataGridViewColumn.ReadOnly = true;
             // 
@@ -158,6 +167,14 @@
             listingUrlPatternDataGridViewColumn.HeaderText = "Listing URL pattern";
             listingUrlPatternDataGridViewColumn.Name = "listingUrlPatternDataGridViewColumn";
             listingUrlPatternDataGridViewColumn.ReadOnly = true;
+            // 
+            // XpathPostSearch
+            // 
+            XpathPostSearch.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            XpathPostSearch.DataPropertyName = "NoSearchResultsXpath";
+            XpathPostSearch.FillWeight = 50F;
+            XpathPostSearch.HeaderText = "Xpath";
+            XpathPostSearch.Name = "XpathPostSearch";
             // 
             // controlPanel
             // 
@@ -289,10 +306,10 @@
             editorPanel.Controls.Add(controlContainerPanel);
             editorPanel.Controls.Add(domainEditorHeaderLabel);
             editorPanel.Dock = DockStyle.Bottom;
-            editorPanel.Location = new Point(165, 475);
+            editorPanel.Location = new Point(165, 420);
             editorPanel.Name = "editorPanel";
             editorPanel.Padding = new Padding(5);
-            editorPanel.Size = new Size(817, 180);
+            editorPanel.Size = new Size(817, 235);
             editorPanel.TabIndex = 6;
             // 
             // controlContainerPanel
@@ -302,58 +319,122 @@
             controlContainerPanel.Location = new Point(5, 35);
             controlContainerPanel.Name = "controlContainerPanel";
             controlContainerPanel.Padding = new Padding(5);
-            controlContainerPanel.Size = new Size(807, 140);
+            controlContainerPanel.Size = new Size(807, 195);
             controlContainerPanel.TabIndex = 7;
             // 
             // domainFieldsPanel
             // 
             domainFieldsPanel.AutoScroll = true;
-            domainFieldsPanel.Controls.Add(pageCountMultiplierPanel);
+            domainFieldsPanel.Controls.Add(xpathEditorPanel);
             domainFieldsPanel.Controls.Add(listingUrlPanel);
             domainFieldsPanel.Controls.Add(searchUrlPanel);
             domainFieldsPanel.Controls.Add(labelPanel);
             domainFieldsPanel.Dock = DockStyle.Fill;
             domainFieldsPanel.Location = new Point(5, 5);
             domainFieldsPanel.Name = "domainFieldsPanel";
-            domainFieldsPanel.Size = new Size(797, 130);
+            domainFieldsPanel.Size = new Size(797, 185);
             domainFieldsPanel.TabIndex = 14;
             // 
-            // pageCountMultiplierPanel
+            // xpathEditorPanel
             // 
-            pageCountMultiplierPanel.AutoScroll = true;
-            pageCountMultiplierPanel.Controls.Add(pageCountMultiplierNumericUpDown);
-            pageCountMultiplierPanel.Controls.Add(pageCountMultiplierLabel);
-            pageCountMultiplierPanel.Dock = DockStyle.Top;
-            pageCountMultiplierPanel.Location = new Point(0, 96);
-            pageCountMultiplierPanel.Name = "pageCountMultiplierPanel";
-            pageCountMultiplierPanel.Padding = new Padding(5);
-            pageCountMultiplierPanel.Size = new Size(797, 32);
-            pageCountMultiplierPanel.TabIndex = 20;
+            xpathEditorPanel.AutoScroll = true;
+            xpathEditorPanel.Controls.Add(xpathEditorTextBox);
+            xpathEditorPanel.Controls.Add(xpathEditorContainerPanelTop);
+            xpathEditorPanel.Controls.Add(xpathEditorLabel);
+            xpathEditorPanel.Dock = DockStyle.Top;
+            xpathEditorPanel.Location = new Point(0, 111);
+            xpathEditorPanel.Name = "xpathEditorPanel";
+            xpathEditorPanel.Padding = new Padding(5);
+            xpathEditorPanel.Size = new Size(797, 64);
+            xpathEditorPanel.TabIndex = 20;
             // 
-            // pageCountMultiplierNumericUpDown
+            // xpathEditorTextBox
             // 
-            pageCountMultiplierNumericUpDown.Dock = DockStyle.Fill;
-            pageCountMultiplierNumericUpDown.Font = new Font("Segoe UI", 10F);
-            pageCountMultiplierNumericUpDown.Location = new Point(172, 5);
-            pageCountMultiplierNumericUpDown.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-            pageCountMultiplierNumericUpDown.Name = "pageCountMultiplierNumericUpDown";
-            pageCountMultiplierNumericUpDown.Size = new Size(620, 25);
-            pageCountMultiplierNumericUpDown.TabIndex = 4;
-            pageCountMultiplierNumericUpDown.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            xpathEditorTextBox.Dock = DockStyle.Fill;
+            xpathEditorTextBox.Font = new Font("Segoe UI", 10F);
+            xpathEditorTextBox.Location = new Point(172, 32);
+            xpathEditorTextBox.Name = "xpathEditorTextBox";
+            xpathEditorTextBox.Size = new Size(620, 25);
+            xpathEditorTextBox.TabIndex = 11;
+            xpathEditorTextBox.KeyUp += xpathEditorTextBox_KeyUp;
             // 
-            // pageCountMultiplierLabel
+            // xpathEditorContainerPanelTop
             // 
-            pageCountMultiplierLabel.BackColor = Color.FromArgb(250, 250, 255);
-            pageCountMultiplierLabel.Dock = DockStyle.Left;
-            pageCountMultiplierLabel.Font = new Font("Segoe UI Variable Display Semib", 10F, FontStyle.Bold);
-            pageCountMultiplierLabel.ImageAlign = ContentAlignment.TopLeft;
-            pageCountMultiplierLabel.Location = new Point(5, 5);
-            pageCountMultiplierLabel.Name = "pageCountMultiplierLabel";
-            pageCountMultiplierLabel.Padding = new Padding(5, 0, 5, 0);
-            pageCountMultiplierLabel.Size = new Size(167, 22);
-            pageCountMultiplierLabel.TabIndex = 3;
-            pageCountMultiplierLabel.Text = "Page count multiplier";
-            pageCountMultiplierLabel.TextAlign = ContentAlignment.TopRight;
+            xpathEditorContainerPanelTop.Controls.Add(xpathEditorComboBox);
+            xpathEditorContainerPanelTop.Controls.Add(xpathButtonsPanel);
+            xpathEditorContainerPanelTop.Dock = DockStyle.Top;
+            xpathEditorContainerPanelTop.Location = new Point(172, 5);
+            xpathEditorContainerPanelTop.Name = "xpathEditorContainerPanelTop";
+            xpathEditorContainerPanelTop.Size = new Size(620, 27);
+            xpathEditorContainerPanelTop.TabIndex = 6;
+            // 
+            // xpathEditorComboBox
+            // 
+            xpathEditorComboBox.Dock = DockStyle.Fill;
+            xpathEditorComboBox.Font = new Font("Segoe UI", 10F);
+            xpathEditorComboBox.FormattingEnabled = true;
+            xpathEditorComboBox.Location = new Point(0, 0);
+            xpathEditorComboBox.Name = "xpathEditorComboBox";
+            xpathEditorComboBox.Size = new Size(465, 25);
+            xpathEditorComboBox.TabIndex = 11;
+            xpathEditorComboBox.SelectedIndexChanged += xpathEditorComboBox_SelectedIndexChanged;
+            // 
+            // xpathButtonsPanel
+            // 
+            xpathButtonsPanel.Controls.Add(deleteXpathButton);
+            xpathButtonsPanel.Controls.Add(addNewXpathButton);
+            xpathButtonsPanel.Dock = DockStyle.Right;
+            xpathButtonsPanel.Location = new Point(465, 0);
+            xpathButtonsPanel.Name = "xpathButtonsPanel";
+            xpathButtonsPanel.Padding = new Padding(5, 0, 5, 3);
+            xpathButtonsPanel.Size = new Size(155, 27);
+            xpathButtonsPanel.TabIndex = 10;
+            // 
+            // deleteXpathButton
+            // 
+            deleteXpathButton.BackColor = Color.FromArgb(100, 100, 150);
+            deleteXpathButton.Dock = DockStyle.Right;
+            deleteXpathButton.FlatAppearance.BorderSize = 0;
+            deleteXpathButton.FlatStyle = FlatStyle.Flat;
+            deleteXpathButton.Font = new Font("Segoe UI", 8F);
+            deleteXpathButton.ForeColor = Color.FromArgb(250, 250, 255);
+            deleteXpathButton.Location = new Point(80, 0);
+            deleteXpathButton.Name = "deleteXpathButton";
+            deleteXpathButton.Size = new Size(70, 24);
+            deleteXpathButton.TabIndex = 7;
+            deleteXpathButton.Text = "Delete";
+            deleteXpathButton.UseVisualStyleBackColor = false;
+            deleteXpathButton.Click += deleteXpathButton_Click;
+            // 
+            // addNewXpathButton
+            // 
+            addNewXpathButton.BackColor = Color.FromArgb(100, 100, 150);
+            addNewXpathButton.Dock = DockStyle.Left;
+            addNewXpathButton.FlatAppearance.BorderSize = 0;
+            addNewXpathButton.FlatStyle = FlatStyle.Flat;
+            addNewXpathButton.Font = new Font("Segoe UI", 8F);
+            addNewXpathButton.ForeColor = Color.FromArgb(250, 250, 255);
+            addNewXpathButton.Location = new Point(5, 0);
+            addNewXpathButton.Name = "addNewXpathButton";
+            addNewXpathButton.Size = new Size(70, 24);
+            addNewXpathButton.TabIndex = 6;
+            addNewXpathButton.Text = "Add new";
+            addNewXpathButton.UseVisualStyleBackColor = false;
+            addNewXpathButton.Click += addNewXpathButton_Click;
+            // 
+            // xpathEditorLabel
+            // 
+            xpathEditorLabel.BackColor = Color.FromArgb(250, 250, 255);
+            xpathEditorLabel.Dock = DockStyle.Left;
+            xpathEditorLabel.Font = new Font("Segoe UI Variable Display Semib", 10F, FontStyle.Bold);
+            xpathEditorLabel.ImageAlign = ContentAlignment.TopLeft;
+            xpathEditorLabel.Location = new Point(5, 5);
+            xpathEditorLabel.Name = "xpathEditorLabel";
+            xpathEditorLabel.Padding = new Padding(5, 0, 5, 0);
+            xpathEditorLabel.Size = new Size(167, 54);
+            xpathEditorLabel.TabIndex = 3;
+            xpathEditorLabel.Text = "Post-search XPath:";
+            xpathEditorLabel.TextAlign = ContentAlignment.TopRight;
             // 
             // listingUrlPanel
             // 
@@ -361,10 +442,10 @@
             listingUrlPanel.Controls.Add(listingUrlTextBox);
             listingUrlPanel.Controls.Add(listingUrlLabel);
             listingUrlPanel.Dock = DockStyle.Top;
-            listingUrlPanel.Location = new Point(0, 64);
+            listingUrlPanel.Location = new Point(0, 74);
             listingUrlPanel.Name = "listingUrlPanel";
             listingUrlPanel.Padding = new Padding(5);
-            listingUrlPanel.Size = new Size(797, 32);
+            listingUrlPanel.Size = new Size(797, 37);
             listingUrlPanel.TabIndex = 19;
             // 
             // listingUrlTextBox
@@ -385,7 +466,7 @@
             listingUrlLabel.Location = new Point(5, 5);
             listingUrlLabel.Name = "listingUrlLabel";
             listingUrlLabel.Padding = new Padding(5, 0, 5, 0);
-            listingUrlLabel.Size = new Size(167, 22);
+            listingUrlLabel.Size = new Size(167, 27);
             listingUrlLabel.TabIndex = 3;
             listingUrlLabel.Text = "Listing URL pattern:";
             listingUrlLabel.TextAlign = ContentAlignment.TopRight;
@@ -396,10 +477,10 @@
             searchUrlPanel.Controls.Add(searchUrlTextBox);
             searchUrlPanel.Controls.Add(searchUrlLabel);
             searchUrlPanel.Dock = DockStyle.Top;
-            searchUrlPanel.Location = new Point(0, 32);
+            searchUrlPanel.Location = new Point(0, 37);
             searchUrlPanel.Name = "searchUrlPanel";
             searchUrlPanel.Padding = new Padding(5);
-            searchUrlPanel.Size = new Size(797, 32);
+            searchUrlPanel.Size = new Size(797, 37);
             searchUrlPanel.TabIndex = 17;
             // 
             // searchUrlTextBox
@@ -421,9 +502,9 @@
             searchUrlLabel.Location = new Point(5, 5);
             searchUrlLabel.Name = "searchUrlLabel";
             searchUrlLabel.Padding = new Padding(5, 0, 5, 0);
-            searchUrlLabel.Size = new Size(167, 22);
+            searchUrlLabel.Size = new Size(167, 27);
             searchUrlLabel.TabIndex = 3;
-            searchUrlLabel.Text = "Search URL pattern:";
+            searchUrlLabel.Text = "Starting URL:";
             searchUrlLabel.TextAlign = ContentAlignment.TopRight;
             // 
             // labelPanel
@@ -435,7 +516,7 @@
             labelPanel.Location = new Point(0, 0);
             labelPanel.Name = "labelPanel";
             labelPanel.Padding = new Padding(5);
-            labelPanel.Size = new Size(797, 32);
+            labelPanel.Size = new Size(797, 37);
             labelPanel.TabIndex = 16;
             // 
             // labelTextBox
@@ -455,7 +536,7 @@
             labelLabel.Location = new Point(5, 5);
             labelLabel.Name = "labelLabel";
             labelLabel.Padding = new Padding(5, 0, 5, 0);
-            labelLabel.Size = new Size(167, 22);
+            labelLabel.Size = new Size(167, 27);
             labelLabel.TabIndex = 3;
             labelLabel.Text = "Domain label:";
             labelLabel.TextAlign = ContentAlignment.TopRight;
@@ -492,8 +573,10 @@
             editorPanel.ResumeLayout(false);
             controlContainerPanel.ResumeLayout(false);
             domainFieldsPanel.ResumeLayout(false);
-            pageCountMultiplierPanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)pageCountMultiplierNumericUpDown).EndInit();
+            xpathEditorPanel.ResumeLayout(false);
+            xpathEditorPanel.PerformLayout();
+            xpathEditorContainerPanelTop.ResumeLayout(false);
+            xpathButtonsPanel.ResumeLayout(false);
             listingUrlPanel.ResumeLayout(false);
             listingUrlPanel.PerformLayout();
             searchUrlPanel.ResumeLayout(false);
@@ -528,16 +611,23 @@
         private Panel listingUrlPanel;
         private TextBox listingUrlTextBox;
         private Label listingUrlLabel;
-        private ToolTip mainTooltip;
+        private ToolTip errorTooltip;
         private TextBox searchUrlTextBox;
         private TextBox labelTextBox;
+        private Button clearDomainsButton;
+        private ToolTip infoToolTip;
+        private Panel xpathEditorPanel;
+        private Label xpathEditorLabel;
         private DataGridViewCheckBoxColumn activeDataGridViewColumn;
         private DataGridViewTextBoxColumn domainLabelDataGridViewColumn;
         private DataGridViewTextBoxColumn searchUrlPatternDataGridViewColumn;
         private DataGridViewTextBoxColumn listingUrlPatternDataGridViewColumn;
-        private Button clearDomainsButton;
-        private Panel pageCountMultiplierPanel;
-        private NumericUpDown pageCountMultiplierNumericUpDown;
-        private Label pageCountMultiplierLabel;
+        private DataGridViewComboBoxColumn XpathPostSearch;
+        private TextBox xpathEditorTextBox;
+        private Panel xpathEditorContainerPanelTop;
+        private ComboBox xpathEditorComboBox;
+        private Panel xpathButtonsPanel;
+        private Button deleteXpathButton;
+        private Button addNewXpathButton;
     }
 }

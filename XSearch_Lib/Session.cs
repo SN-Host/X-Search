@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using static XSearch_Lib.SearchHandler;
-using static XSearch_Lib.Strings;
+using static XSearch_Lib.XSearch_Strings;
 
 namespace XSearch_Lib
 {
@@ -50,12 +50,6 @@ namespace XSearch_Lib
                 return;
             }
 
-            // Early exit if status change is unnecessary.
-            if (SearchListings[index].Status == newStatus)
-            {
-                return;
-            }
-
             // Find item for status change.
             SearchListing listingToSort = SearchListings[index];
             listingToSort.Status = newStatus;
@@ -80,7 +74,7 @@ namespace XSearch_Lib
                     break;
                 }
 
-                // Otherwise, move to the next element.
+                // Otherwise, move to the next index.
                 newIndex++;
             }
 

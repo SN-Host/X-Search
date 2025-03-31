@@ -1,19 +1,14 @@
-﻿using System;
-using System.ComponentModel;
-using System.Net;
-using System.Reflection.Metadata;
-using System.Runtime.CompilerServices;
+﻿using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using HtmlAgilityPack;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.DevTools.V131.Memory;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
-using static System.Collections.Specialized.BitVector32;
 using static XSearch_Lib.SearchHandler;
-using static XSearch_Lib.Strings;
+using static XSearch_Lib.XSearch_Strings;
 
 namespace XSearch_Lib
 {
@@ -22,28 +17,23 @@ namespace XSearch_Lib
         // CONSTANTS //
 
         /// <summary>
-        /// Default time to call Task.Delay to throttle searching.
+        /// Number of concurrent tasks that can be performed at once in multithreaded processes such as domain querying.
         /// </summary>
-        private static readonly int timeBetweenNewSearchTasks = 1000;
-
-        /// <summary>
-        /// Default time to call Task.Delay to throttle title grabbing.
-        /// </summary>
-        private static readonly int timeBetweenNewTitleGrabTasks = 10000;
+        private static readonly int concurrentTaskLimit = 5;
 
         // FIELDS //
 
         /// <summary>
-        /// Handles errors related to sessions.
+        /// Handles errors related to searches.
         /// </summary>
         /// <param name="domain">The session with the error</param>
         /// <param name="eArgs">Details about the error.</param>
-        public delegate void SessionErrorHandler(Session session, ErrorReportArgs eArgs);
+        public delegate void SearchErrorHandler(Session session, ErrorReportArgs eArgs);
 
         /// <summary>
         /// Event to raise when a pull is attempted but requirements aren't met.
         /// </summary>
-        public event SessionErrorHandler OnPullFailedAttempt = delegate { };
+        public event SearchErrorHandler OnPullFailedAttempt = delegate { };
 
         /// <summary>
         /// Logs details about ongoing searches.
@@ -55,7 +45,18 @@ namespace XSearch_Lib
         /// <summary>
         /// Event when a new message should be logged about a search in this session.
         /// </summary>
-        public event SearchLogHandler OnNewSearchMessage = delegate { };
+        public event SearchLogHandler OnNewSearchUpdateLog = delegate { };
+
+        /// <summary>
+        /// Acts as an interface for search listing operations to ensure syncing across threads.
+        /// </summary>
+        /// <param name="searchlistings">The search listings to perform an operation on.</param>
+        public delegate void SearchListingsHandler(IEnumerable<SearchListing> searchlistings);
+
+        /// <summary>
+        /// Event when new search results have been found and should be added to the session in the main thread.
+        /// </summary>
+        public event SearchListingsHandler OnNewSearchResults = delegate { };
         
         /// <summary>
         /// List of webdrivers currently in use by the program.
@@ -73,9 +74,9 @@ namespace XSearch_Lib
         private int currentCompletedTasks = 0;
 
         /// <summary>
-        /// Descriptive string representing the search task currently in progress.
+        /// Holds a list of notes on pull failures (if any).
         /// </summary>
-        public string _currentSearchTask = Log_Header_Ready;
+        private List<ErrorReportArgs> pullFailureNotes = new List<ErrorReportArgs>();
 
         // CONSTRUCTOR //
 
@@ -109,6 +110,7 @@ namespace XSearch_Lib
                 return _currentSearchTask;
             }
         }
+        private string _currentSearchTask = Log_Header_Ready;
 
         /// <summary>
         /// Returns an integer from 0-100 representing current search progress.
@@ -131,16 +133,65 @@ namespace XSearch_Lib
         /// </summary>
         public bool CurrentlyPulling { get; set; } = false;
 
-        
+        /// <summary>
+        /// Set to true when the searcher should cancel a pull.
+        /// </summary>
+        public bool ShouldCancelPull 
+        { 
+            get
+            {
+                return _shouldCancelPull;
+            }
+            set
+            {
+                if (value == true)
+                {
+                    OnNewSearchUpdateLog(this, new SearchLogArgs("Cancelling pull..."));
+                }
+                _shouldCancelPull = value;
+            }
+        }
+        private bool _shouldCancelPull = false;
+
         /// <summary>
         /// The search term to use during a pull, as provided by the user.
         /// </summary>
         public string SearchTerm { get; set; } = string.Empty;
 
         /// <summary>
-        /// The number of pages to search during a pull, as provided by the user.
+        /// String to deliver when a pull is finished. This will normally be a completion message unless the pull was cancelled or it failed.
         /// </summary>
-        public int PagesToSearch { get; set; } = 0;
+        public string PullFinishedString 
+        { 
+            get
+            {
+                if (_shouldCancelPull)
+                {
+                    return Pull_Cancelled;
+                }
+                if (!PullSuccessful)
+                {
+                    StringBuilder pullFailedMessage = new StringBuilder();
+
+                    pullFailedMessage.AppendLine(Pull_Failed);
+
+                    foreach (ErrorReportArgs note in pullFailureNotes)
+                    {
+                        pullFailedMessage.AppendLine($"{note.ErrorTitle}: {note.ErrorText}");
+                    }
+
+                    return pullFailedMessage.ToString();
+                }
+                return Pull_Complete;
+            } 
+        }
+
+        public bool PullSuccessful { get; set; } = true;
+
+        /// <summary>
+        /// The number of results to pull per domain, as provided by the user.
+        /// </summary>
+        public int ResultsToPullPerDomain { get; set; } = 50;
 
         /// <summary>
         /// Pulls a new search from active domains using current session settings.
@@ -148,49 +199,66 @@ namespace XSearch_Lib
         public async Task PullSearch()
         {
             // Do not pull if requirements aren't satisfied.
-            /*if (!PullRequirementsSatisfied())
+            if (!PullRequirementsSatisfied())
             {
                 return;
             }
-            */
 
             CurrentlyPulling = true;
 
+            // Return control to caller so the setup process doesn't block the program.
+            await Task.Yield();
 
+            // Update the current search task string indicator for search update logs.
+            _currentSearchTask = Log_Header_PullPrep;
 
-            //FirefoxDriver driver = CreateFirefoxDriver();
-            ChromeDriver chromeDriver = CreateChromeDriver();
+            // Ensure there is a limit on domains to process concurrently.
+            SemaphoreSlim throttler = new SemaphoreSlim(initialCount: concurrentTaskLimit);
+            List<Task> allTasks = new List<Task>();
 
-            // TODO: Add a trycatch here to generically catch errors.
+            foreach (Domain domain in Session.DomainProfile.ActiveDomains)
+            {
+                await throttler.WaitAsync();
 
-            SearchDomain(Session.DomainProfile.ActiveDomains.ElementAt(0), chromeDriver);
+                allTasks.Add(
+                    Task.Run(() =>
+                    {
+                        OnNewSearchUpdateLog(this, new SearchLogArgs($"Creating FireFox driver for domain {domain.Label}."));
+                        FirefoxDriver driver = CreateFirefoxDriver();
 
-            //driver.Quit();
+                        try
+                        {
+                            SearchDomain(domain, driver);
+                        }
+                        // If at any point we encounter an error page (typically due to having lost connection), we should handle the exception and not search this domain any further.
+                        catch (UnknownErrorException ex) when (ex.Message.StartsWith("Reached error page:"))
+                        {
+                            OnNewSearchUpdateLog(this, new SearchLogArgs($"Error page encountered at {domain.Label}. Exception message follows: \n{ex.Message}"));
+                            pullFailureNotes.Add(new ErrorReportArgs($"{domain.Label}:", "Encountered error page. Please verify Internet connection and try again."));
+                            PullSuccessful = false;
+                        }
+                        finally
+                        {
+                            TerminateDriver(driver);
+                            throttler.Release();
+                        }
+                    }));
+            }
 
-            TerminateDriver(chromeDriver);
+            await Task.WhenAll(allTasks);
 
-            /*
-
-            // Fetch any new search listings.
-            List<Task> tasks = new List<Task>();
-
-            await PullFromSearchPages();
-
-            // Attempt to fetch the titles of all currently pulled search listings without titles.
-            await TryUpdateSearchListingTitles();
-
-            */
-            CurrentlyPulling = false;
-
-            // Currently won't work as expected - our async methods are beginning as soon as they're loaded into an IEnumerable. This will need to change.
             _currentSearchTask = Log_Header_Ready;
-            OnNewSearchMessage(this, new SearchLogArgs($"Pull complete."));
+            OnNewSearchUpdateLog(this, new SearchLogArgs(PullFinishedString));
+
+            // Reset volatile search variables.
+            PullSuccessful = true;
+            CurrentlyPulling = false;
+            ShouldCancelPull = false;
         }
 
         /// <summary>
         /// Creates a Firefox driver with the default settings used by the program.
         /// </summary>
-        /// <returns></returns>
         public FirefoxDriver CreateFirefoxDriver()
         {
             FirefoxOptions ffOptions = new FirefoxOptions();
@@ -218,7 +286,59 @@ namespace XSearch_Lib
 
             webDrivers.Add(driver);
 
+            // Currently doesn't seem to do anything.
+            driver.ExecuteCdpCommand("Network.setUserAgentOverride", new Dictionary<string, object>
+            {
+                ["userAgent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36"
+            });
+
             return driver;
+        }
+
+        /// <summary>
+        /// Raises an event to add new search listings to the session.
+        /// </summary>
+        /// <param name="searchListings">Search listings to add to the session.</param>
+        /// <returns>The search listings to be added to the session.</returns>
+        public IEnumerable<SearchListing> TryAddSearchListings(IEnumerable<SearchListing> searchListings, Domain domain)
+        {
+            List<SearchListing> listingsToAdd = new List<SearchListing>();
+            foreach (SearchListing searchListing in searchListings)
+            {
+                // Check if we should cancel the pull.
+                if (ShouldCancelPull)
+                {
+                    return listingsToAdd;
+                }
+
+                // Don't allow any listings already contained in the search listing list. 
+                if (Session.SearchListings.Where(x => x.Url == searchListing.Url).Any())
+                {
+                    OnNewSearchUpdateLog(this, new SearchLogArgs($"Pulled duplicate search listing:\n{searchListing.Title}\n{searchListing.Url}"));
+                    continue;
+                }
+
+                if (!Regex.IsMatch(searchListing.Url, domain.ListingUrlPattern))
+                {
+                    continue;
+                }
+
+                listingsToAdd.Add(searchListing);
+            }
+
+            OnNewSearchResults(listingsToAdd);
+
+            return listingsToAdd;
+        }
+
+        /// <summary>
+        /// Overload of <see cref="TryAddSearchListings"/> for only a single searchListing.
+        /// </summary>
+        /// <param name="searchListing">The SearchListing to add.</param>
+        /// <returns>The SearchListings successfully added by the attempt.</returns>
+        public IEnumerable<SearchListing> TryAddSearchListings(SearchListing searchListing, Domain domain)
+        {
+            return TryAddSearchListings([searchListing], domain);
         }
         
         /// <summary>
@@ -240,7 +360,6 @@ namespace XSearch_Lib
         /// <returns>True if a pull can be made, false otherwise.</returns>
         public bool PullRequirementsSatisfied()
         {
-
             // Pull already in progress.
             if (CurrentlyPulling)
             {
@@ -255,8 +374,8 @@ namespace XSearch_Lib
                 return false;
             }
 
-            // No pages to search.
-            if (PagesToSearch <= 0)
+            // No results to pull.
+            if (ResultsToPullPerDomain <= 0)
             {
                 OnPullFailedAttempt(Session, new ErrorReportArgs(Error_OnZeroPagesSelected_Title, Error_OnZeroPagesSelected_Text));
                 return false;
@@ -273,49 +392,55 @@ namespace XSearch_Lib
             return true;
         }
 
+        /// <summary>
+        /// Performs a search over an entire domain for as long as there are results to grab and we haven't reached the target.
+        /// Intended to be run on its own thread with Task.Run.
+        /// </summary>
+        /// <param name="domain">The domain to query.</param>
+        /// <param name="driver">The Selenium WebDriver instance to use to drive this domain's searches.</param>
         public void SearchDomain(Domain domain, IWebDriver driver)
         {
-            string searchUrl = domain.GetResolvedSearchUrl(SearchTerm, 1);
+            OnNewSearchUpdateLog(this, new SearchLogArgs($"Setting up search for domain {domain.Label}."));
 
+            // Replace any placeholders in the domain's search URL pattern with the current search term.
+            string searchUrl = domain.GetResolvedSearchUrl(SearchTerm);
+
+            // Determine if the given URL is valid and early exit if not.
             bool result = Uri.TryCreate(searchUrl, UriKind.Absolute, out Uri? testUri)
-            && (testUri?.Scheme == Uri.UriSchemeHttp || testUri?.Scheme == Uri.UriSchemeHttps);
+                && (testUri?.Scheme == Uri.UriSchemeHttp || testUri?.Scheme == Uri.UriSchemeHttps);
 
-            // If the search URL pattern was invalid, don't proceed with this domain.
             if (!result)
             {
-                OnNewSearchMessage(this, new SearchLogArgs($"Search url {searchUrl} for domain {domain} was invalid. Skipping."));
+                OnNewSearchUpdateLog(this, new SearchLogArgs($"Search url {searchUrl} for domain {domain} was invalid. Skipping."));
                 return;
             }
 
-            //Go to the webpage.
+            //Go to the starting search URL.
             driver.Navigate().GoToUrl(searchUrl);
             
             driver.Manage().Window.Maximize();
 
+            // Make note of the handle of the page we're using to fetch listings.
             string currentPageSearchHandle = driver.CurrentWindowHandle;
 
-            /*
-            IWebElement revealed = driver.FindElement(By.TagName("a"));
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
-            wait.Until(d => revealed.Displayed);
-            */
+            // Keep track of links we've visited and new listings we've collected in this session.
+            List<string> visitedHrefs = new List<string>();
+            List<SearchListing> domainListingsPulledSoFar = new List<SearchListing>();
 
-            // Find all listing links.
+            // Attempt to find all listing links.
+            List<IWebElement> linksToCheck = SearchForListingsUntilTimeout(domain, driver);
 
-            List<string> visitedLinks = new List<string>();
-            List<string> collectedTitles = new List<string>();
-            List<string> collectedUrls = new List<string>();
+            // If we reach this point, we're cleared to begin the pull, so we inform the logger.
+            _currentSearchTask = Log_Header_SearchPagePulling;
+            OnNewSearchUpdateLog(this, new SearchLogArgs($"Beginning pull for domain {domain} at search URL {searchUrl}. {linksToCheck.Count} links found."));
 
-            new WebDriverWait(driver, TimeSpan.FromSeconds(30)).Until(
-                        d => GetMatchingDomainLinks(driver, domain).Any());
-
-            List<IWebElement> linksToCheck = GetMatchingDomainLinks(driver, domain);
-
-            System.Diagnostics.Debug.WriteLine($"links: {linksToCheck.Count}");
-
-
-            while (linksToCheck.Count > 0)
+            do
             {
+                // Check if we should cancel the pull.
+                if (ShouldCancelPull)
+                {
+                    return;
+                }
                 int i = 0;
                 /*
                 for (i = 0; i < linksToCheck.Count; i++)
@@ -326,9 +451,9 @@ namespace XSearch_Lib
                     }
                 }
                 */
-            //}
-            //for (int i = 0; i < linksToCheck.Count; i++)
-            //{
+                //}
+                //for (int i = 0; i < linksToCheck.Count; i++)
+                //{
                 //List<string> hrefs = GetMatchingDomainLinks(driver, domain).Select(x => x.GetAttribute("href")).ToList();
 
                 /*
@@ -339,58 +464,76 @@ namespace XSearch_Lib
                 System.Diagnostics.Debug.WriteLine($"hrefs[{i}]: {hrefs[i]}");
                 */
 
-                string href = linksToCheck[i].GetAttribute("href");
-
-                if (!visitedLinks.Contains(href))
+                try
                 {
-                    IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-                    //js.ExecuteScript("arguments[0].scrollIntoView(true);", linksToCheck[i]);
-                    //js.ExecuteScript("window.scrollBy(0, -2);");
-
-                    /*
-                    List<IWebElement> currentElements = GetMatchingDisplayedDomainLinks(driver, domain);
-                    linksToCheck.AddRange(currentElements.Where(x => !visitedLinks.Contains(x.GetAttribute("href"))));
-                     }*/
-
-                    js.ExecuteScript("arguments[0].focus();", linksToCheck[i]);
-
-                    new Actions(driver)
-                    .KeyDown(Keys.LeftControl)
-                    .KeyDown(Keys.Enter)
-                    .KeyUp(Keys.Enter)
-                    //.Click(linksToCheck[i])
-                    .KeyUp(Keys.LeftControl)
-                    .Build()
-                    .Perform();
-
-                    /*
-                    js.ExecuteScript("arguments[0].click();", linksToCheck[i]);
-
-                    new Actions(driver)
-                    .KeyUp(Keys.LeftControl)
-                    .Build()
-                    .Perform();
-                    */
-
-                    IList<string> otherWindowHandles = new List<string>(driver.WindowHandles).Where(x => x != currentPageSearchHandle).ToList();
-                    foreach (string windowHandle in otherWindowHandles)
+                    // Search through the found listings, if they're still valid.
+                    string? possibleHref = linksToCheck[i]?.GetAttribute("href");
+                    if (possibleHref is string href && !visitedHrefs.Contains(href))
                     {
-                        driver.SwitchTo().Window(windowHandle);
-                        /*new WebDriverWait(driver, TimeSpan.FromSeconds(30)).Until(
-                            d => ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState")?.Equals("complete") ?? false);*/
+                        IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                        //js.ExecuteScript("arguments[0].scrollIntoView(true);", linksToCheck[i]);
+                        //js.ExecuteScript("window.scrollBy(0, -2);");
 
-                        
-                        new WebDriverWait(driver, TimeSpan.FromSeconds(30)).Until(
-                            d => !string.IsNullOrEmpty(d.Title) && !string.IsNullOrEmpty(d.Url));
+                        /*
+                        List<IWebElement> currentElements = GetMatchingDisplayedDomainLinks(driver, domain);
+                        linksToCheck.AddRange(currentElements.Where(x => !visitedLinks.Contains(x.GetAttribute("href"))));
+                         }*/
 
-                        visitedLinks.Add(href);
-                        collectedTitles.Add(driver.Title);
-                        collectedUrls.Add(driver.Url);
+                        js.ExecuteScript("arguments[0].focus();", linksToCheck[i]);
 
-                        driver.Close();
+                        new Actions(driver)
+                        .KeyDown(Keys.LeftControl)
+                        .KeyDown(Keys.Enter)
+                        .KeyUp(Keys.Enter)
+                        //.Click(linksToCheck[i])
+                        .KeyUp(Keys.LeftControl)
+                        .Build()
+                        .Perform();
+
+                        /*
+                        js.ExecuteScript("arguments[0].click();", linksToCheck[i]);
+
+                        new Actions(driver)
+                        .KeyUp(Keys.LeftControl)
+                        .Build()
+                        .Perform();
+                        */
+
+                        IList<string> otherWindowHandles = new List<string>(driver.WindowHandles).Where(x => x != currentPageSearchHandle).ToList();
+                        foreach (string windowHandle in otherWindowHandles)
+                        {
+                            // Check if we should cancel the pull.
+                            if (ShouldCancelPull)
+                            {
+                                return;
+                            }
+
+                            SearchListing searchListing = BuildSearchListingFromOpenedWindow(driver, windowHandle, domain);
+
+                            domainListingsPulledSoFar.Add(searchListing);
+                            visitedHrefs.Add(href);
+
+                            // Check if we should cancel the pull again.
+                            if (ShouldCancelPull)
+                            {
+                                return;
+                            }
+
+                            if (TryAddSearchListings(searchListing, domain).Any())
+                            {
+                                OnNewSearchUpdateLog(this, new SearchLogArgs($"Successfully pulled new search listing:\n{searchListing.Title}\n{searchListing.Url}"));
+                            }
+
+                            // Close the current window.
+                            driver.Close();
+                        }
                     }
-                }
 
+                }
+                catch (StaleElementReferenceException)
+                {
+                    OnNewSearchUpdateLog(this, new SearchLogArgs($"Link elements for domain {domain.Label} were stale for index {i} of found links."));
+                }
                 /*
                 if (!ElementCompletelyVisible(driver, linksToCheck[i]))
                 {*/
@@ -399,16 +542,29 @@ namespace XSearch_Lib
 
                 linksToCheck.RemoveAt(i);
 
+                // Stop searching if we've found enough listings.
+                if (domainListingsPulledSoFar.Count >= ResultsToPullPerDomain)
+                {
+                    OnNewSearchUpdateLog(this, new SearchLogArgs($"Pull complete for domain {domain.Label} after collecting {domainListingsPulledSoFar.Count} listings."));
+                    break;
+                }    
+
+                // Check for any links that may have loaded since we finished processing the last grabbed batch.
                 if (linksToCheck.Count == 0)
                 {
-                    linksToCheck = GetMatchingDomainLinks(driver, domain).Where(x => !visitedLinks.Contains(x.GetAttribute("href"))).ToList();
+                    linksToCheck = GetMatchingListingLinks(domain, driver).Where(x => !visitedHrefs.Contains(x.GetAttribute("href"))).ToList();
                 }
-            }
 
-            foreach (string title in collectedTitles)
-            {
-                System.Diagnostics.Debug.WriteLine(title);
+                // If we still didn't find any listings on the load search, try pressing any buttons we're commanded to at this point.
+                if (linksToCheck.Count == 0)
+                {
+                    linksToCheck = ProcessDomainNoSearchResultsXpath(domain, driver);
+                }
+                
+                // Ensure current search page handle is updated, as we may have changed pages.
+                currentPageSearchHandle = driver.CurrentWindowHandle;
             }
+            while (linksToCheck.Count > 0);
 
             /*
             foreach (var link in links.Values)
@@ -442,6 +598,127 @@ namespace XSearch_Lib
 
         }
 
+        /// <summary>
+        /// Handles standard procedures for marking a pull as failed.
+        /// </summary>
+        /// <param name="domain">The domain contributing a failure note.</param>
+        /// <param name="failureNoteMessage">The summarized reason for the failure to provide at end of the pull.</param>
+        /// <param name="updateLogMessage">The message for the failure to be given at the time of failure.</param>
+        public void FailPull(Domain domain, string failureNoteMessage, string updateLogMessage)
+        {
+            OnNewSearchUpdateLog(this, new SearchLogArgs(updateLogMessage));
+            pullFailureNotes.Add(new ErrorReportArgs($"{domain.Label}", failureNoteMessage));
+            PullSuccessful = false;
+        }
+
+        public List<IWebElement> SearchForListingsUntilTimeout(Domain domain, IWebDriver driver)
+        {
+            // Attempt to find all listing links.
+            List<IWebElement> linksToCheck = new List<IWebElement>();
+            try
+            {
+
+                new WebDriverWait(driver, TimeSpan.FromSeconds(30)).Until(d =>
+                {
+                    linksToCheck = GetMatchingListingLinks(domain, d);
+                    return linksToCheck.Any();
+                });
+
+            }
+            // Fail pull for this domain if we time out while searching for listing links.
+            catch (WebDriverTimeoutException ex)
+            {
+                string message = $"Timed out while searching for any listing links at domain {domain.Label}.";
+                FailPull(domain, message, message + $" Exception message follows: \n{ex.Message}");
+            }
+
+            return linksToCheck;
+        }
+
+        public List<IWebElement> ProcessDomainNoSearchResultsXpath(Domain domain, IWebDriver driver)
+        {
+            // Represents any new elements found after executing the 
+            List<IWebElement> elementsAfterXpathCheck = new List<IWebElement>();
+            List<string> xpathLeftToCheck = domain.NoSearchResultsXpath.ToList();
+
+            // Find any elements with in the xpath searches provided.
+            while (elementsAfterXpathCheck.Count <= 0 && xpathLeftToCheck.Count > 0)
+            {
+                try
+                {
+                    IWebElement element = driver.FindElement(By.XPath(xpathLeftToCheck[0]));
+
+                    IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+
+                    js.ExecuteScript("arguments[0].focus();", element);
+                    js.ExecuteScript("arguments[0].click();", element);
+                }
+                catch (NoSuchElementException)
+                {
+                    OnNewSearchUpdateLog(this, new SearchLogArgs($"Failed to find element with xpath {xpathLeftToCheck[0]} in domain {domain.Label}."));
+                }
+
+                elementsAfterXpathCheck = SearchForListingsUntilTimeout(domain, driver);
+                xpathLeftToCheck.RemoveAt(0);
+            }
+
+            // Return anything found (or the empty list if nothing was provided.
+            return elementsAfterXpathCheck;
+
+        }
+
+        /// <summary>
+        /// Attempts to build a SearchListing from an opened window handle.
+        /// </summary>
+        /// <param name="driver"></param>
+        /// <param name="windowHandle"></param>
+        /// <returns></returns>
+        public SearchListing BuildSearchListingFromOpenedWindow(IWebDriver driver, string windowHandle, Domain domain, int maxTries = 5, int retries = 0)
+        {
+            driver.SwitchTo().Window(windowHandle);
+            /*new WebDriverWait(driver, TimeSpan.FromSeconds(30)).Until(
+                d => ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState")?.Equals("complete") ?? false);*/
+
+                    string title = string.Empty;
+            string url = string.Empty;
+
+            while (retries <= maxTries)
+            {
+                // Attempt to fetch the title and URL for the new listing.
+                try
+                {
+                    new WebDriverWait(driver, TimeSpan.FromSeconds(30)).Until(
+                        d => !string.IsNullOrEmpty(d.Title) && !string.IsNullOrEmpty(d.Url));
+
+                    title = driver.Title;
+                    url = new Uri(driver.Url).GetLeftPart(UriPartial.Path);
+
+                    // Make sure we escape the loop.
+                    break;
+                }
+                // If we time out, reload the page and try again up to the maximum number of retries.
+                catch (WebDriverTimeoutException)
+                {
+                    driver.Navigate().Refresh();
+                    OnNewSearchUpdateLog(this, new SearchLogArgs($"Timed out while trying to fetch listing from {domain.Label}. Reloading page and trying again. Retries: {retries}"));
+                    BuildSearchListingFromOpenedWindow(driver, windowHandle, domain, maxTries, ++retries);
+                }
+            }
+
+            if (retries > maxTries)
+            {
+                FailPull(domain,
+                    $"Failed to fetch listing details from {domain.Label}.",
+                    $"Failed to fetch listing details from {domain.Label} after {retries} tries due to repeated timeouts. Defaulting.");
+
+                title = Listing_Default_Title;
+                url = driver.Url ?? Listing_Default_Url;
+            }
+
+            return new SearchListing(title, domain, url, DateTime.Now);
+
+        }
+
         public bool ElementCompletelyVisible(IWebDriver driver, IWebElement element)
         {
             int elementLeftBound = element.Location.X;
@@ -472,254 +749,58 @@ namespace XSearch_Lib
         /// <param name="driver">The webdriver to find elements on.</param>
         /// <param name="domain">The domain to use the listing pattern from.</param>
         /// <returns></returns>
-        public List<IWebElement> GetMatchingDomainLinks(IWebDriver driver, Domain domain)
+        public List<IWebElement> GetMatchingListingLinks(Domain domain, IWebDriver driver, bool retry = true)
         {
-            List<IWebElement> allLinks = driver.FindElements(By.TagName("a")).ToList();
-            allLinks = allLinks.OrderBy(x => x.Location.Y).ToList();
+            List<IWebElement> allLinks = new List<IWebElement>();
             List<IWebElement> matchingLinks = new List<IWebElement>();
             List<string> hrefs = new List<string>();
 
-            // Early exit if no links were found.
-            if (!allLinks.Any())
+            try
             {
-                return matchingLinks;
+                allLinks = driver.FindElements(By.TagName("a")).OrderBy(x => x.Location.Y).ToList();
+
+                // Early exit if no links were found.
+                if (!allLinks.Any())
+                {
+                    return matchingLinks;
+                }
+
+                // Determine which links should be returned from those found.
+                foreach (IWebElement link in allLinks)
+                {
+                    // Don't return any links without href attributes.
+                    if (link.GetAttribute("href") is not string href)
+                    {
+                        continue;
+                    }
+
+                    // Don't return any links that don't match the listing URL pattern.
+                    if (!Regex.IsMatch(href, domain.ListingUrlPattern))
+                    {
+                        continue;
+                    }
+
+                    // Only add those links that have passed all conditions.
+                    matchingLinks.Add(link);
+                    hrefs.Add(href);
+                }
+
             }
-
-            // Determine which links should be returned from those found.
-            foreach (IWebElement link in allLinks)
+            catch (StaleElementReferenceException ex)
             {
-                // Don't return any links without href attributes.
-                if (!(link.GetAttribute("href") is string href))
+                //Retry once if exception caught.
+                if (retry)
                 {
-                    continue;
+                    return GetMatchingListingLinks(domain, driver, retry: false);
                 }
 
-                // Don't return any links that don't match the listing URL pattern.
-                if (!Regex.IsMatch(href, domain.ListingUrlPattern))
-                {
-                    continue;
-                }
-
-                /*
-                // Don't return any links that aren't completely in view.
-                if (!ElementCompletelyVisible(driver, link))
-                {
-                    continue;
-                }*/
-
-                // Only add those links that have passed all conditions.
-                matchingLinks.Add(link);
-                hrefs.Add(href);
+                FailPull(domain,
+                    "Listing links became stale.",
+                    $"Stale listing returned by FindElements when getting matching listing links. Exception follows: \n{ex.Message}");
+                return allLinks;
             }
 
             return matchingLinks;
-        }
-        public async Task PullFromSearchPages()
-        {
-            _currentSearchTask = Log_Header_SearchPagePulling;
-
-            // Determine which domains are active and need to be pulled from.
-            List<Domain> activeDomains = Session.DomainProfile.Domains.Where(x => x.Active).ToList();
-
-            OnNewSearchMessage(this, new SearchLogArgs($"Beginning search page listing pulls for {activeDomains.Count} domains."));
-
-            // Build the search pages we intend to search by filling in our placeholders.
-            List<SearchPage> searchPages = new List<SearchPage>();
-            foreach (Domain domain in activeDomains)
-            {
-                // First ensure that this domain's search URLs are valid at all.
-                string searchUrl = domain.GetResolvedSearchUrl(SearchTerm, 1);
-
-                bool result = Uri.TryCreate(searchUrl, UriKind.Absolute, out Uri? testUri)
-                && (testUri?.Scheme == Uri.UriSchemeHttp || testUri?.Scheme == Uri.UriSchemeHttps);
-
-                // If the search URL pattern was invalid, don't proceed with this domain.
-                if (!result)
-                {
-                    OnNewSearchMessage(this, new SearchLogArgs($"Search url {searchUrl} for domain {domain} was invalid. Skipping."));
-                    continue;
-                }
-
-                // Otherwise, generate uris for all pages of all domains for the given search term.
-                for (int curPage = 1; curPage <= PagesToSearch; curPage++)
-                {
-                    string url = domain.GetResolvedSearchUrl(SearchTerm, curPage);
-                    if (!searchPages.Where(x => x.Url == url).Any())
-                    {
-                        searchPages.Add(new SearchPage(url, domain));
-                    }
-                }
-            }
-
-            // Compile a list of tasks representing the search pages to query for listings.
-            IEnumerable<Task<List<SearchListing>>> downloadListingTasksQuery =
-                from searchPage in searchPages
-                select ParseSearchPageForListingLinks(new Uri(searchPage.Url), searchPage.Domain);
-
-            // Represents the tasks to download listings from search pages that still need to be completed.
-            List<Task<List<SearchListing>>> remainingDownloadListingTasks = downloadListingTasksQuery.ToList();
-
-            // Represents the listings for which we need to fetch titles.
-            List<SearchListing> searchListingsToGetTitlesFor = new List<SearchListing>();
-
-            OnNewSearchMessage(this, new SearchLogArgs($"Pulling listings from {remainingDownloadListingTasks.Count} pages."));
-
-            // Main loop for pulling listings from search pages.
-            while (remainingDownloadListingTasks.Any())
-            {
-                // When any of the tasks have finished...
-                Task<List<SearchListing>> finishedListingTask = await Task.WhenAny(remainingDownloadListingTasks);
-
-                // Remove finished task from to-do lists.
-                remainingDownloadListingTasks.Remove(finishedListingTask);
-
-                List<SearchListing> searchListings = await finishedListingTask;
-
-                // Insert the retrieved listings into our session's SearchListings.
-                foreach (SearchListing searchListing in searchListings)
-                {
-                    Session.SearchListings.Insert(0, searchListing);
-                    searchListingsToGetTitlesFor.Insert(0, searchListing);
-                }
-            }
-
-            OnNewSearchMessage(this, new SearchLogArgs($"Search listing pulls complete."));
-
-        }
-
-        /// <summary>
-        /// Attempts to update listing titles for any search listings in the session.
-        /// </summary>
-        public async Task TryUpdateSearchListingTitles()
-        {
-            // Update current search task.
-            _currentSearchTask = Log_Header_TitleFetching;
-
-            // Compile a list of title update tasks.
-            IEnumerable<Task<bool>> downloadListingTitlesTasksQuery =
-                from searchListing in Session.SearchListings
-                where !searchListing.TitleGrabbed
-                select ParseListingPageForTitles(searchListing);
-
-            List<Task<bool>> remainingDownloadTitlesTasks = downloadListingTitlesTasksQuery.ToList();
-
-            OnNewSearchMessage(this, new SearchLogArgs($"Attempting to pull titles for {remainingDownloadTitlesTasks.Count} listings."));
-
-            // Continue to await results so long as there are tasks remaining to be completed.
-            while (remainingDownloadTitlesTasks.Any())
-            {
-                // Handle any completed tasks.
-                Task<bool> finishedTitlingTask = await Task.WhenAny(remainingDownloadTitlesTasks);
-
-                remainingDownloadTitlesTasks.Remove(finishedTitlingTask);
-            }
-
-            OnNewSearchMessage(this, new SearchLogArgs($"Listing title pulls complete."));
-        }
-
-        /// <summary>
-        /// Retrieves and parses a SearchListing's associated HTML for a webpage title.
-        /// </summary>
-        /// <param name="searchListing">The SearchListing to check.</param>
-        /// <returns>True only if a title could be retrieved from the document.</returns>
-        private async Task<bool> ParseListingPageForTitles(SearchListing searchListing)
-        {
-            // Indicate that this title is being fetched.
-            searchListing.Title = SearchListing.FetchingTitle;
-
-            // Try to get web request at matched URL.
-            HttpResponseMessage response = await SharedClient.GetAsync(searchListing.Url);
-
-            currentCompletedTasks++;
-
-            // Throw exception if URL can't be resolved.
-            if (response == null || !response.IsSuccessStatusCode)
-            {
-                // TODO: Message
-                searchListing.Title = SearchListing.FailedTitleFetch;
-                OnNewSearchMessage(this, new SearchLogArgs($"Failed to pull title for the following URL: {searchListing.Url}"));
-                return false;
-                //throw new Exception($"Failed to load URL: {listingUrl}");
-            }
-
-            // From the content of the listing, retrieve the title.
-
-            string listingContent = await response.Content.ReadAsStringAsync();
-
-            searchListing.Title = Regex.Match(listingContent, @"\<title\b[^>]*\>\s*(?<Title>[\s\S]*?)\</title\>",
-            RegexOptions.IgnoreCase).Groups["Title"].Value;
-
-            searchListing.TitleGrabbed = true;
-            OnNewSearchMessage(this, new SearchLogArgs($"Title pulled:\n {searchListing.Title}."));
-
-            return true;
-        }
-
-        private async Task<List<SearchListing>> ParseSearchPageForListingLinks(Uri searchPageUri, Domain domain)
-        {
-            // Try to get web request at matched URL.
-            HttpResponseMessage response = await SharedClient.GetAsync(searchPageUri);
-
-            // Throw exception if URL can't be resolved.
-            if (response == null || !response.IsSuccessStatusCode)
-            {
-                OnNewSearchMessage(this, new SearchLogArgs($"Could not reach domain {domain.Label}."));
-                return new List<SearchListing>();
-                //throw new Exception($"Failed to load URL: {listingUrl}");
-            }
-
-            // Load the HTML document and locate any href attributes.
-
-            string listingContent = await response.Content.ReadAsStringAsync();
-
-            HtmlDocument htmlDoc = new HtmlDocument();
-            htmlDoc.LoadHtml(listingContent);
-
-            List<string> listingUrls = htmlDoc.DocumentNode
-                .SelectNodes("//a[@href]")
-                .Select(node => node.GetAttributeValue("href", string.Empty))
-                .Distinct()
-                .ToList();
-
-            // Load the found href attributes into a list for processing.
-
-            List<SearchListing> searchListings = new List<SearchListing>();
-
-            foreach (string listingUrl in listingUrls)
-            {
-                bool result = Uri.TryCreate(listingUrl, UriKind.Absolute, out Uri? testUri)
-                    && (testUri?.Scheme == Uri.UriSchemeHttp || testUri?.Scheme == Uri.UriSchemeHttps);
-
-                // Early exit if the URL can't be resolved.
-                if (!result || testUri == null)
-                {
-                    continue;
-                }
-
-                // Change testUri into a non-null instance.
-                Uri uriResult = testUri;
-
-                // Early exit if the URL doesn't match the regex pattern.
-                if (!Regex.IsMatch(listingUrl, domain.ListingUrlPattern))
-                {
-                    continue;
-                }
-
-                // Early exit if we've already fetched this search listing.
-                if (Session.SearchListings.Where(x => x.Url == listingUrl).Any())
-                {
-                    continue;
-                };
-
-                // Otherwise, we've found a new listing and can safely add it to our list.
-
-                searchListings.Add(new SearchListing(domain, listingUrl));
-                OnNewSearchMessage(this, new SearchLogArgs($"{searchListings.Count} search listings pulled from the following URL: {listingUrl}"));
-            }
-
-            return searchListings;
-
-
         }
     }
 }

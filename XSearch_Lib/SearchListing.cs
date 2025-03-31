@@ -28,14 +28,25 @@ namespace XSearch_Lib
 
         // CONSTRUCTORS //
 
-        public SearchListing(Domain domain, string url)
+        public SearchListing(Domain domain, string url, DateTime dateTime)
         {
             Domain = domain;
             Url = url;
+            DateTimeRetrieved = dateTime;
+        }
+        public SearchListing(string title, Domain domain, string url, DateTime dateTime)
+        {
+            Title = title;
+            Domain = domain;
+            Url = url;
+            DateTimeRetrieved = dateTime;
         }
 
         // PROPERTIES //
 
+        /// <summary>
+        /// Exists for access by UI elements.
+        /// </summary>
         public string DomainName
         {
             get
@@ -67,11 +78,22 @@ namespace XSearch_Lib
 
         public string Url { get; set; } = string.Empty;
 
+        public string RetrievalTimeString 
+        { 
+            get
+            {
+                return DateTimeRetrieved.ToString(@"MM\/dd\/yyyy h\:mm tt");
+            }
+        } 
+
         [Browsable(false)]
         public Domain Domain { get; set; }
 
         [Browsable(false)]
         public ListingStatus Status { get; set; } = CommonStatus.NewStatus;
+
+        [Browsable(false)]
+        public DateTime DateTimeRetrieved { get; set; } = DateTime.MinValue;
 
     }
 }

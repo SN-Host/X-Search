@@ -69,14 +69,45 @@ namespace XSearch_WinForms
             Program.CurrentSession.Searcher.OnPullFailedAttempt += GenericErrorMessage;
 
             // Handle events for update search log updates.
-            Program.CurrentSession.Searcher.OnNewSearchMessage += UpdateSearchLog;
+            Program.CurrentSession.Searcher.OnNewSearchUpdateLog += UpdateSearchLog;
+
+            // Handle events for new search results.
+            Program.CurrentSession.Searcher.OnNewSearchResults += OnNewSearchResults;
         }
 
         /// <summary>
-        /// Handles search logging events raised by the library.
+        /// Safely handles new search result events raised by webdriver threads opened in the library.
+        /// </summary>
+        /// <param name="searchListings"></param>
+        public void OnNewSearchResults(IEnumerable<SearchListing> searchListings)
+        {
+            // Ensure calls from other threads are handled properly.
+            if (InvokeRequired)
+            {
+                // Note to self: It doesn't seem that this call has much of a negative performance impact. It takes about 4ms to run, so marshalling the thread events back to the UI thread shouldn't be that big of a deal.
+                Invoke(new MethodInvoker(() => { OnNewSearchResults(searchListings); }));
+                return;
+            }
+            foreach (SearchListing sl in searchListings)
+            {
+                // Insert the new listing and ensure it is sorted correctly.
+                Program.CurrentSession.SearchListings.Insert(0, sl);
+                Program.CurrentSession.ChangeStatusAtListingIndex(0, sl.Status);
+            }
+        }
+
+        /// <summary>
+        /// Safely handles new search logging events raised by webdriver threads opened in the library.
         /// </summary>
         public void UpdateSearchLog(SessionSearcher searcher, SearchLogArgs sArgs)
         {
+            // Ensure calls from other threads are handled properly.
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(() => { UpdateSearchLog(searcher, sArgs); }));
+                return;
+            }
+
             statusReportLabel.Text = $"[{searcher.CurrentSearchTask}]\n" + sArgs.Text;
             searchProgressLabel.Text = $"{searcher.SearchProgress}%";
         }
@@ -95,7 +126,7 @@ namespace XSearch_WinForms
         public void ApplySelectedButtonColor(Button curSelection, ref Button oldSelection, Color newColor, Color? possibleDefaultColor = null)
         {
             // Use class default if parameter wasn't given.
-            if (!(possibleDefaultColor is Color defaultColor))
+            if (possibleDefaultColor is not Color defaultColor)
             {
                 defaultColor = DefaultButtonColor;
             }

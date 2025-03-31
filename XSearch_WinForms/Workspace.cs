@@ -19,6 +19,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static XSearch_WinForms.Domains;
 using Microsoft.Web.WebView2.Core;
 using System.Diagnostics;
+using static System.Windows.Forms.LinkLabel;
 
 namespace XSearch_WinForms
 {
@@ -83,10 +84,18 @@ namespace XSearch_WinForms
         public Workspace(MainForm mainForm)
         {
             InitializeComponent();
-            
+
+            //SearchListings._syncObject = this;
+
             // Ensure our DataGridView is linked to our session's search listings.
             // TODO: Use a BindingSource.
-            mainDataGridView.DataSource = SearchListings;
+
+            BindingSource bindingSource = new BindingSource()
+            {
+                DataSource = SearchListings
+            };
+
+            mainDataGridView.DataSource = bindingSource;
 
             // Ensure that the style is set to support double buffering for best performance.
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
@@ -280,6 +289,85 @@ namespace XSearch_WinForms
             if (clear == DialogResult.Yes)
             {
                 SearchListings.Clear();
+            }
+        }
+
+        private void cancelPullButton_Click(object sender, EventArgs e)
+        {
+            if (!CurrentSession.Searcher.ShouldCancelPull && CurrentSession.Searcher.CurrentlyPulling)
+            {
+                CurrentSession.Searcher.ShouldCancelPull = true;
+            }
+            else
+            {
+                MessageBox.Show("No pull in progress.", "Cannot cancel");
+            }
+        }
+
+        private void searchTextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            mainDataGridView.ClearSelection();
+            int searchColumnIndex = mainDataGridView.Columns["titleDataGridViewColumn"].Index;
+            string searchValue = searchTextBox.Text;
+
+            // Return with cleared selection if searchbox is empty.
+            if (string.IsNullOrEmpty(searchValue))
+            {
+                return;
+            }
+
+            try
+            {
+                foreach (DataGridViewRow row in mainDataGridView.Rows)
+                {
+                    for (int i = 0; i < row.Cells.Count; i++)
+                    {
+                        if (row.Cells[i].Value != null && row.Cells[searchColumnIndex]?.Value?.ToString()?.ToLower().IndexOf(searchValue, StringComparison.OrdinalIgnoreCase) >= 0)
+                        {
+                            int rowIndex = row.Index;
+                            mainDataGridView.Rows[rowIndex].Selected = true;
+                            break;
+                        }
+
+                    }
+                }
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message);
+            }
+        }
+
+        private void mainDataGridView_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
+        {
+            if (e.RowIndex == mainDataGridView.RowCount - 1)
+            {
+                return;
+            }
+
+            SearchListing listingTmp = Program.CurrentSession.SearchListings[e.RowIndex];
+
+            switch (mainDataGridView.Columns[e.ColumnIndex].DataPropertyName)
+            {
+                case nameof(SearchListing.Status):
+                    e.Value = listingTmp.Status;
+                    break;
+
+                case nameof(SearchListing.Domain):
+                    e.Value = listingTmp.Domain;
+                    break;
+
+                case nameof(SearchListing.Title):
+                    e.Value = listingTmp.Title;
+                    break;
+
+                case nameof(SearchListing.Url):
+                    e.Value = listingTmp.Url;
+                    break;
+
+                case nameof(SearchListing.RetrievalTimeString):
+                    e.Value = listingTmp.RetrievalTimeString;
+                    break;
             }
         }
     }

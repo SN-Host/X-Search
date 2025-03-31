@@ -20,9 +20,29 @@ namespace XSearch_Lib
         }
         private string _text;
 
-        public SearchLogArgs(string text)
+        public int? ListingsPulledSoFar
+        {
+            get
+            {
+                return _listingsPulledSoFar;
+            }
+        }
+        private int? _listingsPulledSoFar;
+
+        public Domain? Domain
+        {
+            get 
+            {
+                return _domain;
+            }
+        }
+        public Domain? _domain;
+
+        public SearchLogArgs(string text, int? listingsPulledSoFar = null, Domain? domain = null)
         {
             _text = text;
+            _listingsPulledSoFar = listingsPulledSoFar;
+            _domain = domain;
         }
     }
 

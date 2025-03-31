@@ -33,7 +33,7 @@
             searchTermContainerPanel = new Panel();
             pullSearchButton = new Button();
             pageCountPanel = new Panel();
-            pageCountNumericUpDown = new NumericUpDown();
+            resultsPerDomainNumericUpDown = new NumericUpDown();
             pageCountLabel = new Label();
             searchTermPanel = new Panel();
             searchTermTextBox = new TextBox();
@@ -43,7 +43,7 @@
             controlContainerPanel.SuspendLayout();
             searchTermContainerPanel.SuspendLayout();
             pageCountPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pageCountNumericUpDown).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)resultsPerDomainNumericUpDown).BeginInit();
             searchTermPanel.SuspendLayout();
             SuspendLayout();
             // 
@@ -55,7 +55,7 @@
             editorPanel.Location = new Point(0, 0);
             editorPanel.Name = "editorPanel";
             editorPanel.Padding = new Padding(5);
-            editorPanel.Size = new Size(430, 158);
+            editorPanel.Size = new Size(502, 159);
             editorPanel.TabIndex = 7;
             // 
             // controlContainerPanel
@@ -65,7 +65,7 @@
             controlContainerPanel.Location = new Point(5, 35);
             controlContainerPanel.Name = "controlContainerPanel";
             controlContainerPanel.Padding = new Padding(5);
-            controlContainerPanel.Size = new Size(420, 118);
+            controlContainerPanel.Size = new Size(492, 119);
             controlContainerPanel.TabIndex = 7;
             // 
             // searchTermContainerPanel
@@ -77,7 +77,7 @@
             searchTermContainerPanel.Dock = DockStyle.Fill;
             searchTermContainerPanel.Location = new Point(5, 5);
             searchTermContainerPanel.Name = "searchTermContainerPanel";
-            searchTermContainerPanel.Size = new Size(410, 108);
+            searchTermContainerPanel.Size = new Size(482, 109);
             searchTermContainerPanel.TabIndex = 14;
             // 
             // pullSearchButton
@@ -92,7 +92,7 @@
             pullSearchButton.Location = new Point(0, 70);
             pullSearchButton.Name = "pullSearchButton";
             pullSearchButton.Padding = new Padding(5, 0, 0, 0);
-            pullSearchButton.Size = new Size(410, 36);
+            pullSearchButton.Size = new Size(482, 36);
             pullSearchButton.TabIndex = 22;
             pullSearchButton.Text = "   Pull now";
             pullSearchButton.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -102,22 +102,25 @@
             // pageCountPanel
             // 
             pageCountPanel.AutoScroll = true;
-            pageCountPanel.Controls.Add(pageCountNumericUpDown);
+            pageCountPanel.Controls.Add(resultsPerDomainNumericUpDown);
             pageCountPanel.Controls.Add(pageCountLabel);
             pageCountPanel.Dock = DockStyle.Top;
             pageCountPanel.Location = new Point(0, 35);
             pageCountPanel.Name = "pageCountPanel";
             pageCountPanel.Padding = new Padding(5);
-            pageCountPanel.Size = new Size(410, 35);
+            pageCountPanel.Size = new Size(482, 35);
             pageCountPanel.TabIndex = 20;
             // 
-            // pageCountNumericUpDown
+            // resultsPerDomainNumericUpDown
             // 
-            pageCountNumericUpDown.Dock = DockStyle.Fill;
-            pageCountNumericUpDown.Location = new Point(139, 5);
-            pageCountNumericUpDown.Name = "pageCountNumericUpDown";
-            pageCountNumericUpDown.Size = new Size(266, 27);
-            pageCountNumericUpDown.TabIndex = 4;
+            resultsPerDomainNumericUpDown.Dock = DockStyle.Fill;
+            resultsPerDomainNumericUpDown.Increment = new decimal(new int[] { 25, 0, 0, 0 });
+            resultsPerDomainNumericUpDown.Location = new Point(201, 5);
+            resultsPerDomainNumericUpDown.Maximum = new decimal(new int[] { 500, 0, 0, 0 });
+            resultsPerDomainNumericUpDown.Name = "resultsPerDomainNumericUpDown";
+            resultsPerDomainNumericUpDown.Size = new Size(276, 27);
+            resultsPerDomainNumericUpDown.TabIndex = 4;
+            resultsPerDomainNumericUpDown.Value = new decimal(new int[] { 50, 0, 0, 0 });
             // 
             // pageCountLabel
             // 
@@ -128,9 +131,9 @@
             pageCountLabel.Location = new Point(5, 5);
             pageCountLabel.Name = "pageCountLabel";
             pageCountLabel.Padding = new Padding(5, 0, 5, 0);
-            pageCountLabel.Size = new Size(134, 25);
+            pageCountLabel.Size = new Size(196, 25);
             pageCountLabel.TabIndex = 3;
-            pageCountLabel.Text = "Pages to search:";
+            pageCountLabel.Text = "Results to pull per domain:";
             pageCountLabel.TextAlign = ContentAlignment.MiddleRight;
             // 
             // searchTermPanel
@@ -142,16 +145,16 @@
             searchTermPanel.Location = new Point(0, 0);
             searchTermPanel.Name = "searchTermPanel";
             searchTermPanel.Padding = new Padding(5);
-            searchTermPanel.Size = new Size(410, 35);
+            searchTermPanel.Size = new Size(482, 35);
             searchTermPanel.TabIndex = 19;
             // 
             // searchTermTextBox
             // 
             searchTermTextBox.Dock = DockStyle.Fill;
             searchTermTextBox.Font = new Font("Segoe UI", 10F);
-            searchTermTextBox.Location = new Point(139, 5);
+            searchTermTextBox.Location = new Point(201, 5);
             searchTermTextBox.Name = "searchTermTextBox";
-            searchTermTextBox.Size = new Size(266, 25);
+            searchTermTextBox.Size = new Size(276, 25);
             searchTermTextBox.TabIndex = 4;
             // 
             // searchTermLabel
@@ -163,7 +166,7 @@
             searchTermLabel.Location = new Point(5, 5);
             searchTermLabel.Name = "searchTermLabel";
             searchTermLabel.Padding = new Padding(5, 0, 5, 0);
-            searchTermLabel.Size = new Size(134, 25);
+            searchTermLabel.Size = new Size(196, 25);
             searchTermLabel.TabIndex = 3;
             searchTermLabel.Text = "Search term:";
             searchTermLabel.TextAlign = ContentAlignment.MiddleRight;
@@ -177,7 +180,7 @@
             pullSearchHeaderLabel.Location = new Point(5, 5);
             pullSearchHeaderLabel.Name = "pullSearchHeaderLabel";
             pullSearchHeaderLabel.Padding = new Padding(5);
-            pullSearchHeaderLabel.Size = new Size(420, 30);
+            pullSearchHeaderLabel.Size = new Size(492, 30);
             pullSearchHeaderLabel.TabIndex = 9;
             pullSearchHeaderLabel.Text = "Pull Search";
             pullSearchHeaderLabel.TextAlign = ContentAlignment.MiddleCenter;
@@ -188,7 +191,7 @@
             AutoScaleDimensions = new SizeF(96F, 96F);
             AutoScaleMode = AutoScaleMode.Dpi;
             BackColor = Color.FromArgb(250, 250, 255);
-            ClientSize = new Size(430, 158);
+            ClientSize = new Size(502, 159);
             Controls.Add(editorPanel);
             Font = new Font("Segoe UI Variable Text Semibold", 11.25F, FontStyle.Bold);
             ForeColor = Color.FromArgb(50, 50, 100);
@@ -205,7 +208,7 @@
             controlContainerPanel.ResumeLayout(false);
             searchTermContainerPanel.ResumeLayout(false);
             pageCountPanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)pageCountNumericUpDown).EndInit();
+            ((System.ComponentModel.ISupportInitialize)resultsPerDomainNumericUpDown).EndInit();
             searchTermPanel.ResumeLayout(false);
             searchTermPanel.PerformLayout();
             ResumeLayout(false);
@@ -222,7 +225,7 @@
         private Label pullSearchHeaderLabel;
         private Panel pageCountPanel;
         private Label pageCountLabel;
-        private NumericUpDown pageCountNumericUpDown;
+        private NumericUpDown resultsPerDomainNumericUpDown;
         private Button pullSearchButton;
     }
 }

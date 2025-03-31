@@ -38,29 +38,35 @@
             domainDataGridViewColumn = new DataGridViewTextBoxColumn();
             titleDataGridViewColumn = new DataGridViewTextBoxColumn();
             urlDataGridViewColumn = new DataGridViewTextBoxColumn();
+            RetrievalTimeString = new DataGridViewTextBoxColumn();
+            searchPanel = new Panel();
+            searchTextBox = new TextBox();
             statusImages = new ImageList(components);
             controlPanel = new Panel();
             loadSessionButton = new Button();
             saveSessionButton = new Button();
             clearAllButton = new Button();
             clearListingButton = new Button();
+            webPreviewButton = new Button();
             uncrossButton = new Button();
             crossButton = new Button();
-            webPreviewButton = new Button();
+            cancelPullButton = new Button();
             pullSearchButton = new Button();
             dataGridViewPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)mainDataGridView).BeginInit();
+            searchPanel.SuspendLayout();
             controlPanel.SuspendLayout();
             SuspendLayout();
             // 
             // dataGridViewPanel
             // 
             dataGridViewPanel.Controls.Add(mainDataGridView);
+            dataGridViewPanel.Controls.Add(searchPanel);
             dataGridViewPanel.Dock = DockStyle.Fill;
             dataGridViewPanel.ForeColor = Color.FromArgb(50, 50, 60);
             dataGridViewPanel.Location = new Point(165, 0);
             dataGridViewPanel.Name = "dataGridViewPanel";
-            dataGridViewPanel.Padding = new Padding(10);
+            dataGridViewPanel.Padding = new Padding(10, 0, 10, 10);
             dataGridViewPanel.Size = new Size(619, 361);
             dataGridViewPanel.TabIndex = 3;
             // 
@@ -83,7 +89,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
             mainDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             mainDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            mainDataGridView.Columns.AddRange(new DataGridViewColumn[] { statusDataGridViewColumn, domainDataGridViewColumn, titleDataGridViewColumn, urlDataGridViewColumn });
+            mainDataGridView.Columns.AddRange(new DataGridViewColumn[] { statusDataGridViewColumn, domainDataGridViewColumn, titleDataGridViewColumn, urlDataGridViewColumn, RetrievalTimeString });
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = Color.FromArgb(230, 230, 245);
             dataGridViewCellStyle2.Font = new Font("Segoe UI Variable Text Semibold", 11.25F, FontStyle.Bold);
@@ -93,16 +99,18 @@
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
             mainDataGridView.DefaultCellStyle = dataGridViewCellStyle2;
             mainDataGridView.Dock = DockStyle.Fill;
-            mainDataGridView.Location = new Point(10, 10);
+            mainDataGridView.Location = new Point(10, 39);
             mainDataGridView.Name = "mainDataGridView";
             mainDataGridView.ReadOnly = true;
             mainDataGridView.RowHeadersVisible = false;
             mainDataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             mainDataGridView.ShowCellErrors = false;
             mainDataGridView.ShowRowErrors = false;
-            mainDataGridView.Size = new Size(599, 341);
+            mainDataGridView.Size = new Size(599, 312);
             mainDataGridView.TabIndex = 2;
+            mainDataGridView.VirtualMode = true;
             mainDataGridView.CellFormatting += mainDataGridView_CellFormatting;
+            mainDataGridView.CellValueNeeded += mainDataGridView_CellValueNeeded;
             mainDataGridView.SelectionChanged += mainDataGridView_SelectionChanged;
             // 
             // statusDataGridViewColumn
@@ -142,6 +150,33 @@
             urlDataGridViewColumn.Name = "urlDataGridViewColumn";
             urlDataGridViewColumn.ReadOnly = true;
             // 
+            // RetrievalTimeString
+            // 
+            RetrievalTimeString.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            RetrievalTimeString.DataPropertyName = "RetrievalTimeString";
+            RetrievalTimeString.HeaderText = "Pulled on";
+            RetrievalTimeString.Name = "RetrievalTimeString";
+            RetrievalTimeString.ReadOnly = true;
+            // 
+            // searchPanel
+            // 
+            searchPanel.Controls.Add(searchTextBox);
+            searchPanel.Dock = DockStyle.Top;
+            searchPanel.Location = new Point(10, 0);
+            searchPanel.Name = "searchPanel";
+            searchPanel.Padding = new Padding(5);
+            searchPanel.Size = new Size(599, 39);
+            searchPanel.TabIndex = 3;
+            // 
+            // searchTextBox
+            // 
+            searchTextBox.Dock = DockStyle.Fill;
+            searchTextBox.Location = new Point(5, 5);
+            searchTextBox.Name = "searchTextBox";
+            searchTextBox.Size = new Size(589, 27);
+            searchTextBox.TabIndex = 0;
+            searchTextBox.KeyUp += searchTextBox_KeyUp;
+            // 
             // statusImages
             // 
             statusImages.ColorDepth = ColorDepth.Depth32Bit;
@@ -157,9 +192,10 @@
             controlPanel.Controls.Add(saveSessionButton);
             controlPanel.Controls.Add(clearAllButton);
             controlPanel.Controls.Add(clearListingButton);
+            controlPanel.Controls.Add(webPreviewButton);
             controlPanel.Controls.Add(uncrossButton);
             controlPanel.Controls.Add(crossButton);
-            controlPanel.Controls.Add(webPreviewButton);
+            controlPanel.Controls.Add(cancelPullButton);
             controlPanel.Controls.Add(pullSearchButton);
             controlPanel.Dock = DockStyle.Left;
             controlPanel.Location = new Point(0, 0);
@@ -178,7 +214,7 @@
             loadSessionButton.Font = new Font("Segoe UI Variable Text", 10F);
             loadSessionButton.Image = Properties.Resources.placeholder_25x25_dark;
             loadSessionButton.ImageAlign = ContentAlignment.MiddleLeft;
-            loadSessionButton.Location = new Point(0, 252);
+            loadSessionButton.Location = new Point(0, 288);
             loadSessionButton.Name = "loadSessionButton";
             loadSessionButton.Padding = new Padding(5, 0, 0, 0);
             loadSessionButton.Size = new Size(165, 36);
@@ -196,7 +232,7 @@
             saveSessionButton.Font = new Font("Segoe UI Variable Text", 10F);
             saveSessionButton.Image = Properties.Resources.placeholder_25x25_dark;
             saveSessionButton.ImageAlign = ContentAlignment.MiddleLeft;
-            saveSessionButton.Location = new Point(0, 216);
+            saveSessionButton.Location = new Point(0, 252);
             saveSessionButton.Name = "saveSessionButton";
             saveSessionButton.Padding = new Padding(5, 0, 0, 0);
             saveSessionButton.Size = new Size(165, 36);
@@ -213,7 +249,7 @@
             clearAllButton.Font = new Font("Segoe UI Variable Text", 10F);
             clearAllButton.Image = Properties.Resources.placeholder_25x25_dark;
             clearAllButton.ImageAlign = ContentAlignment.MiddleLeft;
-            clearAllButton.Location = new Point(0, 180);
+            clearAllButton.Location = new Point(0, 216);
             clearAllButton.Name = "clearAllButton";
             clearAllButton.Padding = new Padding(5, 0, 0, 0);
             clearAllButton.Size = new Size(165, 36);
@@ -231,7 +267,7 @@
             clearListingButton.Font = new Font("Segoe UI Variable Text", 10F);
             clearListingButton.Image = Properties.Resources.placeholder_25x25_dark;
             clearListingButton.ImageAlign = ContentAlignment.MiddleLeft;
-            clearListingButton.Location = new Point(0, 144);
+            clearListingButton.Location = new Point(0, 180);
             clearListingButton.Name = "clearListingButton";
             clearListingButton.Padding = new Padding(5, 0, 0, 0);
             clearListingButton.Size = new Size(165, 36);
@@ -240,6 +276,24 @@
             clearListingButton.TextImageRelation = TextImageRelation.ImageBeforeText;
             clearListingButton.UseVisualStyleBackColor = true;
             clearListingButton.Click += clearListingButton_Click;
+            // 
+            // webPreviewButton
+            // 
+            webPreviewButton.Dock = DockStyle.Top;
+            webPreviewButton.FlatAppearance.BorderSize = 0;
+            webPreviewButton.FlatStyle = FlatStyle.Flat;
+            webPreviewButton.Font = new Font("Segoe UI Variable Text", 10F);
+            webPreviewButton.Image = Properties.Resources.placeholder_25x25_dark;
+            webPreviewButton.ImageAlign = ContentAlignment.MiddleLeft;
+            webPreviewButton.Location = new Point(0, 144);
+            webPreviewButton.Name = "webPreviewButton";
+            webPreviewButton.Padding = new Padding(5, 0, 0, 0);
+            webPreviewButton.Size = new Size(165, 36);
+            webPreviewButton.TabIndex = 4;
+            webPreviewButton.Text = "  Web preview";
+            webPreviewButton.TextImageRelation = TextImageRelation.ImageBeforeText;
+            webPreviewButton.UseVisualStyleBackColor = true;
+            webPreviewButton.Click += webPreviewButton_Click;
             // 
             // uncrossButton
             // 
@@ -254,7 +308,7 @@
             uncrossButton.Padding = new Padding(5, 0, 0, 0);
             uncrossButton.Size = new Size(165, 36);
             uncrossButton.TabIndex = 6;
-            uncrossButton.Text = "  Uncross entry";
+            uncrossButton.Text = "  Uncross";
             uncrossButton.TextImageRelation = TextImageRelation.ImageBeforeText;
             uncrossButton.UseVisualStyleBackColor = true;
             uncrossButton.Click += uncrossButton_Click;
@@ -272,28 +326,28 @@
             crossButton.Padding = new Padding(5, 0, 0, 0);
             crossButton.Size = new Size(165, 36);
             crossButton.TabIndex = 5;
-            crossButton.Text = "  Cross entry";
+            crossButton.Text = "  Cross";
             crossButton.TextImageRelation = TextImageRelation.ImageBeforeText;
             crossButton.UseVisualStyleBackColor = true;
             crossButton.Click += crossButton_Click;
             // 
-            // webPreviewButton
+            // cancelPullButton
             // 
-            webPreviewButton.Dock = DockStyle.Top;
-            webPreviewButton.FlatAppearance.BorderSize = 0;
-            webPreviewButton.FlatStyle = FlatStyle.Flat;
-            webPreviewButton.Font = new Font("Segoe UI Variable Text", 10F);
-            webPreviewButton.Image = Properties.Resources.placeholder_25x25_dark;
-            webPreviewButton.ImageAlign = ContentAlignment.MiddleLeft;
-            webPreviewButton.Location = new Point(0, 36);
-            webPreviewButton.Name = "webPreviewButton";
-            webPreviewButton.Padding = new Padding(5, 0, 0, 0);
-            webPreviewButton.Size = new Size(165, 36);
-            webPreviewButton.TabIndex = 4;
-            webPreviewButton.Text = "  Web preview";
-            webPreviewButton.TextImageRelation = TextImageRelation.ImageBeforeText;
-            webPreviewButton.UseVisualStyleBackColor = true;
-            webPreviewButton.Click += webPreviewButton_Click;
+            cancelPullButton.Dock = DockStyle.Top;
+            cancelPullButton.FlatAppearance.BorderSize = 0;
+            cancelPullButton.FlatStyle = FlatStyle.Flat;
+            cancelPullButton.Font = new Font("Segoe UI Variable Text", 10F);
+            cancelPullButton.Image = Properties.Resources.placeholder_25x25_dark;
+            cancelPullButton.ImageAlign = ContentAlignment.MiddleLeft;
+            cancelPullButton.Location = new Point(0, 36);
+            cancelPullButton.Name = "cancelPullButton";
+            cancelPullButton.Padding = new Padding(5, 0, 0, 0);
+            cancelPullButton.Size = new Size(165, 36);
+            cancelPullButton.TabIndex = 12;
+            cancelPullButton.Text = "  Cancel pull";
+            cancelPullButton.TextImageRelation = TextImageRelation.ImageBeforeText;
+            cancelPullButton.UseVisualStyleBackColor = true;
+            cancelPullButton.Click += cancelPullButton_Click;
             // 
             // pullSearchButton
             // 
@@ -328,6 +382,8 @@
             Text = "Workspace";
             dataGridViewPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)mainDataGridView).EndInit();
+            searchPanel.ResumeLayout(false);
+            searchPanel.PerformLayout();
             controlPanel.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -345,10 +401,14 @@
         private Button saveSessionButton;
         private Button loadSessionButton;
         private Button pullSearchButton;
+        private Button clearListingButton;
+        private Panel searchPanel;
+        private TextBox searchTextBox;
+        private Button cancelPullButton;
         private DataGridViewImageColumn statusDataGridViewColumn;
         private DataGridViewTextBoxColumn domainDataGridViewColumn;
         private DataGridViewTextBoxColumn titleDataGridViewColumn;
         private DataGridViewTextBoxColumn urlDataGridViewColumn;
-        private Button clearListingButton;
+        private DataGridViewTextBoxColumn RetrievalTimeString;
     }
 }

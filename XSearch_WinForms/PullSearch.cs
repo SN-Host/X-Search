@@ -22,7 +22,7 @@ namespace XSearch_WinForms
         {
             // Ensure search information reflects current session properties.
             searchTermTextBox.Text = Program.CurrentSession.Searcher.SearchTerm;
-            pageCountNumericUpDown.Value = Program.CurrentSession.Searcher.PagesToSearch;
+            resultsPerDomainNumericUpDown.Value = Program.CurrentSession.Searcher.ResultsToPullPerDomain;
         }
 
         private async void pullSearchButton_Click(object sender, EventArgs e)
@@ -31,7 +31,7 @@ namespace XSearch_WinForms
 
             // Update session parameters.
             session.Searcher.SearchTerm = searchTermTextBox.Text;
-            session.Searcher.PagesToSearch = (int)pageCountNumericUpDown.Value;
+            session.Searcher.ResultsToPullPerDomain = (int)resultsPerDomainNumericUpDown.Value;
 
             // Early exit for unsatisfied pull condiitons.
             if (!session.Searcher.PullRequirementsSatisfied())
@@ -43,7 +43,6 @@ namespace XSearch_WinForms
             Close();
 
             // Search.
-
             //await Task.Run(delegate { session.Searcher.PullSearch(); });
             await session.Searcher.PullSearch();
         }
