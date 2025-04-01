@@ -52,6 +52,8 @@
             crossButton = new Button();
             cancelPullButton = new Button();
             pullSearchButton = new Button();
+            sessionOpenFileDialog = new OpenFileDialog();
+            sessionSaveFileDialog = new SaveFileDialog();
             dataGridViewPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)mainDataGridView).BeginInit();
             searchPanel.SuspendLayout();
@@ -226,7 +228,6 @@
             // saveSessionButton
             // 
             saveSessionButton.Dock = DockStyle.Top;
-            saveSessionButton.Enabled = false;
             saveSessionButton.FlatAppearance.BorderSize = 0;
             saveSessionButton.FlatStyle = FlatStyle.Flat;
             saveSessionButton.Font = new Font("Segoe UI Variable Text", 10F);
@@ -240,6 +241,7 @@
             saveSessionButton.Text = "  Save session";
             saveSessionButton.TextImageRelation = TextImageRelation.ImageBeforeText;
             saveSessionButton.UseVisualStyleBackColor = true;
+            saveSessionButton.Click += saveSessionButton_Click;
             // 
             // clearAllButton
             // 
@@ -367,6 +369,16 @@
             pullSearchButton.UseVisualStyleBackColor = true;
             pullSearchButton.Click += pullSearchButton_Click;
             // 
+            // sessionOpenFileDialog
+            // 
+            sessionOpenFileDialog.Filter = "XML Files|*.xml";
+            sessionOpenFileDialog.Title = "Load session";
+            // 
+            // sessionSaveFileDialog
+            // 
+            sessionSaveFileDialog.Filter = "XML Files|*.xml";
+            sessionSaveFileDialog.Title = "Save session";
+            // 
             // Workspace
             // 
             AutoScaleDimensions = new SizeF(96F, 96F);
@@ -410,5 +422,7 @@
         private DataGridViewTextBoxColumn titleDataGridViewColumn;
         private DataGridViewTextBoxColumn urlDataGridViewColumn;
         private DataGridViewTextBoxColumn RetrievalTimeString;
+        private OpenFileDialog sessionOpenFileDialog;
+        private SaveFileDialog sessionSaveFileDialog;
     }
 }

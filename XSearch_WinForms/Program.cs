@@ -11,19 +11,18 @@ namespace XSearch_WinForms
         {
             get
             {
-                if (_currentSession != null)
+                if (Session.CurrentSession != null)
                 {
-                    return _currentSession;
+                    return Session.CurrentSession;
                 }
-                _currentSession = new Session();
-                return _currentSession;
+                Session.CurrentSession = new Session();
+                return Session.CurrentSession;
             }
             set
             {
-                _currentSession = value;
+                Session.CurrentSession = value;
             }
         }
-        private static Session? _currentSession;
 
         /// <summary>
         ///  The main entry point for the application.

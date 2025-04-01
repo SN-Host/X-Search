@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace XSearch_Lib
 {
@@ -28,10 +29,19 @@ namespace XSearch_Lib
 
         // CONSTRUCTORS // 
 
-        public PatternedString(HashSet<string> requiredPlaceholderPatterns, Action<ErrorReportArgs>? predicateFailedAction = null)
+        /// <summary>
+        /// Exists only for the purposes of XML serialization. Do not use to create new instances.
+        /// </summary>
+        private PatternedString()
+        {
+            RequiredPlaceholderPatterns = new HashSet<string>();
+            RawPatternPredicate = DefaultPatternPredicate;
+        }
+
+        public PatternedString(HashSet<string>? requiredPlaceholderPatterns = null, Action<ErrorReportArgs>? predicateFailedAction = null)
         {
             RawPatternPredicate = DefaultPatternPredicate;
-            RequiredPlaceholderPatterns = requiredPlaceholderPatterns;
+            RequiredPlaceholderPatterns = requiredPlaceholderPatterns ?? new HashSet<string>();
             RawPattern = String.Join(string.Empty, RequiredPlaceholderPatterns);
             if (predicateFailedAction is Action<ErrorReportArgs> action)
             {
@@ -40,11 +50,6 @@ namespace XSearch_Lib
         }
 
         // PROPERTIES //
-
-        /// <summary>
-        /// Action to take upon failing validation when attempting to set RawPattern.
-        /// </summary>
-        public Action<ErrorReportArgs> PredicateFailedAction { get; set; } = delegate { };
 
         /// <summary>
         /// Whether or not this PatternedString is allowed to be set to values that don't include all required placeholders.
@@ -73,8 +78,15 @@ namespace XSearch_Lib
         }
 
         /// <summary>
+        /// Action to take upon failing validation when attempting to set RawPattern.
+        /// </summary>
+        [XmlIgnore]
+        public Action<ErrorReportArgs> PredicateFailedAction { get; set; } = delegate { };
+
+        /// <summary>
         /// Predicate to test the validity of a PatternedString RawPattern when setting it.
         /// </summary>
+        [XmlIgnore]
         public Predicate<string> RawPatternPredicate { get; set; }
 
         // METHODS //

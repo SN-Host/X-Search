@@ -56,15 +56,8 @@ namespace XSearch_Lib
         /// </summary>
         public const string DomainUrl_SearchTerm_PlaceholderPattern = "<<searchTerm>>";
 
-        /// <summary>
-        /// Generic title for any error-handling tooltips that weren't given a more specific title.
-        /// </summary>
-        public const string Tooltip_TitleGeneric_Error = "Invalid tooltip title";
-
-        /// <summary>
-        /// Generic body for any error-handling tooltips that weren't given a more specific body.
-        /// </summary>
-        public const string Tooltip_BodyGeneric_Error = "Invalid tooltip body text.";
+        public const string Tooltip_Title_Generic_Error = "Invalid tooltip title";
+        public const string Tooltip_Body_Generic_Error = "Invalid tooltip body text.";
 
     }
 }

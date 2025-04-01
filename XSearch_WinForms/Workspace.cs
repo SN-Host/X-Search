@@ -184,7 +184,7 @@ namespace XSearch_WinForms
         /// </summary>
         private void uncrossButton_Click(object sender, EventArgs e)
         {
-            CurrentSession.ChangeStatusAtListingIndexes(CurrentlySelectedRowIndices, NewStatus);
+            CurrentSession.ChangeStatusAtListingIndexes(CurrentlySelectedRowIndices, UnevaluatedStatus);
         }
 
         /// <summary>
@@ -202,13 +202,13 @@ namespace XSearch_WinForms
                     // TODO: We want to add this data checking to make it a property of a status definition.
                     // They should have a method that runs to determine how they interact with other statuses, or maybe sets of lists.
                     // Then we can bake it into ChangeStatusAtListingIndex.
-                    if (SearchListings[index].Status == NewStatus)
+                    if (SearchListings[index].Status == UnevaluatedStatus)
                     {
                         CurrentSession.ChangeStatusAtListingIndex(index, CrossedStatus);
                     }
                     else
                     {
-                        CurrentSession.ChangeStatusAtListingIndex(index, NewStatus);
+                        CurrentSession.ChangeStatusAtListingIndex(index, UnevaluatedStatus);
                     }
                 }
 
@@ -368,6 +368,19 @@ namespace XSearch_WinForms
                 case nameof(SearchListing.RetrievalTimeString):
                     e.Value = listingTmp.RetrievalTimeString;
                     break;
+            }
+        }
+
+        private void saveSessionButton_Click(object sender, EventArgs e)
+        {
+            sessionSaveFileDialog.Title = $"New Session {DateTime.Now.ToString("MM'-'dd'-'yyyy")}";
+            sessionSaveFileDialog.ShowDialog();
+
+            if (sessionSaveFileDialog.FileName != string.Empty)
+            {
+                Stream writer = sessionSaveFileDialog.OpenFile();
+
+                CurrentSession.SaveSession(writer);
             }
         }
     }

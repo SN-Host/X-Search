@@ -58,6 +58,8 @@ namespace XSearch_Lib
         /// </summary>
         public event DomainErrorHandler OnSearchUrlPatternRejected = delegate { };
 
+        private string domainId;
+
         // PROPERTIES //
 
         /// <summary>
@@ -95,14 +97,7 @@ namespace XSearch_Lib
         /// Holds data pertaining to the domain's expected search URL pattern.
         /// </summary>
         [Browsable(false)]
-        public PatternedString SearchUrlPatternedString { get; set; }
-
-        /// <summary>
-        /// Gets or sets the page count multiplier. This applies a multiplier to any page count placeholders when this domain is being handled.
-        /// Useful for websites that track result delivery by gallery count, such as Craigslist.
-        /// </summary>
-        [Browsable (false)]
-        public decimal PageCountMultiplier { get; set; } = 1;
+        public PatternedString SearchUrlPatternedString { get; set; } = new PatternedString();
 
         /// <summary>
         /// List of xpath queries that should be run to find clickable elements that will hopefully yield more results on a given domain when no more search results can be found.
@@ -110,10 +105,31 @@ namespace XSearch_Lib
         public BindingList<string> NoSearchResultsXpath { get; set; } = new BindingList<string>();
 
         /// <summary>
+        /// Unique internal identifier for this domain.
+        /// Used to unite SearchListings with their domains across sessions.
+        /// TODO: Implement a system to ensure IDs are never duplicated within one domain profile.
+        /// </summary>
+        public string DomainId
+        {
+            get
+            {
+                return domainId;
+            }
+        }
+
+        /// <summary>
+        /// Parameterless constructor for XML serialization.
+        /// </summary>
+        private Domain() 
+        { 
+            domainId = GetHashCode().ToString();
+        }
+
+        /// <summary>
         /// Default constructor, requiring a GUI handler for when a search URL pattern is rejected.
         /// </summary>
         /// <param name="onSearchUrlPatternRejected">Action to take when a search URL pattern is rejected. Can be assigned an empty delegate if need be.</param>
-        public Domain(Action<Domain, ErrorReportArgs> onSearchUrlPatternRejected)
+        public Domain(Action<Domain, ErrorReportArgs> onSearchUrlPatternRejected) : this()
         {
             OnSearchUrlPatternRejected += (sender, e) => onSearchUrlPatternRejected(sender, e);
             SearchUrlPatternedString = new PatternedString(RequiredSearchPlaceholderPatterns, delegate (ErrorReportArgs eArgs) { OnSearchUrlPatternRejected(this, eArgs); });

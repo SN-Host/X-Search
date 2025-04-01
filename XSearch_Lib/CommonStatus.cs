@@ -8,7 +8,7 @@ namespace XSearch_Lib
 {
  
     /// <summary>
-    /// Collection of Built-in status types commom throughout the application.
+    /// Collection of built-in status types commom throughout the application.
     /// </summary>
     public static class CommonStatus
     {
@@ -16,22 +16,12 @@ namespace XSearch_Lib
         /// <summary>
         /// For items that have been crossed. Lowest sort priority.
         /// </summary>
-        public static ListingStatus CrossedStatus = new ListingStatus()
-        {
-            TextSymbol = "X",
-            ImagePath = "X",
-            Index = 0
-        };
+        public static ListingStatus CrossedStatus = new ListingStatus("X", "X", 0, nameof(CrossedStatus));
 
         /// <summary>
-        /// For items marked unevaluated. Highest sort priority.
+        /// For items that have yet to be evaluated. Highest sort priority.
         /// </summary>
-        public static ListingStatus NewStatus = new ListingStatus()
-        {
-            TextSymbol = "O",
-            ImagePath = "O",
-            Index = 1
-        };
+        public static ListingStatus UnevaluatedStatus = new ListingStatus("O", "O", 1, nameof(UnevaluatedStatus));
 
     }
 }

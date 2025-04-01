@@ -114,7 +114,6 @@ namespace XSearch_WinForms
                 Label = "Craigslist",
                 ListingUrlPattern = $"/d/",
                 SearchUrlPattern = $"https://houston.craigslist.org/search/cta?query={Domain.URL_SEARCHTERM_PLACEHOLDER_PATTERN}#search=2~gallery~1",
-                PageCountMultiplier = 5
             };
 
             Domain offerUp = new Domain(SearchUrlPatternRejected)
@@ -181,7 +180,6 @@ namespace XSearch_WinForms
                 Label = "Indeed.com",
                 ListingUrlPattern = @"/viewjob?",
                 SearchUrlPattern = $"https://www.indeed.com/jobs?q={Domain.URL_SEARCHTERM_PLACEHOLDER_PATTERN}&l=houston%2C+tx&radius=35&vjk=74f724e50cbcc7b3&start=",
-                PageCountMultiplier = 10
             };
 
             Domain linkedin = new Domain(SearchUrlPatternRejected)
