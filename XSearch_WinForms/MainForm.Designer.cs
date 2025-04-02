@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             infoPanel = new Panel();
-            toolsContainer = new Panel();
+            toolsContainerPanel = new Panel();
             selectionSettingsPanel = new Panel();
             workspaceToolLabel = new Label();
             statusContainerPanel = new Panel();
@@ -54,7 +54,7 @@
             framingPanel = new Panel();
             frameLabel = new Label();
             infoPanel.SuspendLayout();
-            toolsContainer.SuspendLayout();
+            toolsContainerPanel.SuspendLayout();
             statusContainerPanel.SuspendLayout();
             statusPanel.SuspendLayout();
             searchProgressPanel.SuspendLayout();
@@ -69,7 +69,7 @@
             // infoPanel
             // 
             infoPanel.BackColor = Color.Transparent;
-            infoPanel.Controls.Add(toolsContainer);
+            infoPanel.Controls.Add(toolsContainerPanel);
             infoPanel.Controls.Add(statusContainerPanel);
             infoPanel.Controls.Add(controlContainerPanel);
             infoPanel.Dock = DockStyle.Left;
@@ -79,17 +79,17 @@
             infoPanel.Size = new Size(200, 669);
             infoPanel.TabIndex = 0;
             // 
-            // toolsContainer
+            // toolsContainerPanel
             // 
-            toolsContainer.Controls.Add(selectionSettingsPanel);
-            toolsContainer.Controls.Add(workspaceToolLabel);
-            toolsContainer.Dock = DockStyle.Fill;
-            toolsContainer.Location = new Point(0, 205);
-            toolsContainer.Margin = new Padding(0);
-            toolsContainer.Name = "toolsContainer";
-            toolsContainer.Padding = new Padding(0, 5, 0, 5);
-            toolsContainer.Size = new Size(190, 301);
-            toolsContainer.TabIndex = 2;
+            toolsContainerPanel.Controls.Add(selectionSettingsPanel);
+            toolsContainerPanel.Controls.Add(workspaceToolLabel);
+            toolsContainerPanel.Dock = DockStyle.Fill;
+            toolsContainerPanel.Location = new Point(0, 205);
+            toolsContainerPanel.Margin = new Padding(0);
+            toolsContainerPanel.Name = "toolsContainerPanel";
+            toolsContainerPanel.Padding = new Padding(0, 5, 0, 5);
+            toolsContainerPanel.Size = new Size(190, 301);
+            toolsContainerPanel.TabIndex = 2;
             // 
             // selectionSettingsPanel
             // 
@@ -288,7 +288,6 @@
             // 
             settingsButton.BackColor = Color.FromArgb(250, 250, 255);
             settingsButton.Dock = DockStyle.Top;
-            settingsButton.Enabled = false;
             settingsButton.FlatAppearance.BorderSize = 0;
             settingsButton.FlatStyle = FlatStyle.Flat;
             settingsButton.Font = new Font("Segoe UI Variable Text", 10F);
@@ -418,7 +417,7 @@
             SizeGripStyle = SizeGripStyle.Show;
             Text = "X-Search";
             infoPanel.ResumeLayout(false);
-            toolsContainer.ResumeLayout(false);
+            toolsContainerPanel.ResumeLayout(false);
             statusContainerPanel.ResumeLayout(false);
             statusPanel.ResumeLayout(false);
             searchProgressPanel.ResumeLayout(false);
@@ -456,7 +455,7 @@
         private Label statusTitleLabel;
         private Panel framingPanel;
         private Button settingsButton;
-        private Panel toolsContainer;
+        private Panel toolsContainerPanel;
         private Panel selectionSettingsPanel;
         private Label frameLabel;
         private Label workspaceToolLabel;

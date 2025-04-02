@@ -15,12 +15,12 @@ namespace XSearch_WinForms
         /// <summary>
         /// The form currently framed in the main viewport.
         /// </summary>
-        private Form currentFramedForm;
+        private Form? currentFramedForm;
 
         /// <summary>
         /// Current option selected from the main menu for highlighting purposes.
         /// </summary>
-        private Button selectedMainMenuButton;
+        private Button? selectedMainMenuButton;
 
         // PROPERTIES //
         
@@ -45,14 +45,19 @@ namespace XSearch_WinForms
         public static Color InvalidFieldEntryColor { get; set; } = Color.FromArgb(255, 200, 200);
 
         /// <summary>
-        /// The workspace pane currently associated the main form.
+        /// Active workspace pane instance.
         /// </summary>
         private Workspace Workspace { get; set; }
 
         /// <summary>
-        /// The domains pane currently associated the main form.
+        /// Active domains pane instance.
         /// </summary>
         private Domains Domains { get; set; }
+
+        /// <summary>
+        /// Active settings pane instance.
+        /// </summary>
+        private Settings Settings { get; set; }
 
         public MainForm()
         {
@@ -61,6 +66,7 @@ namespace XSearch_WinForms
             // Initialize main program tabs.
             Workspace = new Workspace(this);
             Domains = new Domains(this);
+            Settings = new Settings();
 
             // Frame workspace by default.
             ChangeFrame(workspaceButton, Workspace, Workspace.controlPanel, Workspace.Text);
@@ -152,7 +158,7 @@ namespace XSearch_WinForms
         {
             WinformsUIUtilities.FrameForm(framingPanel, ref currentFramedForm, form);
             WinformsUIUtilities.FramePanel(selectionSettingsPanel, controlPanel);
-
+            
             // Ensure the button the request came from is highlighted.
             ApplySelectedButtonColor(button, ref selectedMainMenuButton, SelectedButtonColor);
 
@@ -177,6 +183,14 @@ namespace XSearch_WinForms
         }
 
         /// <summary>
+        /// Will provide program settings in the future.
+        /// </summary>
+        private void settingsButton_Click(object sender, EventArgs e)
+        {
+            ChangeFrame((Button)sender, Settings, new Panel(), Settings.Text);
+        }
+
+        /// <summary>
         /// Will link to documentation in the future.
         /// </summary>
         private void helpButton_Click(object sender, EventArgs e)
@@ -184,12 +198,6 @@ namespace XSearch_WinForms
             
         }
 
-        /// <summary>
-        /// Will provide program settings in the future.
-        /// </summary>
-        private void settingsButton_Click(object sender, EventArgs e)
-        {
-        }
         
     }
 }

@@ -77,7 +77,6 @@
             mainDataGridView.AllowUserToAddRows = false;
             mainDataGridView.AllowUserToOrderColumns = true;
             mainDataGridView.AllowUserToResizeRows = false;
-            mainDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             mainDataGridView.BackgroundColor = Color.FromArgb(180, 180, 210);
             mainDataGridView.BorderStyle = BorderStyle.None;
             mainDataGridView.CellBorderStyle = DataGridViewCellBorderStyle.Sunken;
@@ -417,12 +416,12 @@
         private Panel searchPanel;
         private TextBox searchTextBox;
         private Button cancelPullButton;
+        private OpenFileDialog sessionOpenFileDialog;
+        private SaveFileDialog sessionSaveFileDialog;
         private DataGridViewImageColumn statusDataGridViewColumn;
         private DataGridViewTextBoxColumn domainDataGridViewColumn;
         private DataGridViewTextBoxColumn titleDataGridViewColumn;
         private DataGridViewTextBoxColumn urlDataGridViewColumn;
         private DataGridViewTextBoxColumn RetrievalTimeString;
-        private OpenFileDialog sessionOpenFileDialog;
-        private SaveFileDialog sessionSaveFileDialog;
     }
 }

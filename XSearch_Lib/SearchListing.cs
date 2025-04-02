@@ -19,16 +19,13 @@ namespace XSearch_Lib
         /// </summary>
         private SearchListing() 
         {
-            Domain = new Domain(delegate { });
-            DomainId = Domain.DomainId;
             StatusId = Status.StatusId;
         }
 
-        public SearchListing(string title, Domain domain, string url, DateTime dateTime)
+        public SearchListing(string title, string domainName, string url, DateTime dateTime)
         {
             Title = title;
-            Domain = domain;
-            DomainId = Domain.DomainId;
+            DomainName = domainName;
             StatusId = Status.StatusId;
             Url = url;
             DateTimeRetrieved = dateTime;
@@ -47,37 +44,15 @@ namespace XSearch_Lib
                 return DateTimeRetrieved.ToString(@"MM\/dd\/yyyy h\:mm tt");
             }
         }
+        public string DomainName { get; set; } = Domain_Default_Label;
 
         [Browsable(false)]
         public DateTime DateTimeRetrieved { get; set; } = DateTime.MinValue;
-
-        /// <summary>
-        /// Exists for access by UI elements.
-        /// </summary>
-        [XmlIgnore]
-        public string DomainName
-        {
-            get
-            {
-                return Domain.Label;
-            }
-            set
-            {
-                Domain.Label = value;
-            }
-        }
-
-        /// <summary>
-        /// Used in saving/loading to reunite search listings with their domains.
-        /// </summary>
-        [Browsable(false)]
-        public string DomainId { get; set; }
-
         /// <summary>
         /// Used in saving/loading reunite search listings with their statuses.
         /// </summary>
         [Browsable(false)]
-        public string StatusId { get; set; }
+        public string StatusId { get; set; } = nameof(CommonStatus.UnevaluatedStatus);
 
         [XmlIgnore]
         public string StatusImage
@@ -101,10 +76,6 @@ namespace XSearch_Lib
                 }
             }
         }
-
-        [Browsable(false)]
-        [XmlIgnore]
-        public Domain Domain { get; set; }
 
         [Browsable(false)]
         [XmlIgnore]

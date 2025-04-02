@@ -30,11 +30,11 @@ namespace XSearch_Lib
         public int SortIndex = 0;
 
         /// <summary>
-        /// Unique identifier for a status.
-        /// TODO: Implement verification with PatternedStrings. Probably same for domains.
+        /// Unique internal identifier for this status.
+        /// Convention is to use nameof in the status declaration.
+        /// Used to unite SearchListings with their statuses across sessions.
         /// </summary>
-        private string statusId = string.Empty;
-
+        public string StatusId = Guid.NewGuid().ToString();
 
         /// <summary>
         /// Parameterless constructor for XML serialization. Should not be used to make functional instances.
@@ -48,24 +48,7 @@ namespace XSearch_Lib
             TextSymbol = textSymbol;
             ImagePath = imagePath;
             SortIndex = sortIndex;
-            statusId = id;
-        }
-
-        /// <summary>
-        /// Unique internal identifier for this status.
-        /// Used to unite SearchListings with their statuses across sessions.
-        /// </summary>
-        public string StatusId
-        {
-            get
-            {
-                return statusId;
-            }
-            set
-            {
-                statusId = value;
-            }
-
+            StatusId = id;
         }
     }
 }

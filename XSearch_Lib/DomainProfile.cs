@@ -42,7 +42,6 @@ namespace XSearch_Lib
 
 		public void SaveDomainProfile(Stream stream, string filePath)
 		{
-
 			LastFilePath = filePath;
 
 			XmlSerializer serializer = new XmlSerializer(typeof(DomainProfile));

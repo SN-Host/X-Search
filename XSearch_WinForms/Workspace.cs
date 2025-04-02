@@ -20,6 +20,7 @@ using static XSearch_WinForms.Domains;
 using Microsoft.Web.WebView2.Core;
 using System.Diagnostics;
 using static System.Windows.Forms.LinkLabel;
+using System.Reflection;
 
 namespace XSearch_WinForms
 {
@@ -90,6 +91,10 @@ namespace XSearch_WinForms
             // Ensure our DataGridView is linked to our session's search listings.
             // TODO: Use a BindingSource.
 
+            // We want manual control over our columns.
+            mainDataGridView.AutoGenerateColumns = false;
+            mainDataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+
             BindingSource bindingSource = new BindingSource()
             {
                 DataSource = SearchListings
@@ -98,7 +103,12 @@ namespace XSearch_WinForms
             mainDataGridView.DataSource = bindingSource;
 
             // Ensure that the style is set to support double buffering for best performance.
-            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            SetStyle(ControlStyles.OptimizedDoubleBuffer, true); 
+            
+            Type dgvType = mainDataGridView.GetType();
+            PropertyInfo? pi = dgvType.GetProperty("DoubleBuffered",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            pi?.SetValue(mainDataGridView, true, null);
         }
 
         /// <summary>
@@ -121,9 +131,9 @@ namespace XSearch_WinForms
 
         /// <summary>
         /// Checks if the pull search menu is active.
+        /// TODO: Replace with a nullable prop, most likely.
         /// </summary>
-        /// <returns></returns>
-        public bool PullSearchActive()
+        public bool PullSearchWindowActive()
         {
             if (pullSearch == null)
             {
@@ -193,6 +203,11 @@ namespace XSearch_WinForms
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             // TODO: Replace hard references with a dictionary, linked to keybindings customizable in the settings menu. Here, keys are the name of the setting and values are the Key
+            // Other hotkey ideas:
+            // Home - first listing
+            // End - last listing
+            // Control + S - Save
+            // Control + O - Open
 
             // Quick crossing/uncrossing functionality.
             if (keyData == (Keys.Space | Keys.Control))
@@ -258,7 +273,7 @@ namespace XSearch_WinForms
             }
             else
             {
-                if (!PullSearchActive())
+                if (!PullSearchWindowActive())
                 {
                     pullSearch = new PullSearch();
                 }
@@ -353,8 +368,8 @@ namespace XSearch_WinForms
                     e.Value = listingTmp.Status;
                     break;
 
-                case nameof(SearchListing.Domain):
-                    e.Value = listingTmp.Domain;
+                case nameof(SearchListing.DomainName):
+                    e.Value = listingTmp.DomainName;
                     break;
 
                 case nameof(SearchListing.Title):

@@ -158,6 +158,8 @@ namespace XSearch_Lib
         /// </summary>
         public string SearchTerm { get; set; } = string.Empty;
 
+        public bool RunHeadless { get; set; } = true;
+
         /// <summary>
         /// String to deliver when a pull is finished. This will normally be a completion message unless the pull was cancelled or it failed.
         /// </summary>
@@ -169,7 +171,7 @@ namespace XSearch_Lib
                 {
                     return Pull_Cancelled;
                 }
-                if (!PullSuccessful)
+                if (!CurrentPullSuccessful)
                 {
                     StringBuilder pullFailedMessage = new StringBuilder();
 
@@ -186,7 +188,7 @@ namespace XSearch_Lib
             } 
         }
 
-        public bool PullSuccessful { get; set; } = true;
+        public bool CurrentPullSuccessful { get; set; } = true;
 
         /// <summary>
         /// The number of results to pull per domain, as provided by the user.
@@ -235,7 +237,7 @@ namespace XSearch_Lib
                         {
                             OnNewSearchUpdateLog(this, new SearchLogArgs($"Error page encountered at {domain.Label}. Exception message follows: \n{ex.Message}"));
                             pullFailureNotes.Add(new ErrorReportArgs($"{domain.Label}:", "Encountered error page. Please verify Internet connection and try again."));
-                            PullSuccessful = false;
+                            CurrentPullSuccessful = false;
                         }
                         finally
                         {
@@ -251,7 +253,7 @@ namespace XSearch_Lib
             OnNewSearchUpdateLog(this, new SearchLogArgs(PullFinishedString));
 
             // Reset volatile search variables.
-            PullSuccessful = true;
+            CurrentPullSuccessful = true;
             CurrentlyPulling = false;
             ShouldCancelPull = false;
         }
@@ -262,7 +264,11 @@ namespace XSearch_Lib
         public FirefoxDriver CreateFirefoxDriver()
         {
             FirefoxOptions ffOptions = new FirefoxOptions();
-            //ffOptions.AddArgument("-headless");
+
+            if (RunHeadless)
+            {
+                ffOptions.AddArgument("-headless");
+            }
 
             FirefoxDriverService ffDriverService = FirefoxDriverService.CreateDefaultService();
             ffDriverService.HideCommandPromptWindow = true;
@@ -277,7 +283,11 @@ namespace XSearch_Lib
         public ChromeDriver CreateChromeDriver()
         {
             ChromeOptions cOptions = new ChromeOptions();
-            //ffOptions.AddArgument("-headless");
+
+            if (RunHeadless)
+            {
+                cOptions.AddArgument("-headless");
+            }
 
             ChromeDriverService cDriverService = ChromeDriverService.CreateDefaultService();
             cDriverService.HideCommandPromptWindow = true;
@@ -436,68 +446,35 @@ namespace XSearch_Lib
 
             do
             {
+
                 // Check if we should cancel the pull.
                 if (ShouldCancelPull)
                 {
                     return;
                 }
-                int i = 0;
-                /*
-                for (i = 0; i < linksToCheck.Count; i++)
-                {
-                    if (linksToCheck[i].Displayed)
-                    {
-                        break;
-                    }
-                }
-                */
-                //}
-                //for (int i = 0; i < linksToCheck.Count; i++)
-                //{
-                //List<string> hrefs = GetMatchingDomainLinks(driver, domain).Select(x => x.GetAttribute("href")).ToList();
-
-                /*
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
-                wait.Until(d => revealed.Displayed);
-
-                WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("element_id")));
-                System.Diagnostics.Debug.WriteLine($"hrefs[{i}]: {hrefs[i]}");
-                */
 
                 try
                 {
-                    // Search through the found listings, if they're still valid.
-                    string? possibleHref = linksToCheck[i]?.GetAttribute("href");
+                    IWebElement linkToCheck = linksToCheck[0];
+
+                    // Determine that the current link to check is valid nefore processing it.
+                    string? possibleHref = linkToCheck.GetAttribute("href");
                     if (possibleHref is string href && !visitedHrefs.Contains(href))
                     {
                         IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-                        //js.ExecuteScript("arguments[0].scrollIntoView(true);", linksToCheck[i]);
-                        //js.ExecuteScript("window.scrollBy(0, -2);");
 
-                        /*
-                        List<IWebElement> currentElements = GetMatchingDisplayedDomainLinks(driver, domain);
-                        linksToCheck.AddRange(currentElements.Where(x => !visitedLinks.Contains(x.GetAttribute("href"))));
-                         }*/
+                        // Focus --> Control + Enter is important because it's much more consistent than MoveToElement and Click.
+                        // Any site with reasonable accessibility should respond to it.
 
-                        js.ExecuteScript("arguments[0].focus();", linksToCheck[i]);
+                        js.ExecuteScript("arguments[0].focus();", linksToCheck[0]);
 
                         new Actions(driver)
                         .KeyDown(Keys.LeftControl)
                         .KeyDown(Keys.Enter)
                         .KeyUp(Keys.Enter)
-                        //.Click(linksToCheck[i])
                         .KeyUp(Keys.LeftControl)
                         .Build()
                         .Perform();
-
-                        /*
-                        js.ExecuteScript("arguments[0].click();", linksToCheck[i]);
-
-                        new Actions(driver)
-                        .KeyUp(Keys.LeftControl)
-                        .Build()
-                        .Perform();
-                        */
 
                         IList<string> otherWindowHandles = new List<string>(driver.WindowHandles).Where(x => x != currentPageSearchHandle).ToList();
                         foreach (string windowHandle in otherWindowHandles)
@@ -532,7 +509,7 @@ namespace XSearch_Lib
                 }
                 catch (StaleElementReferenceException)
                 {
-                    OnNewSearchUpdateLog(this, new SearchLogArgs($"Link elements for domain {domain.Label} were stale for index {i} of found links."));
+                    OnNewSearchUpdateLog(this, new SearchLogArgs($"Link element for domain {domain.Label} was found stale while attempting to collect listings."));
                 }
                 /*
                 if (!ElementCompletelyVisible(driver, linksToCheck[i]))
@@ -540,7 +517,7 @@ namespace XSearch_Lib
 
                 driver.SwitchTo().Window(currentPageSearchHandle);
 
-                linksToCheck.RemoveAt(i);
+                linksToCheck.RemoveAt(0);
 
                 // Stop searching if we've found enough listings.
                 if (domainListingsPulledSoFar.Count >= ResultsToPullPerDomain)
@@ -565,37 +542,6 @@ namespace XSearch_Lib
                 currentPageSearchHandle = driver.CurrentWindowHandle;
             }
             while (linksToCheck.Count > 0);
-
-            /*
-            foreach (var link in links.Values)
-            {
-                System.Diagnostics.Debug.WriteLine($"coords: {link.Location.X}, {link.Location.Y}");
-
-                IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-                js.ExecuteScript("arguments[0].scrollIntoView(true);", link);
-
-                if (!link.Displayed || !link.Enabled)
-                {
-                    continue;
-                }
-                try
-                {
-                    new Actions(driver)
-                    .ScrollToElement(link)
-                    .KeyDown(Keys.LeftControl)
-                    .Click(link)
-                    .KeyUp(Keys.LeftControl)
-                    .Build()
-                    .Perform();
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine($"error: {link.Location.X}, {link.Location.Y}");
-                    continue;
-                }
-            }
-            */
-
         }
 
         /// <summary>
@@ -608,7 +554,7 @@ namespace XSearch_Lib
         {
             OnNewSearchUpdateLog(this, new SearchLogArgs(updateLogMessage));
             pullFailureNotes.Add(new ErrorReportArgs($"{domain.Label}", failureNoteMessage));
-            PullSuccessful = false;
+            CurrentPullSuccessful = false;
         }
 
         public List<IWebElement> SearchForListingsUntilTimeout(Domain domain, IWebDriver driver)
@@ -715,7 +661,7 @@ namespace XSearch_Lib
                 url = driver.Url ?? Listing_Default_Url;
             }
 
-            return new SearchListing(title, domain, url, DateTime.Now);
+            return new SearchListing(title, domain.Label, url, DateTime.Now);
 
         }
 

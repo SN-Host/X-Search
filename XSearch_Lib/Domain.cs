@@ -121,7 +121,6 @@ namespace XSearch_Lib
         /// <summary>
         /// Default constructor, requiring a GUI handler for when a search URL pattern is rejected.
         /// </summary>
-        /// <param name="id">Internal identifier for domain. Generate using <see cref="DomainProfile.GetNewIdForDomain(Domain)"/>.</param>
         /// <param name="label">User-facing label for the domain.</param>
         /// <param name="onSearchUrlPatternRejected">Action to take when a search URL pattern is rejected. Can be assigned an empty delegate if need be.</param>
         public Domain(Action<Domain, ErrorReportArgs> onSearchUrlPatternRejected, string? label = null)

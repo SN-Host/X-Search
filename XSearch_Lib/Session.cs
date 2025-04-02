@@ -21,10 +21,6 @@ namespace XSearch_Lib
         public Session()
         {
             Searcher = new SessionSearcher(this);
-            if (DomainProfilePath != null && File.Exists(DomainProfilePath))
-            {
-                // Logic here to open profile from path
-            }
         }
 
         // PROPERTIES //
@@ -114,6 +110,8 @@ namespace XSearch_Lib
         
         public void SaveSession(Stream stream, bool saveDomainProfilePath = true)
         {
+            // Load session TODO:
+            // Auto save domain profile at new stream 
             if (saveDomainProfilePath)
             {
                 DomainProfilePath = DomainProfile.LastFilePath;
@@ -124,6 +122,28 @@ namespace XSearch_Lib
             serializer.Serialize(stream, this);
             
             stream.Close();
+        }
+
+        public static Session? LoadSession(Stream stream)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(Session));
+
+            Session? session = serializer.Deserialize(stream) as Session;
+
+            if (session == null)
+            {
+                return session;
+            }
+
+            foreach (SearchListing listing in session.SearchListings)
+            {
+                if (CommonStatus.IdToStatus.TryGetValue(listing.StatusId, out ListingStatus? status))
+                {
+                    listing.Status = status;
+                }
+            }
+
+            return session;
         }
     }
 }
