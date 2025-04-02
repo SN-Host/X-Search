@@ -48,6 +48,9 @@ namespace XSearch_Lib
             }
         }
 
+        [Browsable(false)]
+        public DateTime DateTimeRetrieved { get; set; } = DateTime.MinValue;
+
         /// <summary>
         /// Exists for access by UI elements.
         /// </summary>
@@ -63,6 +66,18 @@ namespace XSearch_Lib
                 Domain.Label = value;
             }
         }
+
+        /// <summary>
+        /// Used in saving/loading to reunite search listings with their domains.
+        /// </summary>
+        [Browsable(false)]
+        public string DomainId { get; set; }
+
+        /// <summary>
+        /// Used in saving/loading reunite search listings with their statuses.
+        /// </summary>
+        [Browsable(false)]
+        public string StatusId { get; set; }
 
         [XmlIgnore]
         public string StatusImage
@@ -87,18 +102,6 @@ namespace XSearch_Lib
             }
         }
 
-        /// <summary>
-        /// Used in saving/loading to reunite search listings with their domains.
-        /// </summary>
-        [Browsable(false)]
-        public string DomainId { get; set; }
-
-        /// <summary>
-        /// Used in saving/loading reunite search listings with their statuses.
-        /// </summary>
-        [Browsable(false)]
-        public string StatusId { get; set; }
-
         [Browsable(false)]
         [XmlIgnore]
         public Domain Domain { get; set; }
@@ -106,10 +109,6 @@ namespace XSearch_Lib
         [Browsable(false)]
         [XmlIgnore]
         public ListingStatus Status { get; set; } = CommonStatus.UnevaluatedStatus;
-
-        [Browsable(false)]
-        [XmlIgnore]
-        public DateTime DateTimeRetrieved { get; set; } = DateTime.MinValue;
 
     }
 }

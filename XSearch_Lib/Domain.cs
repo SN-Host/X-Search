@@ -4,6 +4,8 @@ using System.Data;
 using System.Net.Mail;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml.Serialization;
+using static XSearch_Lib.XSearch_Strings;
 
 namespace XSearch_Lib
 {
@@ -58,9 +60,14 @@ namespace XSearch_Lib
         /// </summary>
         public event DomainErrorHandler OnSearchUrlPatternRejected = delegate { };
 
-        private string domainId;
-
         // PROPERTIES //
+
+        /// <summary>
+        /// Unique internal identifier for this domain.
+        /// Used to unite SearchListings with their domains across sessions.
+        /// TODO: Implement a system to ensure IDs are never duplicated within one domain profile.
+        /// </summary>
+        public string DomainId { get; set; } = Domain_Default_Id;
 
         /// <summary>
         /// Whether this domain is to be included in new pulls.
@@ -70,7 +77,7 @@ namespace XSearch_Lib
         /// <summary>
         /// User readable label for this domain.
         /// </summary>
-        public string Label { get; set; } = string.Empty;
+        public string Label { get; set; } = Domain_Default_Label;
 
         /// <summary>
         /// Gets or sets the search URL pattern, containing all placeholders necessary for searching. 
@@ -105,32 +112,22 @@ namespace XSearch_Lib
         public BindingList<string> NoSearchResultsXpath { get; set; } = new BindingList<string>();
 
         /// <summary>
-        /// Unique internal identifier for this domain.
-        /// Used to unite SearchListings with their domains across sessions.
-        /// TODO: Implement a system to ensure IDs are never duplicated within one domain profile.
-        /// </summary>
-        public string DomainId
-        {
-            get
-            {
-                return domainId;
-            }
-        }
-
-        /// <summary>
-        /// Parameterless constructor for XML serialization.
+        /// Parameterless constructor for XML serialization only. Do not call.
         /// </summary>
         private Domain() 
-        { 
-            domainId = GetHashCode().ToString();
+        {
         }
 
         /// <summary>
         /// Default constructor, requiring a GUI handler for when a search URL pattern is rejected.
         /// </summary>
+        /// <param name="id">Internal identifier for domain. Generate using <see cref="DomainProfile.GetNewIdForDomain(Domain)"/>.</param>
+        /// <param name="label">User-facing label for the domain.</param>
         /// <param name="onSearchUrlPatternRejected">Action to take when a search URL pattern is rejected. Can be assigned an empty delegate if need be.</param>
-        public Domain(Action<Domain, ErrorReportArgs> onSearchUrlPatternRejected) : this()
+        public Domain(Action<Domain, ErrorReportArgs> onSearchUrlPatternRejected, string? label = null)
         {
+            DomainId = Guid.NewGuid().ToString();
+            Label = label ?? Label;
             OnSearchUrlPatternRejected += (sender, e) => onSearchUrlPatternRejected(sender, e);
             SearchUrlPatternedString = new PatternedString(RequiredSearchPlaceholderPatterns, delegate (ErrorReportArgs eArgs) { OnSearchUrlPatternRejected(this, eArgs); });
             SearchUrlPatternedString.AllowInvalidRawPatternSets = true;
@@ -169,5 +166,19 @@ namespace XSearch_Lib
             return result;
         }
 
+        public override bool Equals(object? obj)
+        {
+            return obj is Domain domain &&
+                   Label == domain.Label &&
+                   SearchUrlPattern == domain.SearchUrlPattern &&
+                   ListingUrlPattern == domain.ListingUrlPattern &&
+                   EqualityComparer<PatternedString>.Default.Equals(SearchUrlPatternedString, domain.SearchUrlPatternedString) &&
+                   EqualityComparer<BindingList<string>>.Default.Equals(NoSearchResultsXpath, domain.NoSearchResultsXpath);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Label, SearchUrlPattern, ListingUrlPattern, SearchUrlPatternedString, NoSearchResultsXpath);
+        }
     }
 }

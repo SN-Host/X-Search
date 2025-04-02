@@ -42,6 +42,8 @@ namespace XSearch_Lib
 
         public static readonly string Listing_Default_Title = "No title pulled";
         public static readonly string Listing_Default_Url = "data:text/plain;base64,SGVsbG8sIHdvcmxk";
+        public static readonly string Domain_Default_Id = "NO_ID";
+        public static readonly string Domain_Default_Label = "Unnamed Domain";
 
         // Domain strings
 

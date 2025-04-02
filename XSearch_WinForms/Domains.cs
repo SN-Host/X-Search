@@ -359,5 +359,20 @@ namespace XSearch_WinForms
             // TODO: Make a method for these control calls and call them within the handlers instead of calling the handlers directly
             xpathEditorComboBox_SelectedIndexChanged(sender, e);
         }
+
+        private void saveDomainsButton_Click(object sender, EventArgs e)
+        {
+
+            domainsSaveFileDialog.Title = $"New Domain Profile {DateTime.Now.ToString("MM'-'dd'-'yyyy")}";
+            domainsSaveFileDialog.FileName = $"New Domain Profile {DateTime.Now.ToString("MM'-'dd'-'yyyy")}";
+            domainsSaveFileDialog.ShowDialog();
+
+            if (domainsSaveFileDialog.FileName != string.Empty)
+            {
+                Stream writer = domainsSaveFileDialog.OpenFile();
+
+                Program.CurrentSession.DomainProfile.SaveDomainProfile(writer, Path.GetFullPath(domainsSaveFileDialog.FileName));
+            }
+        }
     }
 }

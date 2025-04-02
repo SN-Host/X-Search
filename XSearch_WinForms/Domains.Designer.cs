@@ -68,6 +68,7 @@
             domainEditorHeaderLabel = new Label();
             errorTooltip = new ToolTip(components);
             infoToolTip = new ToolTip(components);
+            domainsSaveFileDialog = new SaveFileDialog();
             dataGridViewPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)mainDataGridView).BeginInit();
             controlPanel.SuspendLayout();
@@ -214,7 +215,6 @@
             // saveDomainsButton
             // 
             saveDomainsButton.Dock = DockStyle.Top;
-            saveDomainsButton.Enabled = false;
             saveDomainsButton.FlatAppearance.BorderSize = 0;
             saveDomainsButton.FlatStyle = FlatStyle.Flat;
             saveDomainsButton.Font = new Font("Segoe UI Variable Text", 10F);
@@ -228,6 +228,7 @@
             saveDomainsButton.Text = "  Save domains";
             saveDomainsButton.TextImageRelation = TextImageRelation.ImageBeforeText;
             saveDomainsButton.UseVisualStyleBackColor = true;
+            saveDomainsButton.Click += saveDomainsButton_Click;
             // 
             // clearDomainsButton
             // 
@@ -555,6 +556,10 @@
             domainEditorHeaderLabel.Text = "Domain editor";
             domainEditorHeaderLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // domainsSaveFileDialog
+            // 
+            domainsSaveFileDialog.Filter = "XML Files|*.xml";
+            // 
             // Domains
             // 
             AutoScaleDimensions = new SizeF(96F, 96F);
@@ -629,5 +634,6 @@
         private Panel xpathButtonsPanel;
         private Button deleteXpathButton;
         private Button addNewXpathButton;
+        private SaveFileDialog domainsSaveFileDialog;
     }
 }

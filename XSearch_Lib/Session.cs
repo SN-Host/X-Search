@@ -40,15 +40,15 @@ namespace XSearch_Lib
         public BindingList<SearchListing> SearchListings { get; set; } = new BindingList<SearchListing>();
 
         /// <summary>
+        /// File path of the previously used domain profile for this session, if applicable, for use in saving/loading.
+        /// </summary>
+        public string? DomainProfilePath { get; set; } = null;
+
+        /// <summary>
         /// Current domain profile.
         /// </summary>
         [XmlIgnore]
         public DomainProfile DomainProfile { get; set; } = new DomainProfile();
-
-        /// <summary>
-        /// File path of the previously used domain profile for this session, if applicable, for use in saving/loading.
-        /// </summary>
-        public string? DomainProfilePath { get; set; } = null;
 
         /// <summary>
         /// The SessionSearcher instance responsible for carrying out this session's searches.
@@ -112,9 +112,12 @@ namespace XSearch_Lib
             }
         }
         
-        public void SaveSession(Stream stream)
+        public void SaveSession(Stream stream, bool saveDomainProfilePath = true)
         {
-            DomainProfilePath = DomainProfile.FilePath;
+            if (saveDomainProfilePath)
+            {
+                DomainProfilePath = DomainProfile.LastFilePath;
+            }
 
             XmlSerializer serializer = new XmlSerializer(typeof(Session));
 

@@ -374,6 +374,7 @@ namespace XSearch_WinForms
         private void saveSessionButton_Click(object sender, EventArgs e)
         {
             sessionSaveFileDialog.Title = $"New Session {DateTime.Now.ToString("MM'-'dd'-'yyyy")}";
+            sessionSaveFileDialog.FileName = $"New Session {DateTime.Now.ToString("MM'-'dd'-'yyyy")}";
             sessionSaveFileDialog.ShowDialog();
 
             if (sessionSaveFileDialog.FileName != string.Empty)
