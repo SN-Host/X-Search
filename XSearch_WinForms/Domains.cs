@@ -71,33 +71,21 @@ namespace XSearch_WinForms
         {
             InitializeComponent();
 
-            // Bind control data to internal values.
-            BindingSource bindingSource = new BindingSource()
+            BindData();
+            
+            // Ensure that only members of Domain corresponding to items in our displayedColumns list render.
+
+            foreach (DataGridViewColumn column in mainDataGridView.Columns)
             {
-                DataSource = sessionDomains
-            };
-
-            mainDataGridView.DataSource = bindingSource;
-
-            // TODO: Remove pagecount multiplier.
-
-            // Setting this property ensures our textboxes will update the DataGridView in real time.
-            labelTextBox.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
-            searchUrlTextBox.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
-            listingUrlTextBox.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
-            //xpathEditorTextBox.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
-            //pageCountMultiplierNumericUpDown.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
-
-            // These databindings are essential for allowing our textboxes to directly modify domain data.
-            labelTextBox.DataBindings.Add(nameof(labelTextBox.Text), mainDataGridView.DataSource, nameof(Domain.Label));
-            searchUrlTextBox.DataBindings.Add(nameof(searchUrlTextBox.Text), mainDataGridView.DataSource, nameof(Domain.SearchUrlPattern));
-            listingUrlTextBox.DataBindings.Add(nameof(listingUrlTextBox.Text), mainDataGridView.DataSource, nameof(Domain.ListingUrlPattern));
-            //xpathEditorTextBox.DataBindings.Add(nameof(xpathEditorTextBox.Text), mainDataGridView.DataSource, nameof(Domain.NoSearchResultsXpath));
-            //pageCountMultiplierNumericUpDown.DataBindings.Add(nameof(pageCountMultiplierNumericUpDown.Value), mainDataGridView.DataSource, nameof(Domain.PageCountMultiplier));
+                if (!displayedColumns.Contains(column.DataPropertyName))
+                {
+                    column.Visible = false;
+                }
+            }
 
             // For debug testing and demo purposes only because profiles are not currently implemented, I've added two default domains.
             // See below for the long list of domains I attempted to add, but ran into problems with.
-
+            /*
             Domain eBay = new Domain(SearchUrlPatternRejected)
             {
                 Label = "Ebay",
@@ -163,16 +151,6 @@ namespace XSearch_WinForms
             Program.CurrentSession.DomainProfile.Domains.Add(edmunds);
             Program.CurrentSession.DomainProfile.Domains.Add(fbMarketplace);
 
-            // Ensure that only members of Domain corresponding to items in our displayedColumns list render.
-
-            foreach (DataGridViewColumn column in mainDataGridView.Columns)
-            {
-                if (!displayedColumns.Contains(column.DataPropertyName))
-                {
-                    column.Visible = false;
-                }
-            }
-
             // Below are some examples of domains that immediately identify X-Search as a bot, and are thus currently unscrapable.
 
             Domain indeed = new Domain(SearchUrlPatternRejected)
@@ -202,6 +180,38 @@ namespace XSearch_WinForms
                 ListingUrlPattern = $"/homedetails/",
                 SearchUrlPattern = $"https://www.zillow.com/houston-tx-77041/1_p/?searchQueryState=%7B%22pagination%22%3A%7B%22currentPage%22%3A2%7D%2C%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3A-95.66721740551758%2C%22east%22%3A-95.46637359448242%2C%22south%22%3A29.805973092052174%2C%22north%22%3A29.94053580720247%7D%2C%22regionSelection%22%3A%5B%7B%22regionId%22%3A91690%2C%22regionType%22%3A7%7D%5D%2C%22filterState%22%3A%7B%22sort%22%3A%7B%22value%22%3A%22globalrelevanceex%22%7D%2C%22beds%22%3A%7B%22min%22%3A2%7D%2C%22baths%22%3A%7B%22min%22%3A2%7D%7D%2C%22isListVisible%22%3Atrue%2C%22mapZoom%22%3A13%2C%22usersSearchTerm%22%3A%22Houston%20TX%2077041%22%7D",
             };
+            */
+        }
+
+        public void BindData()
+        {
+            // Bind control data to internal values.
+            BindingSource bindingSource = new BindingSource()
+            {
+                DataSource = Program.CurrentSession.DomainProfile.Domains
+            };
+
+            mainDataGridView.DataSource = bindingSource;
+
+            // Clear databindings in case they were set once already
+            labelTextBox.DataBindings.Clear();
+            searchUrlTextBox.DataBindings.Clear();
+            listingUrlTextBox.DataBindings.Clear();
+
+            // Setting this property ensures our textboxes will update the DataGridView in real time.
+            labelTextBox.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+            searchUrlTextBox.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+            listingUrlTextBox.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+            //xpathEditorTextBox.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+            //pageCountMultiplierNumericUpDown.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+
+            // These databindings are essential for allowing our textboxes to directly modify domain data.
+            labelTextBox.DataBindings.Add(nameof(labelTextBox.Text), mainDataGridView.DataSource, nameof(Domain.Label));
+            searchUrlTextBox.DataBindings.Add(nameof(searchUrlTextBox.Text), mainDataGridView.DataSource, nameof(Domain.SearchUrlPattern));
+            listingUrlTextBox.DataBindings.Add(nameof(listingUrlTextBox.Text), mainDataGridView.DataSource, nameof(Domain.ListingUrlPattern));
+            //xpathEditorTextBox.DataBindings.Add(nameof(xpathEditorTextBox.Text), mainDataGridView.DataSource, nameof(Domain.NoSearchResultsXpath));
+            //pageCountMultiplierNumericUpDown.DataBindings.Add(nameof(pageCountMultiplierNumericUpDown.Value), mainDataGridView.DataSource, nameof(Domain.PageCountMultiplier));
+
         }
 
         /// <summary>
@@ -365,14 +375,39 @@ namespace XSearch_WinForms
 
             domainsSaveFileDialog.Title = $"New Domain Profile {DateTime.Now.ToString("MM'-'dd'-'yyyy")}";
             domainsSaveFileDialog.FileName = $"New Domain Profile {DateTime.Now.ToString("MM'-'dd'-'yyyy")}";
+
+            string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..\\Domains"));
+            Directory.CreateDirectory(path);
+
+            domainsSaveFileDialog.InitialDirectory = path;
             domainsSaveFileDialog.ShowDialog();
 
             if (domainsSaveFileDialog.FileName != string.Empty)
             {
                 Stream writer = domainsSaveFileDialog.OpenFile();
 
-                Program.CurrentSession.DomainProfile.SaveDomainProfile(writer, Path.GetFullPath(domainsSaveFileDialog.FileName));
+                Program.CurrentSession.DomainProfile.SaveToFile(writer, Path.GetFullPath(domainsSaveFileDialog.FileName));
             }
+        }
+
+        private void loadDomainsButton_Click(object sender, EventArgs e)
+        {
+            domainsOpenFileDialog.Title = "Load session";
+
+            string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..\\Domains"));
+            Directory.CreateDirectory(path);
+
+            domainsOpenFileDialog.InitialDirectory = path;
+            domainsOpenFileDialog.ShowDialog();
+
+            if (domainsOpenFileDialog.FileName != string.Empty)
+            {
+                Stream reader = domainsOpenFileDialog.OpenFile();
+
+                Program.CurrentSession.DomainProfile.LoadFromFile(reader, SearchUrlPatternRejected);
+            }
+
+            BindData();
         }
     }
 }

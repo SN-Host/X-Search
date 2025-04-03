@@ -21,6 +21,7 @@ using Microsoft.Web.WebView2.Core;
 using System.Diagnostics;
 using static System.Windows.Forms.LinkLabel;
 using System.Reflection;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace XSearch_WinForms
 {
@@ -86,29 +87,24 @@ namespace XSearch_WinForms
         {
             InitializeComponent();
 
-            //SearchListings._syncObject = this;
+            // Ensure our DataGridView is linked to our session's search listings
+            BindData();
 
-            // Ensure our DataGridView is linked to our session's search listings.
-            // TODO: Use a BindingSource.
+            //  Ensure double buffering is enabled using reflection.
+            Type dgvType = mainDataGridView.GetType();
+            PropertyInfo? pi = dgvType.GetProperty("DoubleBuffered",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            pi?.SetValue(mainDataGridView, true, null);
+        }
 
-            // We want manual control over our columns.
-            mainDataGridView.AutoGenerateColumns = false;
-            mainDataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-
+        public void BindData()
+        {
             BindingSource bindingSource = new BindingSource()
             {
                 DataSource = SearchListings
             };
 
             mainDataGridView.DataSource = bindingSource;
-
-            // Ensure that the style is set to support double buffering for best performance.
-            SetStyle(ControlStyles.OptimizedDoubleBuffer, true); 
-            
-            Type dgvType = mainDataGridView.GetType();
-            PropertyInfo? pi = dgvType.GetProperty("DoubleBuffered",
-                BindingFlags.Instance | BindingFlags.NonPublic);
-            pi?.SetValue(mainDataGridView, true, null);
         }
 
         /// <summary>
@@ -390,13 +386,36 @@ namespace XSearch_WinForms
         {
             sessionSaveFileDialog.Title = $"New Session {DateTime.Now.ToString("MM'-'dd'-'yyyy")}";
             sessionSaveFileDialog.FileName = $"New Session {DateTime.Now.ToString("MM'-'dd'-'yyyy")}";
+
+            string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..\\Sessions"));
+            Directory.CreateDirectory(path);
+
+            sessionSaveFileDialog.InitialDirectory = path;
             sessionSaveFileDialog.ShowDialog();
 
             if (sessionSaveFileDialog.FileName != string.Empty)
             {
                 Stream writer = sessionSaveFileDialog.OpenFile();
 
-                CurrentSession.SaveSession(writer);
+                CurrentSession.SaveToFile(writer);
+            }
+        }
+
+        private void loadSessionButton_Click(object sender, EventArgs e)
+        {
+            sessionOpenFileDialog.Title = "Load session";
+
+            string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..\\Sessions"));
+            Directory.CreateDirectory(path);
+
+            sessionOpenFileDialog.InitialDirectory = path;
+            sessionOpenFileDialog.ShowDialog();
+
+            if (sessionOpenFileDialog.FileName != string.Empty)
+            {
+                Stream reader = sessionOpenFileDialog.OpenFile();
+
+                CurrentSession.LoadFromFile(reader);
             }
         }
     }

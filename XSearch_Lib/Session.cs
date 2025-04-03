@@ -108,10 +108,8 @@ namespace XSearch_Lib
             }
         }
         
-        public void SaveSession(Stream stream, bool saveDomainProfilePath = true)
+        public void SaveToFile(Stream stream, bool saveDomainProfilePath = true)
         {
-            // Load session TODO:
-            // Auto save domain profile at new stream 
             if (saveDomainProfilePath)
             {
                 DomainProfilePath = DomainProfile.LastFilePath;
@@ -124,7 +122,33 @@ namespace XSearch_Lib
             stream.Close();
         }
 
-        public static Session? LoadSession(Stream stream)
+        public void LoadFromFile(Stream stream)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(Session));
+
+            Session? session = serializer.Deserialize(stream) as Session;
+
+            if (session == null)
+            {
+                return;
+            }
+
+            // Clear current search listings to make way for the new.
+            SearchListings.Clear();
+
+            foreach (SearchListing listing in session.SearchListings)
+            {
+                if (CommonStatus.IdToStatus.TryGetValue(listing.StatusId, out ListingStatus? status))
+                {
+                    listing.Status = status;
+                }
+                SearchListings.Add(listing);
+            }
+
+            stream.Close();
+        }
+
+        public static Session? TryGetSessionFromStream(Stream stream)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(Session));
 
@@ -137,11 +161,13 @@ namespace XSearch_Lib
 
             foreach (SearchListing listing in session.SearchListings)
             {
-                if (CommonStatus.IdToStatus.TryGetValue(listing.StatusId, out ListingStatus? status))
+                if (CommonStatus.IdToStatus.TryGetValue(listing.StatusId, out ListingStatus? status) && status != null)
                 {
                     listing.Status = status;
                 }
             }
+
+            stream.Close();
 
             return session;
         }

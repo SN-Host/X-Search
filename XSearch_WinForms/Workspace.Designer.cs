@@ -209,7 +209,6 @@
             // loadSessionButton
             // 
             loadSessionButton.Dock = DockStyle.Top;
-            loadSessionButton.Enabled = false;
             loadSessionButton.FlatAppearance.BorderSize = 0;
             loadSessionButton.FlatStyle = FlatStyle.Flat;
             loadSessionButton.Font = new Font("Segoe UI Variable Text", 10F);
@@ -223,6 +222,7 @@
             loadSessionButton.Text = "  Load session";
             loadSessionButton.TextImageRelation = TextImageRelation.ImageBeforeText;
             loadSessionButton.UseVisualStyleBackColor = true;
+            loadSessionButton.Click += loadSessionButton_Click;
             // 
             // saveSessionButton
             // 
@@ -370,12 +370,14 @@
             // 
             // sessionOpenFileDialog
             // 
-            sessionOpenFileDialog.Filter = "XML Files|*.xml";
+            sessionOpenFileDialog.Filter = "X-Search Session Files|*.xssp";
+            sessionOpenFileDialog.InitialDirectory = "Sessions";
             sessionOpenFileDialog.Title = "Load session";
             // 
             // sessionSaveFileDialog
             // 
-            sessionSaveFileDialog.Filter = "XML Files|*.xml";
+            sessionSaveFileDialog.Filter = "X-Search Session Files|*.xssp";
+            sessionSaveFileDialog.InitialDirectory = "Sessions";
             sessionSaveFileDialog.Title = "Save session";
             // 
             // Workspace

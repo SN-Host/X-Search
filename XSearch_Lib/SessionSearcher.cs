@@ -226,7 +226,8 @@ namespace XSearch_Lib
                     Task.Run(() =>
                     {
                         OnNewSearchUpdateLog(this, new SearchLogArgs($"Creating FireFox driver for domain {domain.Label}."));
-                        FirefoxDriver driver = CreateFirefoxDriver();
+                        IWebDriver driver = CreateFirefoxDriver();
+                        //IWebDriver driver = CreateChromeDriver();
 
                         try
                         {
@@ -328,7 +329,7 @@ namespace XSearch_Lib
                     continue;
                 }
 
-                if (!Regex.IsMatch(searchListing.Url, domain.ListingUrlPattern))
+                if (!Regex.IsMatch(searchListing.Url, Regex.Escape(domain.ListingUrlPattern)))
                 {
                     continue;
                 }
@@ -511,13 +512,20 @@ namespace XSearch_Lib
                 {
                     OnNewSearchUpdateLog(this, new SearchLogArgs($"Link element for domain {domain.Label} was found stale while attempting to collect listings."));
                 }
+                catch (ArgumentOutOfRangeException)
+                {
+                    OnNewSearchUpdateLog(this, new SearchLogArgs($"No matching link elements found for {domain.Label}."));
+                }
                 /*
                 if (!ElementCompletelyVisible(driver, linksToCheck[i]))
                 {*/
 
                 driver.SwitchTo().Window(currentPageSearchHandle);
 
-                linksToCheck.RemoveAt(0);
+                if (linksToCheck.Count > 0)
+                {
+                    linksToCheck.RemoveAt(0);
+                }
 
                 // Stop searching if we've found enough listings.
                 if (domainListingsPulledSoFar.Count >= ResultsToPullPerDomain)
@@ -637,6 +645,7 @@ namespace XSearch_Lib
                         d => !string.IsNullOrEmpty(d.Title) && !string.IsNullOrEmpty(d.Url));
 
                     title = driver.Title;
+                    // TODO: On some domains, like the Steam workshop, the listing ID is part of the query. How can we ensure these get in?
                     url = new Uri(driver.Url).GetLeftPart(UriPartial.Path);
 
                     // Make sure we escape the loop.
@@ -721,7 +730,7 @@ namespace XSearch_Lib
                     }
 
                     // Don't return any links that don't match the listing URL pattern.
-                    if (!Regex.IsMatch(href, domain.ListingUrlPattern))
+                    if (!Regex.IsMatch(href, Regex.Escape(domain.ListingUrlPattern)))
                     {
                         continue;
                     }

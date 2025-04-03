@@ -69,6 +69,7 @@
             errorTooltip = new ToolTip(components);
             infoToolTip = new ToolTip(components);
             domainsSaveFileDialog = new SaveFileDialog();
+            domainsOpenFileDialog = new OpenFileDialog();
             dataGridViewPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)mainDataGridView).BeginInit();
             controlPanel.SuspendLayout();
@@ -197,7 +198,6 @@
             // loadDomainsButton
             // 
             loadDomainsButton.Dock = DockStyle.Top;
-            loadDomainsButton.Enabled = false;
             loadDomainsButton.FlatAppearance.BorderSize = 0;
             loadDomainsButton.FlatStyle = FlatStyle.Flat;
             loadDomainsButton.Font = new Font("Segoe UI Variable Text", 10F);
@@ -211,6 +211,7 @@
             loadDomainsButton.Text = "  Load domains";
             loadDomainsButton.TextImageRelation = TextImageRelation.ImageBeforeText;
             loadDomainsButton.UseVisualStyleBackColor = true;
+            loadDomainsButton.Click += loadDomainsButton_Click;
             // 
             // saveDomainsButton
             // 
@@ -558,7 +559,14 @@
             // 
             // domainsSaveFileDialog
             // 
-            domainsSaveFileDialog.Filter = "XML Files|*.xml";
+            domainsSaveFileDialog.Filter = "X-Search Domain Profile Files|*.xsdp";
+            domainsSaveFileDialog.InitialDirectory = "DomainProfiles";
+            domainsSaveFileDialog.RestoreDirectory = true;
+            // 
+            // domainsOpenFileDialog
+            // 
+            domainsOpenFileDialog.Filter = "X-Search Domain Profile Files|*.xsdp";
+            domainsOpenFileDialog.InitialDirectory = "DomainProfiles";
             // 
             // Domains
             // 
@@ -635,5 +643,6 @@
         private Button deleteXpathButton;
         private Button addNewXpathButton;
         private SaveFileDialog domainsSaveFileDialog;
+        private OpenFileDialog domainsOpenFileDialog;
     }
 }

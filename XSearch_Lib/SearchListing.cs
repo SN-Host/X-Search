@@ -9,7 +9,6 @@ using static XSearch_Lib.XSearch_Strings;
 
 namespace XSearch_Lib
 {
-    // TODO: Remove possible nulls
     public class SearchListing
     {
         // CONSTRUCTORS //

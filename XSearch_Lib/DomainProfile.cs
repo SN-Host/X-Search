@@ -13,7 +13,6 @@ namespace XSearch_Lib
 	/// </summary>
 	public class DomainProfile
 	{
-
 		/// <summary>
 		/// Previous save location of a domain profile, if any.
 		/// </summary>
@@ -40,7 +39,7 @@ namespace XSearch_Lib
 			return newId;
 		}
 
-		public void SaveDomainProfile(Stream stream, string filePath)
+		public void SaveToFile(Stream stream, string filePath)
 		{
 			LastFilePath = filePath;
 
@@ -49,7 +48,56 @@ namespace XSearch_Lib
 			serializer.Serialize(stream, this);
 
 			stream.Close();
-		}
+        }
 
-	}
+        public void LoadFromFile(Stream stream, Action<Domain, ErrorReportArgs> onSearchUrlPatternRejected)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(DomainProfile));
+
+            DomainProfile? profile = serializer.Deserialize(stream) as DomainProfile;
+
+            if (profile == null)
+            {
+                return;
+            }
+
+            // Clear current domains to make way for the new.
+            Domains.Clear();
+
+            foreach (Domain domain in profile.Domains)
+            {
+                // Ensure domains handle search URL pattern events on reload.
+                domain.OnSearchUrlPatternRejected += (sender, e) => onSearchUrlPatternRejected(sender, e);
+
+                Domains.Add(domain);
+            }
+
+            stream.Close();
+        }
+
+        /// <summary>
+        /// Load an entire domain profile from a file.
+        /// <seealso cref="LoadFromFile(Stream, Action{Domain, ErrorReportArgs})">LoadFromFile</seealso> was preferred because it allowed manual control over copied data and prevented dangling references.
+        /// </summary>
+        public static DomainProfile? TryGetDomainProfileFromStream(Stream stream, Action<Domain, ErrorReportArgs> onSearchUrlPatternRejected)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(DomainProfile));
+
+            DomainProfile? profile = serializer.Deserialize(stream) as DomainProfile;
+
+            if (profile == null)
+            {
+                return profile;
+            }
+
+            foreach (Domain domain in profile.Domains)
+            {
+				domain.OnSearchUrlPatternRejected += (sender, e) => onSearchUrlPatternRejected(sender, e);
+            }
+
+            stream.Close();
+
+            return profile;
+        }
+    }
 }

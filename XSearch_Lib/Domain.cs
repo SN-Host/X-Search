@@ -65,7 +65,6 @@ namespace XSearch_Lib
         /// <summary>
         /// Unique internal identifier for this domain.
         /// Used to unite SearchListings with their domains across sessions.
-        /// TODO: Implement a system to ensure IDs are never duplicated within one domain profile.
         /// </summary>
         public string DomainId { get; set; } = Domain_Default_Id;
 
