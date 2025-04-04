@@ -214,6 +214,8 @@ namespace XSearch_WinForms
 
             mainDataGridView.DataSource = bindingSource;
 
+            bindingSource.ResetBindings(false);
+
             // Clear databindings in case they were set once already
             labelTextBox.DataBindings.Clear();
             searchUrlTextBox.DataBindings.Clear();
@@ -225,14 +227,12 @@ namespace XSearch_WinForms
             searchUrlTextBox.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
             listingUrlTextBox.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
             xpathEditorTextBox.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
-            //pageCountMultiplierNumericUpDown.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
 
             // These databindings are essential for allowing our textboxes to directly modify domain data.
             labelTextBox.DataBindings.Add(nameof(labelTextBox.Text), mainDataGridView.DataSource, nameof(Domain.Label));
             searchUrlTextBox.DataBindings.Add(nameof(searchUrlTextBox.Text), mainDataGridView.DataSource, nameof(Domain.SearchUrlPattern));
             listingUrlTextBox.DataBindings.Add(nameof(listingUrlTextBox.Text), mainDataGridView.DataSource, nameof(Domain.ListingUrlPattern));
             xpathEditorTextBox.DataBindings.Add(nameof(xpathEditorTextBox.Text), mainDataGridView.DataSource, nameof(Domain.NoSearchResultsXpath));
-            //pageCountMultiplierNumericUpDown.DataBindings.Add(nameof(pageCountMultiplierNumericUpDown.Value), mainDataGridView.DataSource, nameof(Domain.PageCountMultiplier));
 
         }
 

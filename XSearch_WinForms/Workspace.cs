@@ -75,7 +75,7 @@ namespace XSearch_WinForms
         /// <summary>
         /// Concise reference to current session's search listings.
         /// </summary>
-        private BindingList<SearchListing> SearchListings
+        private ThreadedBindingList<SearchListing> SearchListings
         {
             get
             {
