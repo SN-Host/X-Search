@@ -60,6 +60,9 @@ namespace XSearch_Lib
         /// </summary>
         public event DomainErrorHandler OnSearchUrlPatternRejected = delegate { };
 
+        /// <summary>
+        /// Event to raise when a property is changed. Necessary to ensure the DataGridView updates properly.
+        /// </summary>
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private bool _active = false;
@@ -188,21 +191,18 @@ namespace XSearch_Lib
             // Determine the count of search term placeholders in the search URL pattern given for this domain.
             int placeholdersInUrl = Regex.Matches(resolvedSearchUrl, URL_SEARCHTERM_PLACEHOLDER_PATTERN).Count;
 
-            // If there's a discrepancy in the number of placeholders in the URL pattern or the query,
-            // we'll use the original search term to fill in all placeholders.
+            // Placeholder count must match the count of the delimited terms for delimited substitution.
+            // Otherwise, we will simply use the whole search term for every placeholder.
             if (placeholdersInUrl != delimitedTerms.Length)
             {
                 delimitedTerms = [searchTerm];
             }
 
-            // Define our escape term for Regex to interpret literally; the placeholder pattern.
-            string escape = Regex.Escape(URL_SEARCHTERM_PLACEHOLDER_PATTERN);
-
             // Replace each instance of the placeholder pattern with delimited search terms of the appropriate index.
+            string escape = Regex.Escape(URL_SEARCHTERM_PLACEHOLDER_PATTERN);
             int termIndex = 0;
             string result = Regex.Replace(SearchUrlPattern, escape, (m) => delimitedTerms[termIndex + 1 >= delimitedTerms.Length ? termIndex : termIndex++]);
 
-            // Return what we've come up with.
             return result;
         }
 

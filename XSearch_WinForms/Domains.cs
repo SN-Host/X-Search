@@ -91,7 +91,7 @@ namespace XSearch_WinForms
             InitializeComponent();
 
             BindData();
-            
+
             // Ensure that only members of Domain corresponding to items in our displayedColumns list render.
 
             foreach (DataGridViewColumn column in mainDataGridView.Columns)
@@ -253,13 +253,25 @@ namespace XSearch_WinForms
         }
 
         /// <summary>
-        /// Removes the currently selected domain from the current profile.
+        /// Removes the currently selected domains from the current profile.
         /// </summary>
         private void removeDomainButton_Click(object sender, EventArgs e)
         {
-            foreach (DataGridViewRow row in mainDataGridView.SelectedRows)
+            int count = mainDataGridView.SelectedRows.Count;
+
+            if (count <= 0)
             {
-                sessionDomains.RemoveAt(row.Index);
+                return;
+            }
+
+            DialogResult clear = MessageBox.Show($"Clear {count} {(count > 1 ? "domains" : "domain")}?", "Clear domains?", MessageBoxButtons.YesNo);
+
+            if (clear == DialogResult.Yes)
+            {
+                foreach (DataGridViewRow row in mainDataGridView.SelectedRows)
+                {
+                    sessionDomains.RemoveAt(row.Index);
+                }
             }
 
         }
@@ -467,6 +479,14 @@ namespace XSearch_WinForms
 
             // Allow default handling of keystrokes if our shortcuts weren't used.
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void mainToolTip_Popup(object sender, PopupEventArgs e)
+        {
+            if (Properties.Settings.Default.ShowTooltips == false)
+            {
+                e.Cancel = true;
+            }
         }
     }
 }

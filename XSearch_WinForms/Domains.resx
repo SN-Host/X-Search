@@ -129,6 +129,24 @@
   <metadata name="listingUrlPatternDataGridViewColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <metadata name="mainToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>605, 17</value>
+  </metadata>
+  <data name="xpathEditorLabel.ToolTip" xml:space="preserve">
+    <value>XPath to check for elements that may reveal new listings when no more can be found. 
+
+Can be used to change pages, close popups or even bypass captchas depending on usage.
+
+Manipulating this field in requires some technical knowledge of HTML. Avoid changing it unless that's you!</value>
+  </data>
+  <data name="searchUrlLabel.ToolTip" xml:space="preserve">
+    <value>The URL at which X-Search should start searching for this domain. 
+
+Search term queries can be substituted with the placeholder &lt;&lt;searchTerm&gt;&gt;. These will be filled in based on the search term given at pulling time. 
+
+If multiple &lt;&lt;searchTerm&gt;&gt; placeholders are given, they will each be filled by the search term. If the number of placeholders matches the number of words separated by spaces in the search term, they will substituted in order.
+</value>
+  </data>
   <metadata name="errorTooltip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>

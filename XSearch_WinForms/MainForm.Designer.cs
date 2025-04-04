@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             infoPanel = new Panel();
             toolsContainerPanel = new Panel();
             selectionSettingsPanel = new Panel();
@@ -56,6 +57,7 @@
             workspaceContainerPanel = new Panel();
             framingPanel = new Panel();
             frameLabel = new Label();
+            mainToolTip = new ToolTip(components);
             infoPanel.SuspendLayout();
             toolsContainerPanel.SuspendLayout();
             statusContainerPanel.SuspendLayout();
@@ -154,6 +156,7 @@
             statusReportPanel.Padding = new Padding(5);
             statusReportPanel.Size = new Size(190, 108);
             statusReportPanel.TabIndex = 1;
+            mainToolTip.SetToolTip(statusReportPanel, "Last message logged by a pull.");
             // 
             // statusReportLabel
             // 
@@ -192,6 +195,7 @@
             searchProgressPanel.Padding = new Padding(5);
             searchProgressPanel.Size = new Size(190, 50);
             searchProgressPanel.TabIndex = 2;
+            mainToolTip.SetToolTip(searchProgressPanel, "Number of fetched listings to target listings from current or previous pull.");
             // 
             // searchProgressLabel
             // 
@@ -226,6 +230,7 @@
             rowInfoPanel.Padding = new Padding(5);
             rowInfoPanel.Size = new Size(190, 55);
             rowInfoPanel.TabIndex = 6;
+            mainToolTip.SetToolTip(rowInfoPanel, "Information on currently selected rows in the workspace.");
             // 
             // rowInfoLabel
             // 
@@ -318,6 +323,7 @@
             helpButton.TabIndex = 7;
             helpButton.Text = "   Help";
             helpButton.TextImageRelation = TextImageRelation.ImageBeforeText;
+            mainToolTip.SetToolTip(helpButton, "View X-Search documentation and support.");
             helpButton.UseVisualStyleBackColor = false;
             helpButton.Click += helpButton_Click;
             // 
@@ -337,6 +343,7 @@
             settingsButton.TabIndex = 6;
             settingsButton.Text = "   Settings";
             settingsButton.TextImageRelation = TextImageRelation.ImageBeforeText;
+            mainToolTip.SetToolTip(settingsButton, "Configure X-Search.");
             settingsButton.UseVisualStyleBackColor = false;
             settingsButton.Click += settingsButton_Click;
             // 
@@ -356,6 +363,7 @@
             domainsButton.TabIndex = 3;
             domainsButton.Text = "   Domains";
             domainsButton.TextImageRelation = TextImageRelation.ImageBeforeText;
+            mainToolTip.SetToolTip(domainsButton, "Configure (or load) configurations for web domains to pull results from.");
             domainsButton.UseVisualStyleBackColor = false;
             domainsButton.Click += domainsButton_Click;
             // 
@@ -375,6 +383,7 @@
             workspaceButton.TabIndex = 2;
             workspaceButton.Text = "   Workspace";
             workspaceButton.TextImageRelation = TextImageRelation.ImageBeforeText;
+            mainToolTip.SetToolTip(workspaceButton, "Pull and evaluate pulled listings.");
             workspaceButton.UseVisualStyleBackColor = false;
             workspaceButton.Click += workspaceButton_Click;
             // 
@@ -434,6 +443,10 @@
             frameLabel.TabIndex = 1;
             frameLabel.Text = "Workspace";
             frameLabel.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // mainToolTip
+            // 
+            mainToolTip.Popup += mainToolTip_Popup;
             // 
             // MainForm
             // 
@@ -502,5 +515,6 @@
         private Panel rowInfoPanel;
         private Label rowInfoHeaderLabel;
         internal Label rowInfoLabel;
+        private ToolTip mainToolTip;
     }
 }

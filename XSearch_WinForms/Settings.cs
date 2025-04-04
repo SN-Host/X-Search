@@ -51,5 +51,13 @@ namespace XSearch_WinForms
             Properties.Settings.Default.ShowTooltips = toggleTooltipsCheckBox.Checked;
             Properties.Settings.Default.Save();
         }
+
+        private void mainToolTip_Popup(object sender, PopupEventArgs e)
+        {
+            if (Properties.Settings.Default.ShowTooltips == false)
+            {
+                e.Cancel = true;
+            }
+        }
     }
 }

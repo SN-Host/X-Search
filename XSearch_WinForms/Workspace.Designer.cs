@@ -54,6 +54,7 @@
             pullSearchButton = new Button();
             sessionOpenFileDialog = new OpenFileDialog();
             sessionSaveFileDialog = new SaveFileDialog();
+            mainToolTip = new ToolTip(components);
             dataGridViewPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)mainDataGridView).BeginInit();
             searchPanel.SuspendLayout();
@@ -222,6 +223,7 @@
             loadSessionButton.TabIndex = 9;
             loadSessionButton.Text = "  Load session";
             loadSessionButton.TextImageRelation = TextImageRelation.ImageBeforeText;
+            mainToolTip.SetToolTip(loadSessionButton, "Load a saved file to continue a previous search session.");
             loadSessionButton.UseVisualStyleBackColor = true;
             loadSessionButton.Click += loadSessionButton_Click;
             // 
@@ -240,6 +242,7 @@
             saveSessionButton.TabIndex = 8;
             saveSessionButton.Text = "  Save session";
             saveSessionButton.TextImageRelation = TextImageRelation.ImageBeforeText;
+            mainToolTip.SetToolTip(saveSessionButton, "Save this session to a file to continue searching later.");
             saveSessionButton.UseVisualStyleBackColor = true;
             saveSessionButton.Click += saveSessionButton_Click;
             // 
@@ -258,6 +261,7 @@
             clearAllButton.TabIndex = 7;
             clearAllButton.Text = "  Clear all listings";
             clearAllButton.TextImageRelation = TextImageRelation.ImageBeforeText;
+            mainToolTip.SetToolTip(clearAllButton, resources.GetString("clearAllButton.ToolTip"));
             clearAllButton.UseVisualStyleBackColor = true;
             clearAllButton.Click += clearAllButton_Click;
             // 
@@ -276,6 +280,7 @@
             clearListingButton.TabIndex = 11;
             clearListingButton.Text = "  Clear listing";
             clearListingButton.TextImageRelation = TextImageRelation.ImageBeforeText;
+            mainToolTip.SetToolTip(clearListingButton, resources.GetString("clearListingButton.ToolTip"));
             clearListingButton.UseVisualStyleBackColor = true;
             clearListingButton.Click += clearListingButton_Click;
             // 
@@ -294,6 +299,7 @@
             webPreviewButton.TabIndex = 4;
             webPreviewButton.Text = "  Web preview";
             webPreviewButton.TextImageRelation = TextImageRelation.ImageBeforeText;
+            mainToolTip.SetToolTip(webPreviewButton, "Opens a live web preview of the selected workspace entry for rapid evaluation.");
             webPreviewButton.UseVisualStyleBackColor = true;
             webPreviewButton.Click += webPreviewButton_Click;
             // 
@@ -312,6 +318,7 @@
             uncrossButton.TabIndex = 6;
             uncrossButton.Text = "  Uncross";
             uncrossButton.TextImageRelation = TextImageRelation.ImageBeforeText;
+            mainToolTip.SetToolTip(uncrossButton, "Uncrosses an entry, marking it as unevaluated.");
             uncrossButton.UseVisualStyleBackColor = true;
             uncrossButton.Click += uncrossButton_Click;
             // 
@@ -330,6 +337,7 @@
             crossButton.TabIndex = 5;
             crossButton.Text = "  Cross";
             crossButton.TextImageRelation = TextImageRelation.ImageBeforeText;
+            mainToolTip.SetToolTip(crossButton, "Crosses an entry, dropping it to the bottom of the list.");
             crossButton.UseVisualStyleBackColor = true;
             crossButton.Click += crossButton_Click;
             // 
@@ -348,6 +356,7 @@
             cancelPullButton.TabIndex = 12;
             cancelPullButton.Text = "  Cancel pull";
             cancelPullButton.TextImageRelation = TextImageRelation.ImageBeforeText;
+            mainToolTip.SetToolTip(cancelPullButton, "Cancels a pull, if one is in progress, as soon as it can be reliably cancelled.");
             cancelPullButton.UseVisualStyleBackColor = true;
             cancelPullButton.Click += cancelPullButton_Click;
             // 
@@ -366,6 +375,7 @@
             pullSearchButton.TabIndex = 10;
             pullSearchButton.Text = "  Pull search";
             pullSearchButton.TextImageRelation = TextImageRelation.ImageBeforeText;
+            mainToolTip.SetToolTip(pullSearchButton, "Opens dialog for retrieving results from selected domains.\r\n\r\nHolding shift while selecting this button will instantly start a pull using previous settings.");
             pullSearchButton.UseVisualStyleBackColor = true;
             pullSearchButton.Click += pullSearchButton_Click;
             // 
@@ -426,5 +436,6 @@
         private DataGridViewTextBoxColumn titleDataGridViewColumn;
         private DataGridViewTextBoxColumn urlDataGridViewColumn;
         private DataGridViewTextBoxColumn RetrievalTimeString;
+        private ToolTip mainToolTip;
     }
 }

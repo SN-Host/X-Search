@@ -117,4 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <metadata name="mainToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="headlessCheckBox.ToolTip" xml:space="preserve">
+    <value>When enabled, Selenium will run its WebDrivers in headless mode. This effectively means no new browser windows will be opened.
+
+Disabling this setting can be a useful way to observe X-Search at work.</value>
+  </data>
 </root>

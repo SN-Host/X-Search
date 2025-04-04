@@ -28,11 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Settings));
             mainSettingsContainerPanel = new Panel();
             toggleTooltipsCheckBox = new CheckBox();
             headlessCheckBox = new CheckBox();
             generallSetttingsDividerLineLabel = new Label();
             generalSettingsLabel = new Label();
+            mainToolTip = new ToolTip(components);
             mainSettingsContainerPanel.SuspendLayout();
             SuspendLayout();
             // 
@@ -60,6 +63,7 @@
             toggleTooltipsCheckBox.Size = new Size(670, 30);
             toggleTooltipsCheckBox.TabIndex = 1;
             toggleTooltipsCheckBox.Text = "Tooltips";
+            mainToolTip.SetToolTip(toggleTooltipsCheckBox, "Enables or disables tooltips across the entire program.");
             toggleTooltipsCheckBox.UseVisualStyleBackColor = true;
             toggleTooltipsCheckBox.CheckedChanged += toggleTooltipsCheckBox_CheckedChanged;
             // 
@@ -74,6 +78,7 @@
             headlessCheckBox.Size = new Size(670, 30);
             headlessCheckBox.TabIndex = 0;
             headlessCheckBox.Text = "Headless browsing";
+            mainToolTip.SetToolTip(headlessCheckBox, resources.GetString("headlessCheckBox.ToolTip"));
             headlessCheckBox.UseVisualStyleBackColor = true;
             headlessCheckBox.CheckedChanged += headlessCheckBox_CheckedChanged;
             // 
@@ -95,6 +100,10 @@
             generalSettingsLabel.Size = new Size(670, 33);
             generalSettingsLabel.TabIndex = 3;
             generalSettingsLabel.Text = "General settings";
+            // 
+            // mainToolTip
+            // 
+            mainToolTip.Popup += mainToolTip_Popup;
             // 
             // Settings
             // 
@@ -120,5 +129,6 @@
         private CheckBox toggleTooltipsCheckBox;
         private CheckBox headlessCheckBox;
         private Label generalSettingsLabel;
+        private ToolTip mainToolTip;
     }
 }

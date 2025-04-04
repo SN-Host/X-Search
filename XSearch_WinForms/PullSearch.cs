@@ -46,5 +46,13 @@ namespace XSearch_WinForms
             //await Task.Run(delegate { session.Searcher.PullSearch(); });
             await session.Searcher.PullSearch();
         }
+
+        private void mainToolTip_Popup(object sender, PopupEventArgs e)
+        {
+            if (Properties.Settings.Default.ShowTooltips == false)
+            {
+                e.Cancel = true;
+            }
+        }
     }
 }

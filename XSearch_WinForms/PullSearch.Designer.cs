@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PullSearch));
             editorPanel = new Panel();
             controlContainerPanel = new Panel();
             searchTermContainerPanel = new Panel();
@@ -39,6 +41,7 @@
             searchTermTextBox = new TextBox();
             searchTermLabel = new Label();
             pullSearchHeaderLabel = new Label();
+            mainToolTip = new ToolTip(components);
             editorPanel.SuspendLayout();
             controlContainerPanel.SuspendLayout();
             searchTermContainerPanel.SuspendLayout();
@@ -133,8 +136,9 @@
             pageCountLabel.Padding = new Padding(5, 0, 5, 0);
             pageCountLabel.Size = new Size(196, 25);
             pageCountLabel.TabIndex = 3;
-            pageCountLabel.Text = "Results to pull per domain:";
+            pageCountLabel.Text = "Results to check per domain:";
             pageCountLabel.TextAlign = ContentAlignment.MiddleRight;
+            mainToolTip.SetToolTip(pageCountLabel, "The number of results to query for each domain.\r\n\r\nDuplicate listings will not be pulled, but will still count toward this number.");
             // 
             // searchTermPanel
             // 
@@ -170,6 +174,7 @@
             searchTermLabel.TabIndex = 3;
             searchTermLabel.Text = "Search term:";
             searchTermLabel.TextAlign = ContentAlignment.MiddleRight;
+            mainToolTip.SetToolTip(searchTermLabel, resources.GetString("searchTermLabel.ToolTip"));
             // 
             // pullSearchHeaderLabel
             // 
@@ -184,6 +189,10 @@
             pullSearchHeaderLabel.TabIndex = 9;
             pullSearchHeaderLabel.Text = "Pull Search";
             pullSearchHeaderLabel.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // mainToolTip
+            // 
+            mainToolTip.Popup += mainToolTip_Popup;
             // 
             // PullSearch
             // 
@@ -227,5 +236,6 @@
         private Label pageCountLabel;
         private NumericUpDown resultsPerDomainNumericUpDown;
         private Button pullSearchButton;
+        private ToolTip mainToolTip;
     }
 }

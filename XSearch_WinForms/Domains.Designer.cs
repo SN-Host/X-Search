@@ -31,12 +31,16 @@
             components = new System.ComponentModel.Container();
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Domains));
             dataGridViewPanel = new Panel();
             mainDataGridView = new DataGridView();
+            activeDataGridViewColumn = new DataGridViewCheckBoxColumn();
+            domainLabelDataGridViewColumn = new DataGridViewTextBoxColumn();
+            searchUrlPatternDataGridViewColumn = new DataGridViewTextBoxColumn();
+            listingUrlPatternDataGridViewColumn = new DataGridViewTextBoxColumn();
             controlPanel = new Panel();
             loadDomainsButton = new Button();
             saveDomainsButton = new Button();
-            clearDomainsButton = new Button();
             removeDomainButton = new Button();
             addNewDomainButton = new Button();
             enableDomainButton = new Button();
@@ -65,10 +69,7 @@
             infoToolTip = new ToolTip(components);
             domainsSaveFileDialog = new SaveFileDialog();
             domainsOpenFileDialog = new OpenFileDialog();
-            activeDataGridViewColumn = new DataGridViewCheckBoxColumn();
-            domainLabelDataGridViewColumn = new DataGridViewTextBoxColumn();
-            searchUrlPatternDataGridViewColumn = new DataGridViewTextBoxColumn();
-            listingUrlPatternDataGridViewColumn = new DataGridViewTextBoxColumn();
+            mainToolTip = new ToolTip(components);
             dataGridViewPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)mainDataGridView).BeginInit();
             controlPanel.SuspendLayout();
@@ -132,12 +133,47 @@
             mainDataGridView.TabIndex = 2;
             mainDataGridView.SelectionChanged += mainDataGridView_SelectionChanged;
             // 
+            // activeDataGridViewColumn
+            // 
+            activeDataGridViewColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            activeDataGridViewColumn.DataPropertyName = "Active";
+            activeDataGridViewColumn.FillWeight = 30F;
+            activeDataGridViewColumn.HeaderText = "Active";
+            activeDataGridViewColumn.Name = "activeDataGridViewColumn";
+            // 
+            // domainLabelDataGridViewColumn
+            // 
+            domainLabelDataGridViewColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            domainLabelDataGridViewColumn.DataPropertyName = "Label";
+            domainLabelDataGridViewColumn.FillWeight = 75F;
+            domainLabelDataGridViewColumn.HeaderText = "Domain label";
+            domainLabelDataGridViewColumn.Name = "domainLabelDataGridViewColumn";
+            domainLabelDataGridViewColumn.ReadOnly = true;
+            domainLabelDataGridViewColumn.Resizable = DataGridViewTriState.True;
+            // 
+            // searchUrlPatternDataGridViewColumn
+            // 
+            searchUrlPatternDataGridViewColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            searchUrlPatternDataGridViewColumn.DataPropertyName = "SearchUrlPattern";
+            searchUrlPatternDataGridViewColumn.FillWeight = 75F;
+            searchUrlPatternDataGridViewColumn.HeaderText = "Starting URL";
+            searchUrlPatternDataGridViewColumn.Name = "searchUrlPatternDataGridViewColumn";
+            searchUrlPatternDataGridViewColumn.ReadOnly = true;
+            // 
+            // listingUrlPatternDataGridViewColumn
+            // 
+            listingUrlPatternDataGridViewColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            listingUrlPatternDataGridViewColumn.DataPropertyName = "ListingUrlPattern";
+            listingUrlPatternDataGridViewColumn.FillWeight = 75F;
+            listingUrlPatternDataGridViewColumn.HeaderText = "Listing URL pattern";
+            listingUrlPatternDataGridViewColumn.Name = "listingUrlPatternDataGridViewColumn";
+            listingUrlPatternDataGridViewColumn.ReadOnly = true;
+            // 
             // controlPanel
             // 
             controlPanel.AutoScroll = true;
             controlPanel.Controls.Add(loadDomainsButton);
             controlPanel.Controls.Add(saveDomainsButton);
-            controlPanel.Controls.Add(clearDomainsButton);
             controlPanel.Controls.Add(removeDomainButton);
             controlPanel.Controls.Add(addNewDomainButton);
             controlPanel.Controls.Add(enableDomainButton);
@@ -157,13 +193,14 @@
             loadDomainsButton.Font = new Font("Segoe UI Variable Text", 10F);
             loadDomainsButton.Image = Properties.Resources.placeholder_25x25_dark;
             loadDomainsButton.ImageAlign = ContentAlignment.MiddleLeft;
-            loadDomainsButton.Location = new Point(0, 180);
+            loadDomainsButton.Location = new Point(0, 144);
             loadDomainsButton.Name = "loadDomainsButton";
             loadDomainsButton.Padding = new Padding(5, 0, 0, 0);
             loadDomainsButton.Size = new Size(165, 36);
             loadDomainsButton.TabIndex = 7;
             loadDomainsButton.Text = "  Load domains";
             loadDomainsButton.TextImageRelation = TextImageRelation.ImageBeforeText;
+            mainToolTip.SetToolTip(loadDomainsButton, "Load a domain profile from an existing file.");
             loadDomainsButton.UseVisualStyleBackColor = true;
             loadDomainsButton.Click += loadDomainsButton_Click;
             // 
@@ -175,33 +212,16 @@
             saveDomainsButton.Font = new Font("Segoe UI Variable Text", 10F);
             saveDomainsButton.Image = Properties.Resources.placeholder_25x25_dark;
             saveDomainsButton.ImageAlign = ContentAlignment.MiddleLeft;
-            saveDomainsButton.Location = new Point(0, 144);
+            saveDomainsButton.Location = new Point(0, 108);
             saveDomainsButton.Name = "saveDomainsButton";
             saveDomainsButton.Padding = new Padding(5, 0, 0, 0);
             saveDomainsButton.Size = new Size(165, 36);
             saveDomainsButton.TabIndex = 6;
             saveDomainsButton.Text = "  Save domains";
             saveDomainsButton.TextImageRelation = TextImageRelation.ImageBeforeText;
+            mainToolTip.SetToolTip(saveDomainsButton, "Save the current domain profile to a file for later use.");
             saveDomainsButton.UseVisualStyleBackColor = true;
             saveDomainsButton.Click += saveDomainsButton_Click;
-            // 
-            // clearDomainsButton
-            // 
-            clearDomainsButton.Dock = DockStyle.Top;
-            clearDomainsButton.FlatAppearance.BorderSize = 0;
-            clearDomainsButton.FlatStyle = FlatStyle.Flat;
-            clearDomainsButton.Font = new Font("Segoe UI Variable Text", 10F);
-            clearDomainsButton.Image = Properties.Resources.placeholder_25x25_dark;
-            clearDomainsButton.ImageAlign = ContentAlignment.MiddleLeft;
-            clearDomainsButton.Location = new Point(0, 108);
-            clearDomainsButton.Name = "clearDomainsButton";
-            clearDomainsButton.Padding = new Padding(5, 0, 0, 0);
-            clearDomainsButton.Size = new Size(165, 36);
-            clearDomainsButton.TabIndex = 8;
-            clearDomainsButton.Text = "  Clear all domains";
-            clearDomainsButton.TextImageRelation = TextImageRelation.ImageBeforeText;
-            clearDomainsButton.UseVisualStyleBackColor = true;
-            clearDomainsButton.Click += clearDomainsButton_Click;
             // 
             // removeDomainButton
             // 
@@ -218,6 +238,7 @@
             removeDomainButton.TabIndex = 4;
             removeDomainButton.Text = "  Remove domain";
             removeDomainButton.TextImageRelation = TextImageRelation.ImageBeforeText;
+            mainToolTip.SetToolTip(removeDomainButton, "Removes any currently selected domains from the list entirely.");
             removeDomainButton.UseVisualStyleBackColor = true;
             removeDomainButton.Click += removeDomainButton_Click;
             // 
@@ -236,6 +257,7 @@
             addNewDomainButton.TabIndex = 3;
             addNewDomainButton.Text = "  Add domain";
             addNewDomainButton.TextImageRelation = TextImageRelation.ImageBeforeText;
+            mainToolTip.SetToolTip(addNewDomainButton, "Adds a new (blank) domain for configuration.");
             addNewDomainButton.UseVisualStyleBackColor = true;
             addNewDomainButton.Click += addNewDomainButton_Click;
             // 
@@ -254,6 +276,7 @@
             enableDomainButton.TabIndex = 5;
             enableDomainButton.Text = "  Toggle active";
             enableDomainButton.TextImageRelation = TextImageRelation.ImageBeforeText;
+            mainToolTip.SetToolTip(enableDomainButton, "Toggles currently selected domains for pulling.");
             enableDomainButton.UseVisualStyleBackColor = true;
             enableDomainButton.Click += enableDomainButton_Click;
             // 
@@ -359,6 +382,7 @@
             deleteXpathButton.Size = new Size(70, 24);
             deleteXpathButton.TabIndex = 7;
             deleteXpathButton.Text = "Delete";
+            mainToolTip.SetToolTip(deleteXpathButton, "Delete the currently selected XPath query for this domain.");
             deleteXpathButton.UseVisualStyleBackColor = false;
             deleteXpathButton.Click += deleteXpathButton_Click;
             // 
@@ -375,6 +399,7 @@
             addNewXpathButton.Size = new Size(70, 24);
             addNewXpathButton.TabIndex = 6;
             addNewXpathButton.Text = "Add new";
+            mainToolTip.SetToolTip(addNewXpathButton, "Add a new XPath query for this domain.");
             addNewXpathButton.UseVisualStyleBackColor = false;
             addNewXpathButton.Click += addNewXpathButton_Click;
             // 
@@ -391,6 +416,7 @@
             xpathEditorLabel.TabIndex = 3;
             xpathEditorLabel.Text = "Post-search XPath:";
             xpathEditorLabel.TextAlign = ContentAlignment.TopRight;
+            mainToolTip.SetToolTip(xpathEditorLabel, resources.GetString("xpathEditorLabel.ToolTip"));
             // 
             // listingUrlPanel
             // 
@@ -426,6 +452,7 @@
             listingUrlLabel.TabIndex = 3;
             listingUrlLabel.Text = "Listing URL pattern:";
             listingUrlLabel.TextAlign = ContentAlignment.TopRight;
+            mainToolTip.SetToolTip(listingUrlLabel, "Regex escape pattern that should be designed to match any listing link from this domain.\r\n");
             // 
             // searchUrlPanel
             // 
@@ -462,6 +489,7 @@
             searchUrlLabel.TabIndex = 3;
             searchUrlLabel.Text = "Starting URL:";
             searchUrlLabel.TextAlign = ContentAlignment.TopRight;
+            mainToolTip.SetToolTip(searchUrlLabel, resources.GetString("searchUrlLabel.ToolTip"));
             // 
             // labelPanel
             // 
@@ -496,6 +524,7 @@
             labelLabel.TabIndex = 3;
             labelLabel.Text = "Domain label:";
             labelLabel.TextAlign = ContentAlignment.TopRight;
+            mainToolTip.SetToolTip(labelLabel, "Identifier for this domain for your own convenience.");
             // 
             // domainEditorHeaderLabel
             // 
@@ -524,41 +553,9 @@
             domainsOpenFileDialog.InitialDirectory = "DomainProfiles";
             domainsOpenFileDialog.Title = "Load domain profile";
             // 
-            // activeDataGridViewColumn
+            // mainToolTip
             // 
-            activeDataGridViewColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            activeDataGridViewColumn.DataPropertyName = "Active";
-            activeDataGridViewColumn.FillWeight = 30F;
-            activeDataGridViewColumn.HeaderText = "Active";
-            activeDataGridViewColumn.Name = "activeDataGridViewColumn";
-            // 
-            // domainLabelDataGridViewColumn
-            // 
-            domainLabelDataGridViewColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            domainLabelDataGridViewColumn.DataPropertyName = "Label";
-            domainLabelDataGridViewColumn.FillWeight = 75F;
-            domainLabelDataGridViewColumn.HeaderText = "Domain label";
-            domainLabelDataGridViewColumn.Name = "domainLabelDataGridViewColumn";
-            domainLabelDataGridViewColumn.ReadOnly = true;
-            domainLabelDataGridViewColumn.Resizable = DataGridViewTriState.True;
-            // 
-            // searchUrlPatternDataGridViewColumn
-            // 
-            searchUrlPatternDataGridViewColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            searchUrlPatternDataGridViewColumn.DataPropertyName = "SearchUrlPattern";
-            searchUrlPatternDataGridViewColumn.FillWeight = 75F;
-            searchUrlPatternDataGridViewColumn.HeaderText = "Starting URL";
-            searchUrlPatternDataGridViewColumn.Name = "searchUrlPatternDataGridViewColumn";
-            searchUrlPatternDataGridViewColumn.ReadOnly = true;
-            // 
-            // listingUrlPatternDataGridViewColumn
-            // 
-            listingUrlPatternDataGridViewColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            listingUrlPatternDataGridViewColumn.DataPropertyName = "ListingUrlPattern";
-            listingUrlPatternDataGridViewColumn.FillWeight = 75F;
-            listingUrlPatternDataGridViewColumn.HeaderText = "Listing URL pattern";
-            listingUrlPatternDataGridViewColumn.Name = "listingUrlPatternDataGridViewColumn";
-            listingUrlPatternDataGridViewColumn.ReadOnly = true;
+            mainToolTip.Popup += mainToolTip_Popup;
             // 
             // Domains
             // 
@@ -619,7 +616,6 @@
         private ToolTip errorTooltip;
         private TextBox searchUrlTextBox;
         private TextBox labelTextBox;
-        private Button clearDomainsButton;
         private ToolTip infoToolTip;
         private Panel xpathEditorPanel;
         private Label xpathEditorLabel;
@@ -635,5 +631,6 @@
         private DataGridViewTextBoxColumn domainLabelDataGridViewColumn;
         private DataGridViewTextBoxColumn searchUrlPatternDataGridViewColumn;
         private DataGridViewTextBoxColumn listingUrlPatternDataGridViewColumn;
+        private ToolTip mainToolTip;
     }
 }
