@@ -10,7 +10,7 @@ namespace XSearch_Lib
 {
     /// <summary>
     /// BindingList with threading support. 
-    /// Previously, I raised events to marshal add operations back to the UI thread, but after discovering this implementation in later research I felt it was a cleaner alternative.
+    /// This seemed to be working a lot better than the currnet method (marshalling back to the main thread through event handlers), but the DataGridView threw an index error when adding new entries, so I had to leave it behind.
     /// Implementation from https://stackoverflow.com/questions/455766/how-do-you-correctly-update-a-databound-datagridview-from-a-background-thread
     /// </summary>
     public class ThreadedBindingList<T> : BindingList<T>
@@ -40,6 +40,7 @@ namespace XSearch_Lib
 
         protected override void OnListChanged(ListChangedEventArgs e)
         {
+            ctx = SynchronizationContext.Current;
             if (ctx == null)
             {
                 BaseListChanged(e);

@@ -75,7 +75,7 @@ namespace XSearch_WinForms
         /// <summary>
         /// Concise reference to current session's search listings.
         /// </summary>
-        private ThreadedBindingList<SearchListing> SearchListings
+        private BindingList<SearchListing> SearchListings
         {
             get
             {
@@ -103,6 +103,8 @@ namespace XSearch_WinForms
             {
                 DataSource = SearchListings
             };
+
+            bindingSource.AllowNew = true;
 
             mainDataGridView.DataSource = bindingSource;
         }

@@ -33,7 +33,7 @@ namespace XSearch_Lib
         /// <summary>
         /// Master list of all pulled search listings.
         /// </summary>
-        public ThreadedBindingList<SearchListing> SearchListings { get; set; } = new ThreadedBindingList<SearchListing>();
+        public BindingList<SearchListing> SearchListings { get; set; } = new BindingList<SearchListing>();
 
         /// <summary>
         /// File path of the previously used domain profile for this session, if applicable, for use in saving/loading.

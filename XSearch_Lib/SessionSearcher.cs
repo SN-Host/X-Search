@@ -336,10 +336,10 @@ namespace XSearch_Lib
                     continue;
                 }
 
-                // Add to our search listings.
-                Session.SearchListings.Insert(0, searchListing);
-                Session.ChangeStatusAtListingIndex(0, CommonStatus.UnevaluatedStatus);
+                listingsToAdd.Add(searchListing);
             }
+
+            OnNewSearchResults(listingsToAdd);
 
             return listingsToAdd;
         }

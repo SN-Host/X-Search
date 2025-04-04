@@ -79,8 +79,8 @@ namespace XSearch_WinForms
             // Handle events for update search log updates.
             Program.CurrentSession.Searcher.OnNewSearchUpdateLog += UpdateSearchLog;
 
-            // Vestigial: Handle events for new search results.
-            // Program.CurrentSession.Searcher.OnNewSearchResults += OnNewSearchResults;
+            // Handle events for new search results.
+            Program.CurrentSession.Searcher.OnNewSearchResults += OnNewSearchResults;
         }
 
         public void LoadSettings()
@@ -90,10 +90,8 @@ namespace XSearch_WinForms
         }
 
         /// <summary>
-        /// Original method of handling new search result events raised by webdriver threads opened in the library.
-        /// Replaced with <see cref="ThreadedBindingList{T}"/> as a cleaner implementation that works on the same principle.
+        /// Handles new search result events raised by webdriver threads opened in the library.
         /// </summary>
-        [Obsolete]
         public void OnNewSearchResults(IEnumerable<SearchListing> searchListings)
         {
             // Ensure calls from other threads are handled properly.
