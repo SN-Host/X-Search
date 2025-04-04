@@ -212,7 +212,7 @@ namespace XSearch_WinForms
                 DataSource = Program.CurrentSession.DomainProfile.Domains
             };
 
-            mainDataGridView.DataSource = bindingSource;
+            mainDataGridView.DataSource = Program.CurrentSession.DomainProfile.Domains;
 
             bindingSource.ResetBindings(false);
 
@@ -335,10 +335,7 @@ namespace XSearch_WinForms
             if (sessionDomains[CurrentRowIndex].SearchUrlPatternedString.RawPatternPredicate(searchUrlTextBox.Text))
             {
                 HandleTooltipsForInvalidTextBox(false, searchUrlTextBox);
-                //searchUrlTextBox.DataBindings[0].ReadValue();
             }
-
-            //searchUrlTextBox.DataBindings[0].WriteValue();
         }
 
         /// <summary>

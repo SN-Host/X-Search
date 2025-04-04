@@ -9,7 +9,7 @@ using static XSearch_Lib.XSearch_Strings;
 
 namespace XSearch_Lib
 {
-    public class Domain
+    public class Domain : INotifyPropertyChanged
     {
 
         // CONSTANTS //
@@ -60,6 +60,14 @@ namespace XSearch_Lib
         /// </summary>
         public event DomainErrorHandler OnSearchUrlPatternRejected = delegate { };
 
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        private bool _active = false;
+
+        private string _label = Domain_Default_Label;
+
+        private string _listingUrlPattern = string.Empty;
+
         // PROPERTIES //
 
         /// <summary>
@@ -71,12 +79,34 @@ namespace XSearch_Lib
         /// <summary>
         /// Whether this domain is to be included in new pulls.
         /// </summary>
-        public bool Active { get; set; } = false;
+        public bool Active
+        {
+            get
+            {
+                return _active;
+            }
+            set 
+            {
+                _active = value;
+                NotifyPropertyChanged(nameof(Active));
+            } 
+        }
 
         /// <summary>
         /// User readable label for this domain.
         /// </summary>
-        public string Label { get; set; } = Domain_Default_Label;
+        public string Label 
+        { 
+            get
+            {
+                return _label;
+            }
+            set
+            {
+                _label = value;
+                NotifyPropertyChanged(nameof(Label));
+            }
+        } 
 
         /// <summary>
         /// Gets or sets the search URL pattern, containing all placeholders necessary for searching. 
@@ -91,13 +121,25 @@ namespace XSearch_Lib
             set
             {
                 SearchUrlPatternedString.RawPattern = value;
+                NotifyPropertyChanged(nameof(SearchUrlPattern));
             }
         }
 
         /// <summary>
         /// Gets or sets the listing URL regex pattern. This is a regex expression for which href atts in the source HTML are required to match to be added.
         /// </summary>
-        public string ListingUrlPattern { get; set; } = string.Empty;
+        public string ListingUrlPattern 
+        { 
+            get
+            {
+                return _listingUrlPattern;
+            }
+            set
+            {
+                _listingUrlPattern = value;
+                NotifyPropertyChanged(nameof(ListingUrlPattern));
+            }
+        }
 
         /// <summary>
         /// Holds data pertaining to the domain's expected search URL pattern.
@@ -177,6 +219,15 @@ namespace XSearch_Lib
         public override int GetHashCode()
         {
             return HashCode.Combine(Label, SearchUrlPattern, ListingUrlPattern, SearchUrlPatternedString, NoSearchResultsXpath);
+        }
+
+        /// <summary>
+        /// Essential to ensuring that the DataGridView can update the domain display in real time.
+        /// </summary>
+        private void NotifyPropertyChanged(string p)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(p));
         }
     }
 }
