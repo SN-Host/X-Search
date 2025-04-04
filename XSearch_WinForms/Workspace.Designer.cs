@@ -110,6 +110,7 @@
             mainDataGridView.Size = new Size(599, 312);
             mainDataGridView.TabIndex = 2;
             mainDataGridView.VirtualMode = true;
+            mainDataGridView.CellContentClick += mainDataGridView_CellContentClick;
             mainDataGridView.CellFormatting += mainDataGridView_CellFormatting;
             mainDataGridView.CellValueNeeded += mainDataGridView_CellValueNeeded;
             mainDataGridView.SelectionChanged += mainDataGridView_SelectionChanged;

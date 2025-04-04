@@ -417,8 +417,6 @@ namespace XSearch_WinForms
 
         private void saveDomainsButton_Click(object sender, EventArgs e)
         {
-
-            domainsSaveFileDialog.Title = $"New Domain Profile {DateTime.Now.ToString("MM'-'dd'-'yyyy")}";
             domainsSaveFileDialog.FileName = $"New Domain Profile {DateTime.Now.ToString("MM'-'dd'-'yyyy")}";
 
             string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..\\Domains"));
@@ -437,8 +435,6 @@ namespace XSearch_WinForms
 
         private void loadDomainsButton_Click(object sender, EventArgs e)
         {
-            domainsOpenFileDialog.Title = "Load session";
-
             string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..\\Domains"));
             Directory.CreateDirectory(path);
 

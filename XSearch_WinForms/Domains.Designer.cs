@@ -33,10 +33,6 @@
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             dataGridViewPanel = new Panel();
             mainDataGridView = new DataGridView();
-            activeDataGridViewColumn = new DataGridViewCheckBoxColumn();
-            domainLabelDataGridViewColumn = new DataGridViewTextBoxColumn();
-            searchUrlPatternDataGridViewColumn = new DataGridViewTextBoxColumn();
-            listingUrlPatternDataGridViewColumn = new DataGridViewTextBoxColumn();
             controlPanel = new Panel();
             loadDomainsButton = new Button();
             saveDomainsButton = new Button();
@@ -69,6 +65,10 @@
             infoToolTip = new ToolTip(components);
             domainsSaveFileDialog = new SaveFileDialog();
             domainsOpenFileDialog = new OpenFileDialog();
+            activeDataGridViewColumn = new DataGridViewCheckBoxColumn();
+            domainLabelDataGridViewColumn = new DataGridViewTextBoxColumn();
+            searchUrlPatternDataGridViewColumn = new DataGridViewTextBoxColumn();
+            listingUrlPatternDataGridViewColumn = new DataGridViewTextBoxColumn();
             dataGridViewPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)mainDataGridView).BeginInit();
             controlPanel.SuspendLayout();
@@ -131,43 +131,6 @@
             mainDataGridView.Size = new Size(797, 400);
             mainDataGridView.TabIndex = 2;
             mainDataGridView.SelectionChanged += mainDataGridView_SelectionChanged;
-            // 
-            // activeDataGridViewColumn
-            // 
-            activeDataGridViewColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            activeDataGridViewColumn.DataPropertyName = "Active";
-            activeDataGridViewColumn.FillWeight = 25F;
-            activeDataGridViewColumn.HeaderText = "Active";
-            activeDataGridViewColumn.Name = "activeDataGridViewColumn";
-            activeDataGridViewColumn.Width = 70;
-            // 
-            // domainLabelDataGridViewColumn
-            // 
-            domainLabelDataGridViewColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            domainLabelDataGridViewColumn.DataPropertyName = "Label";
-            domainLabelDataGridViewColumn.FillWeight = 75F;
-            domainLabelDataGridViewColumn.HeaderText = "Domain label";
-            domainLabelDataGridViewColumn.Name = "domainLabelDataGridViewColumn";
-            domainLabelDataGridViewColumn.ReadOnly = true;
-            domainLabelDataGridViewColumn.Resizable = DataGridViewTriState.True;
-            // 
-            // searchUrlPatternDataGridViewColumn
-            // 
-            searchUrlPatternDataGridViewColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            searchUrlPatternDataGridViewColumn.DataPropertyName = "SearchUrlPattern";
-            searchUrlPatternDataGridViewColumn.FillWeight = 75F;
-            searchUrlPatternDataGridViewColumn.HeaderText = "Starting URL";
-            searchUrlPatternDataGridViewColumn.Name = "searchUrlPatternDataGridViewColumn";
-            searchUrlPatternDataGridViewColumn.ReadOnly = true;
-            // 
-            // listingUrlPatternDataGridViewColumn
-            // 
-            listingUrlPatternDataGridViewColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            listingUrlPatternDataGridViewColumn.DataPropertyName = "ListingUrlPattern";
-            listingUrlPatternDataGridViewColumn.FillWeight = 75F;
-            listingUrlPatternDataGridViewColumn.HeaderText = "Listing URL pattern";
-            listingUrlPatternDataGridViewColumn.Name = "listingUrlPatternDataGridViewColumn";
-            listingUrlPatternDataGridViewColumn.ReadOnly = true;
             // 
             // controlPanel
             // 
@@ -553,11 +516,49 @@
             domainsSaveFileDialog.Filter = "X-Search Domain Profile Files|*.xsdp";
             domainsSaveFileDialog.InitialDirectory = "DomainProfiles";
             domainsSaveFileDialog.RestoreDirectory = true;
+            domainsSaveFileDialog.Title = "Save domain profile";
             // 
             // domainsOpenFileDialog
             // 
             domainsOpenFileDialog.Filter = "X-Search Domain Profile Files|*.xsdp";
             domainsOpenFileDialog.InitialDirectory = "DomainProfiles";
+            domainsOpenFileDialog.Title = "Load domain profile";
+            // 
+            // activeDataGridViewColumn
+            // 
+            activeDataGridViewColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            activeDataGridViewColumn.DataPropertyName = "Active";
+            activeDataGridViewColumn.FillWeight = 30F;
+            activeDataGridViewColumn.HeaderText = "Active";
+            activeDataGridViewColumn.Name = "activeDataGridViewColumn";
+            // 
+            // domainLabelDataGridViewColumn
+            // 
+            domainLabelDataGridViewColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            domainLabelDataGridViewColumn.DataPropertyName = "Label";
+            domainLabelDataGridViewColumn.FillWeight = 75F;
+            domainLabelDataGridViewColumn.HeaderText = "Domain label";
+            domainLabelDataGridViewColumn.Name = "domainLabelDataGridViewColumn";
+            domainLabelDataGridViewColumn.ReadOnly = true;
+            domainLabelDataGridViewColumn.Resizable = DataGridViewTriState.True;
+            // 
+            // searchUrlPatternDataGridViewColumn
+            // 
+            searchUrlPatternDataGridViewColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            searchUrlPatternDataGridViewColumn.DataPropertyName = "SearchUrlPattern";
+            searchUrlPatternDataGridViewColumn.FillWeight = 75F;
+            searchUrlPatternDataGridViewColumn.HeaderText = "Starting URL";
+            searchUrlPatternDataGridViewColumn.Name = "searchUrlPatternDataGridViewColumn";
+            searchUrlPatternDataGridViewColumn.ReadOnly = true;
+            // 
+            // listingUrlPatternDataGridViewColumn
+            // 
+            listingUrlPatternDataGridViewColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            listingUrlPatternDataGridViewColumn.DataPropertyName = "ListingUrlPattern";
+            listingUrlPatternDataGridViewColumn.FillWeight = 75F;
+            listingUrlPatternDataGridViewColumn.HeaderText = "Listing URL pattern";
+            listingUrlPatternDataGridViewColumn.Name = "listingUrlPatternDataGridViewColumn";
+            listingUrlPatternDataGridViewColumn.ReadOnly = true;
             // 
             // Domains
             // 

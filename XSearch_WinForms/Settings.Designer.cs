@@ -59,7 +59,7 @@
             toggleTooltipsCheckBox.Padding = new Padding(3);
             toggleTooltipsCheckBox.Size = new Size(670, 30);
             toggleTooltipsCheckBox.TabIndex = 1;
-            toggleTooltipsCheckBox.Text = "Toggle tooltips";
+            toggleTooltipsCheckBox.Text = "Tooltips";
             toggleTooltipsCheckBox.UseVisualStyleBackColor = true;
             toggleTooltipsCheckBox.CheckedChanged += toggleTooltipsCheckBox_CheckedChanged;
             // 

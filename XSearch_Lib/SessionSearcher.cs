@@ -57,7 +57,7 @@ namespace XSearch_Lib
         /// Event when new search results have been found and should be added to the session in the main thread.
         /// </summary>
         public event SearchListingsHandler OnNewSearchResults = delegate { };
-        
+
         /// <summary>
         /// List of webdrivers currently in use by the program.
         /// </summary>
@@ -116,15 +116,11 @@ namespace XSearch_Lib
         /// Returns an integer from 0-100 representing current search progress.
         /// Not currently functional; rework will come with Selenium move.
         /// </summary>
-        public float SearchProgress
+        public string SearchProgress
         {
             get 
             {
-                if (currentTasksTotal == 0)
-                {
-                    return 0f;
-                }
-                return (float)(currentCompletedTasks / currentTasksTotal) * 100f;
+                return $"{currentCompletedTasks} / {currentTasksTotal}"; 
             }
         }
 
@@ -200,8 +196,6 @@ namespace XSearch_Lib
         /// </summary>
         public async Task PullSearch()
         {
-
-
             // Do not pull if requirements aren't satisfied.
             if (!PullRequirementsSatisfied())
             {
@@ -215,6 +209,9 @@ namespace XSearch_Lib
 
             // Update the current search task string indicator for search update logs.
             _currentSearchTask = Log_Header_PullPrep;
+
+            currentTasksTotal = ResultsToPullPerDomain * Session.DomainProfile.ActiveDomains.Count();
+            currentCompletedTasks = 0;
 
             // Ensure there is a limit on domains to process concurrently.
             SemaphoreSlim throttler = new SemaphoreSlim(initialCount: concurrentTaskLimit);
@@ -241,6 +238,11 @@ namespace XSearch_Lib
                             OnNewSearchUpdateLog(this, new SearchLogArgs($"Error page encountered at {domain.Label}. Exception message follows: \n{ex.Message}"));
                             pullFailureNotes.Add(new ErrorReportArgs($"{domain.Label}:", "Encountered error page. Please verify Internet connection and try again."));
                             CurrentPullSuccessful = false;
+                        }
+                        // Catch generic errors.
+                        catch (Exception ex)
+                        {
+                            OnNewSearchUpdateLog(this, new SearchLogArgs($"An uncaught exception occurred when processing {domain.Label}. Exception message follows: \n{ex.Message}"));
                         }
                         finally
                         {
@@ -324,13 +326,19 @@ namespace XSearch_Lib
                     return listingsToAdd;
                 }
 
+                // We've checked a listing so increment the completed tasks; we only want to look at so many links.
+                currentCompletedTasks++;
+
                 // Don't allow any listings already contained in the search listing list. 
                 if (Session.SearchListings.Where(x => x.Url == searchListing.Url).Any())
                 {
                     OnNewSearchUpdateLog(this, new SearchLogArgs($"Pulled duplicate search listing:\n{searchListing.Title}\n{searchListing.Url}"));
+
+                    // Count the task as completed in this case 
                     continue;
                 }
 
+                // Last check to make sure the URL matches the listing pattern, just in case anything slipped through.
                 if (!Regex.IsMatch(searchListing.Url, Regex.Escape(domain.ListingUrlPattern)))
                 {
                     continue;

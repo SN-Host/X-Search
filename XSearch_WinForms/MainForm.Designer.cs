@@ -34,12 +34,15 @@
             workspaceToolLabel = new Label();
             statusContainerPanel = new Panel();
             statusPanel = new Panel();
-            searchProgressPanel = new Panel();
-            searchProgressLabel = new Label();
-            searchProgressTitleLabel = new Label();
             statusReportPanel = new Panel();
             statusReportLabel = new Label();
             currentStatusHeader = new Label();
+            searchProgressPanel = new Panel();
+            searchProgressLabel = new Label();
+            searchProgressHeaderLabel = new Label();
+            rowInfoPanel = new Panel();
+            rowInfoLabel = new Label();
+            rowInfoHeaderLabel = new Label();
             statusTitleLabel = new Label();
             controlContainerPanel = new Panel();
             controlPanel = new Panel();
@@ -57,8 +60,9 @@
             toolsContainerPanel.SuspendLayout();
             statusContainerPanel.SuspendLayout();
             statusPanel.SuspendLayout();
-            searchProgressPanel.SuspendLayout();
             statusReportPanel.SuspendLayout();
+            searchProgressPanel.SuspendLayout();
+            rowInfoPanel.SuspendLayout();
             controlContainerPanel.SuspendLayout();
             controlPanel.SuspendLayout();
             indexContainerPanel.SuspendLayout();
@@ -76,7 +80,7 @@
             infoPanel.Location = new Point(15, 15);
             infoPanel.Name = "infoPanel";
             infoPanel.Padding = new Padding(0, 0, 10, 0);
-            infoPanel.Size = new Size(200, 669);
+            infoPanel.Size = new Size(200, 713);
             infoPanel.TabIndex = 0;
             // 
             // toolsContainerPanel
@@ -88,7 +92,7 @@
             toolsContainerPanel.Margin = new Padding(0);
             toolsContainerPanel.Name = "toolsContainerPanel";
             toolsContainerPanel.Padding = new Padding(0, 5, 0, 5);
-            toolsContainerPanel.Size = new Size(190, 301);
+            toolsContainerPanel.Size = new Size(190, 260);
             toolsContainerPanel.TabIndex = 2;
             // 
             // selectionSettingsPanel
@@ -98,7 +102,7 @@
             selectionSettingsPanel.Location = new Point(0, 35);
             selectionSettingsPanel.Margin = new Padding(0);
             selectionSettingsPanel.Name = "selectionSettingsPanel";
-            selectionSettingsPanel.Size = new Size(190, 261);
+            selectionSettingsPanel.Size = new Size(190, 220);
             selectionSettingsPanel.TabIndex = 0;
             // 
             // workspaceToolLabel
@@ -119,60 +123,25 @@
             statusContainerPanel.BackColor = Color.Transparent;
             statusContainerPanel.Controls.Add(statusPanel);
             statusContainerPanel.Dock = DockStyle.Bottom;
-            statusContainerPanel.Location = new Point(0, 506);
+            statusContainerPanel.Location = new Point(0, 465);
             statusContainerPanel.Margin = new Padding(0);
             statusContainerPanel.Name = "statusContainerPanel";
             statusContainerPanel.Padding = new Padding(0, 5, 0, 0);
-            statusContainerPanel.Size = new Size(190, 163);
+            statusContainerPanel.Size = new Size(190, 248);
             statusContainerPanel.TabIndex = 1;
             // 
             // statusPanel
             // 
             statusPanel.BackColor = Color.FromArgb(250, 250, 255);
-            statusPanel.Controls.Add(searchProgressPanel);
             statusPanel.Controls.Add(statusReportPanel);
+            statusPanel.Controls.Add(searchProgressPanel);
+            statusPanel.Controls.Add(rowInfoPanel);
             statusPanel.Controls.Add(statusTitleLabel);
             statusPanel.Dock = DockStyle.Fill;
             statusPanel.Location = new Point(0, 5);
             statusPanel.Name = "statusPanel";
-            statusPanel.Size = new Size(190, 158);
+            statusPanel.Size = new Size(190, 243);
             statusPanel.TabIndex = 0;
-            // 
-            // searchProgressPanel
-            // 
-            searchProgressPanel.Controls.Add(searchProgressLabel);
-            searchProgressPanel.Controls.Add(searchProgressTitleLabel);
-            searchProgressPanel.Dock = DockStyle.Bottom;
-            searchProgressPanel.Location = new Point(0, 111);
-            searchProgressPanel.Name = "searchProgressPanel";
-            searchProgressPanel.Padding = new Padding(5);
-            searchProgressPanel.Size = new Size(190, 47);
-            searchProgressPanel.TabIndex = 2;
-            searchProgressPanel.Visible = false;
-            // 
-            // searchProgressLabel
-            // 
-            searchProgressLabel.BackColor = Color.FromArgb(250, 250, 255);
-            searchProgressLabel.Dock = DockStyle.Top;
-            searchProgressLabel.Font = new Font("Segoe UI Variable Text", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            searchProgressLabel.Location = new Point(5, 22);
-            searchProgressLabel.Name = "searchProgressLabel";
-            searchProgressLabel.Padding = new Padding(5, 0, 5, 0);
-            searchProgressLabel.Size = new Size(180, 21);
-            searchProgressLabel.TabIndex = 4;
-            searchProgressLabel.Text = "0%";
-            // 
-            // searchProgressTitleLabel
-            // 
-            searchProgressTitleLabel.BackColor = Color.FromArgb(250, 250, 255);
-            searchProgressTitleLabel.Dock = DockStyle.Top;
-            searchProgressTitleLabel.Font = new Font("Segoe UI Variable Display Semib", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            searchProgressTitleLabel.Location = new Point(5, 5);
-            searchProgressTitleLabel.Name = "searchProgressTitleLabel";
-            searchProgressTitleLabel.Padding = new Padding(5, 0, 5, 0);
-            searchProgressTitleLabel.Size = new Size(180, 17);
-            searchProgressTitleLabel.TabIndex = 3;
-            searchProgressTitleLabel.Text = "Progress:";
             // 
             // statusReportPanel
             // 
@@ -183,7 +152,7 @@
             statusReportPanel.Location = new Point(0, 30);
             statusReportPanel.Name = "statusReportPanel";
             statusReportPanel.Padding = new Padding(5);
-            statusReportPanel.Size = new Size(190, 128);
+            statusReportPanel.Size = new Size(190, 108);
             statusReportPanel.TabIndex = 1;
             // 
             // statusReportLabel
@@ -210,8 +179,76 @@
             currentStatusHeader.Padding = new Padding(5, 0, 5, 0);
             currentStatusHeader.Size = new Size(180, 17);
             currentStatusHeader.TabIndex = 3;
-            currentStatusHeader.Text = "Current status:";
+            currentStatusHeader.Text = "Current status";
             currentStatusHeader.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // searchProgressPanel
+            // 
+            searchProgressPanel.Controls.Add(searchProgressLabel);
+            searchProgressPanel.Controls.Add(searchProgressHeaderLabel);
+            searchProgressPanel.Dock = DockStyle.Bottom;
+            searchProgressPanel.Location = new Point(0, 138);
+            searchProgressPanel.Name = "searchProgressPanel";
+            searchProgressPanel.Padding = new Padding(5);
+            searchProgressPanel.Size = new Size(190, 50);
+            searchProgressPanel.TabIndex = 2;
+            // 
+            // searchProgressLabel
+            // 
+            searchProgressLabel.BackColor = Color.FromArgb(250, 250, 255);
+            searchProgressLabel.Dock = DockStyle.Top;
+            searchProgressLabel.Font = new Font("Segoe UI Variable Text", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            searchProgressLabel.Location = new Point(5, 22);
+            searchProgressLabel.Name = "searchProgressLabel";
+            searchProgressLabel.Padding = new Padding(5, 0, 5, 0);
+            searchProgressLabel.Size = new Size(180, 21);
+            searchProgressLabel.TabIndex = 4;
+            // 
+            // searchProgressHeaderLabel
+            // 
+            searchProgressHeaderLabel.BackColor = Color.FromArgb(250, 250, 255);
+            searchProgressHeaderLabel.Dock = DockStyle.Top;
+            searchProgressHeaderLabel.Font = new Font("Segoe UI Variable Display Semib", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            searchProgressHeaderLabel.Location = new Point(5, 5);
+            searchProgressHeaderLabel.Name = "searchProgressHeaderLabel";
+            searchProgressHeaderLabel.Padding = new Padding(5, 0, 5, 0);
+            searchProgressHeaderLabel.Size = new Size(180, 17);
+            searchProgressHeaderLabel.TabIndex = 3;
+            searchProgressHeaderLabel.Text = "Progress";
+            // 
+            // rowInfoPanel
+            // 
+            rowInfoPanel.Controls.Add(rowInfoLabel);
+            rowInfoPanel.Controls.Add(rowInfoHeaderLabel);
+            rowInfoPanel.Dock = DockStyle.Bottom;
+            rowInfoPanel.Location = new Point(0, 188);
+            rowInfoPanel.Name = "rowInfoPanel";
+            rowInfoPanel.Padding = new Padding(5);
+            rowInfoPanel.Size = new Size(190, 55);
+            rowInfoPanel.TabIndex = 6;
+            // 
+            // rowInfoLabel
+            // 
+            rowInfoLabel.BackColor = Color.FromArgb(250, 250, 255);
+            rowInfoLabel.Dock = DockStyle.Top;
+            rowInfoLabel.Font = new Font("Segoe UI Variable Text", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            rowInfoLabel.Location = new Point(5, 22);
+            rowInfoLabel.Name = "rowInfoLabel";
+            rowInfoLabel.Padding = new Padding(5, 0, 5, 0);
+            rowInfoLabel.Size = new Size(180, 21);
+            rowInfoLabel.TabIndex = 4;
+            // 
+            // rowInfoHeaderLabel
+            // 
+            rowInfoHeaderLabel.BackColor = Color.FromArgb(250, 250, 255);
+            rowInfoHeaderLabel.Dock = DockStyle.Top;
+            rowInfoHeaderLabel.Font = new Font("Segoe UI Variable Display Semib", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            rowInfoHeaderLabel.Location = new Point(5, 5);
+            rowInfoHeaderLabel.Name = "rowInfoHeaderLabel";
+            rowInfoHeaderLabel.Padding = new Padding(5, 0, 5, 0);
+            rowInfoHeaderLabel.Size = new Size(180, 17);
+            rowInfoHeaderLabel.TabIndex = 3;
+            rowInfoHeaderLabel.Text = "Row info";
             // 
             // statusTitleLabel
             // 
@@ -223,7 +260,7 @@
             statusTitleLabel.Padding = new Padding(5);
             statusTitleLabel.Size = new Size(190, 30);
             statusTitleLabel.TabIndex = 0;
-            statusTitleLabel.Text = "Search status";
+            statusTitleLabel.Text = "Status";
             statusTitleLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // controlContainerPanel
@@ -372,7 +409,7 @@
             workspaceContainerPanel.Dock = DockStyle.Fill;
             workspaceContainerPanel.Location = new Point(215, 15);
             workspaceContainerPanel.Name = "workspaceContainerPanel";
-            workspaceContainerPanel.Size = new Size(626, 669);
+            workspaceContainerPanel.Size = new Size(676, 713);
             workspaceContainerPanel.TabIndex = 1;
             // 
             // framingPanel
@@ -382,7 +419,7 @@
             framingPanel.Location = new Point(0, 39);
             framingPanel.Name = "framingPanel";
             framingPanel.Padding = new Padding(10);
-            framingPanel.Size = new Size(626, 630);
+            framingPanel.Size = new Size(676, 674);
             framingPanel.TabIndex = 0;
             // 
             // frameLabel
@@ -393,7 +430,7 @@
             frameLabel.ForeColor = Color.FromArgb(250, 250, 255);
             frameLabel.Location = new Point(0, 0);
             frameLabel.Name = "frameLabel";
-            frameLabel.Size = new Size(626, 39);
+            frameLabel.Size = new Size(676, 39);
             frameLabel.TabIndex = 1;
             frameLabel.Text = "Workspace";
             frameLabel.TextAlign = ContentAlignment.MiddleCenter;
@@ -405,7 +442,7 @@
             BackColor = Color.FromArgb(250, 250, 255);
             BackgroundImage = Properties.Resources.daybg;
             BackgroundImageLayout = ImageLayout.Center;
-            ClientSize = new Size(856, 699);
+            ClientSize = new Size(906, 743);
             Controls.Add(workspaceContainerPanel);
             Controls.Add(infoPanel);
             DoubleBuffered = true;
@@ -420,9 +457,10 @@
             toolsContainerPanel.ResumeLayout(false);
             statusContainerPanel.ResumeLayout(false);
             statusPanel.ResumeLayout(false);
-            searchProgressPanel.ResumeLayout(false);
             statusReportPanel.ResumeLayout(false);
             statusReportPanel.PerformLayout();
+            searchProgressPanel.ResumeLayout(false);
+            rowInfoPanel.ResumeLayout(false);
             controlContainerPanel.ResumeLayout(false);
             controlPanel.ResumeLayout(false);
             indexContainerPanel.ResumeLayout(false);
@@ -449,7 +487,7 @@
         private Panel statusPanel;
         private Panel searchProgressPanel;
         private Label searchProgressLabel;
-        private Label searchProgressTitleLabel;
+        private Label searchProgressHeaderLabel;
         private Panel statusReportPanel;
         private Label currentStatusHeader;
         private Label statusTitleLabel;
@@ -461,5 +499,8 @@
         private Label workspaceToolLabel;
         private Button helpButton;
         private Label statusReportLabel;
+        private Panel rowInfoPanel;
+        private Label rowInfoHeaderLabel;
+        internal Label rowInfoLabel;
     }
 }

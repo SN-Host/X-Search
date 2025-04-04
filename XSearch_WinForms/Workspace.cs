@@ -40,6 +40,8 @@ namespace XSearch_WinForms
         /// </summary>
         private PullSearch pullSearch = new PullSearch();
 
+        private MainForm mainForm;
+
         // PROPERTIES //
 
         /// <summary>
@@ -83,14 +85,20 @@ namespace XSearch_WinForms
             }
         }
 
-        public Workspace(MainForm mainForm)
+        public Workspace(MainForm parent)
         {
             InitializeComponent();
+
+            // Do not autogenerate columns to ensure proper ordering.
+            mainDataGridView.AutoGenerateColumns = false;
+
+            mainForm = parent;
 
             // Ensure our DataGridView is linked to our session's search listings
             BindData();
 
-            //  Ensure double buffering is enabled using reflection.
+            //  Ensure double buffering is enabled.
+            // It's a private field, so we have to use reflection here.
             Type dgvType = mainDataGridView.GetType();
             PropertyInfo? pi = dgvType.GetProperty("DoubleBuffered",
                 BindingFlags.Instance | BindingFlags.NonPublic);
@@ -152,6 +160,8 @@ namespace XSearch_WinForms
         private void mainDataGridView_SelectionChanged(object sender, EventArgs e)
         {
             UpdateWebPreview();
+            UpdateRowInfo();
+
         }
 
         private void UpdateWebPreview()
@@ -171,6 +181,31 @@ namespace XSearch_WinForms
             pagePreview.previewWebView.Source = newSource;
         }
 
+        /// <summary>
+        /// Responsible for filling the "row info" info panel.
+        /// </summary>
+        private void UpdateRowInfo()
+        {
+            int selectedRowCount = mainDataGridView.SelectedRows.Count;
+
+            if (selectedRowCount <= 0)
+            {
+                mainForm.rowInfoLabel.Text = string.Empty;
+                return;
+            }
+
+            string text = $"Row {mainDataGridView.SelectedRows[0].Index}";
+
+            if (selectedRowCount > 1)
+            {
+                int max = mainDataGridView.SelectedRows[0].Index + 1;
+                int min = mainDataGridView.SelectedRows[mainDataGridView.SelectedRows.Count - 1].Index + 1;
+
+                text = $"Rows {min}-{max}, count {mainDataGridView.SelectedRows.Count}";
+            }
+
+            mainForm.rowInfoLabel.Text = text;
+        }
 
         /// <summary>
         /// Opens the web preview window.
@@ -274,7 +309,7 @@ namespace XSearch_WinForms
             // Allow a shortcut.
             if (ModifierKeys == Keys.Shift)
             {
-                await CurrentSession.Searcher.PullSearch();
+                await Program.CurrentSession.Searcher.PullSearch();
             }
             else
             {
@@ -393,7 +428,6 @@ namespace XSearch_WinForms
 
         private void saveSessionButton_Click(object sender, EventArgs e)
         {
-            sessionSaveFileDialog.Title = $"New Session {DateTime.Now.ToString("MM'-'dd'-'yyyy")}";
             sessionSaveFileDialog.FileName = $"New Session {DateTime.Now.ToString("MM'-'dd'-'yyyy")}";
 
             string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..\\Sessions"));
@@ -412,8 +446,6 @@ namespace XSearch_WinForms
 
         private void loadSessionButton_Click(object sender, EventArgs e)
         {
-            sessionOpenFileDialog.Title = "Load session";
-
             string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..\\Sessions"));
             Directory.CreateDirectory(path);
 
@@ -426,6 +458,11 @@ namespace XSearch_WinForms
 
                 CurrentSession.LoadFromFile(reader);
             }
+        }
+
+        private void mainDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

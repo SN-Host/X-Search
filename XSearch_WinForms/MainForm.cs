@@ -23,7 +23,7 @@ namespace XSearch_WinForms
         private Button? selectedMainMenuButton;
 
         // PROPERTIES //
-        
+
         /// <summary>
         /// Default color for selected buttons.
         /// </summary>
@@ -120,9 +120,9 @@ namespace XSearch_WinForms
                 Invoke(new MethodInvoker(() => { UpdateSearchLog(searcher, sArgs); }));
                 return;
             }
-
-            statusReportLabel.Text = $"[{searcher.CurrentSearchTask}]\n" + sArgs.Text;
-            searchProgressLabel.Text = $"{searcher.SearchProgress}%";
+            currentStatusHeader.Text = $"{searcher.CurrentSearchTask}";
+            statusReportLabel.Text = sArgs.Text;
+            searchProgressLabel.Text = searcher.SearchProgress;
         }
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace XSearch_WinForms
         {
             WinformsUIUtilities.FrameForm(framingPanel, ref currentFramedForm, form);
             WinformsUIUtilities.FramePanel(selectionSettingsPanel, controlPanel);
-            
+
             // Ensure the button the request came from is highlighted.
             ApplySelectedButtonColor(button, ref selectedMainMenuButton, SelectedButtonColor);
 
@@ -202,9 +202,7 @@ namespace XSearch_WinForms
         /// </summary>
         private void helpButton_Click(object sender, EventArgs e)
         {
-            
-        }
 
-        
+        }
     }
 }
