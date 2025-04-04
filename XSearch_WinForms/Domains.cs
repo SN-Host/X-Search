@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -31,11 +32,6 @@ namespace XSearch_WinForms
         // FIELDS // 
 
         /// <summary>
-        /// The index of the currently selected row on the domain datagridview.
-        /// </summary>
-        public int CurrentRowIndex => mainDataGridView.CurrentCell?.RowIndex ?? -1;
-
-        /// <summary>
         /// Names of columns to display in the main datagridview.
         /// </summary>
         private static readonly string[] displayedColumns =
@@ -48,6 +44,12 @@ namespace XSearch_WinForms
 
         // PROPERTIES //
 
+
+        /// <summary>
+        /// The index of the currently selected row on the domain datagridview.
+        /// </summary>
+        public int CurrentRowIndex => mainDataGridView.CurrentCell?.RowIndex ?? -1;
+
         /// <summary>
         /// More concise accessor for session domains.
         /// </summary>
@@ -59,11 +61,28 @@ namespace XSearch_WinForms
             }
         }
 
+        /// <summary>
+        /// Gets the domain equivalent to the currently selected row, if any.
+        /// </summary>
         private Domain? selectedDomain
         {
             get
             {
                 return CurrentRowIndex < 0 ? null : sessionDomains[CurrentRowIndex];
+            }
+        }
+
+        /// <summary>
+        /// Gets a collection of all currently selected row indices.
+        /// </summary>
+        public IEnumerable<int> CurrentlySelectedRowIndices
+        {
+            get
+            {
+                foreach (DataGridViewRow row in mainDataGridView.SelectedRows)
+                {
+                    yield return row.Index;
+                }
             }
         }
 
@@ -83,6 +102,8 @@ namespace XSearch_WinForms
                 }
             }
 
+
+            // TODO: Remove for release
             // For debug testing and demo purposes only because profiles are not currently implemented, I've added two default domains.
             // See below for the long list of domains I attempted to add, but ran into problems with.
             /*
@@ -197,19 +218,20 @@ namespace XSearch_WinForms
             labelTextBox.DataBindings.Clear();
             searchUrlTextBox.DataBindings.Clear();
             listingUrlTextBox.DataBindings.Clear();
+            xpathEditorTextBox.DataBindings.Clear();
 
             // Setting this property ensures our textboxes will update the DataGridView in real time.
             labelTextBox.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
             searchUrlTextBox.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
             listingUrlTextBox.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
-            //xpathEditorTextBox.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+            xpathEditorTextBox.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
             //pageCountMultiplierNumericUpDown.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
 
             // These databindings are essential for allowing our textboxes to directly modify domain data.
             labelTextBox.DataBindings.Add(nameof(labelTextBox.Text), mainDataGridView.DataSource, nameof(Domain.Label));
             searchUrlTextBox.DataBindings.Add(nameof(searchUrlTextBox.Text), mainDataGridView.DataSource, nameof(Domain.SearchUrlPattern));
             listingUrlTextBox.DataBindings.Add(nameof(listingUrlTextBox.Text), mainDataGridView.DataSource, nameof(Domain.ListingUrlPattern));
-            //xpathEditorTextBox.DataBindings.Add(nameof(xpathEditorTextBox.Text), mainDataGridView.DataSource, nameof(Domain.NoSearchResultsXpath));
+            xpathEditorTextBox.DataBindings.Add(nameof(xpathEditorTextBox.Text), mainDataGridView.DataSource, nameof(Domain.NoSearchResultsXpath));
             //pageCountMultiplierNumericUpDown.DataBindings.Add(nameof(pageCountMultiplierNumericUpDown.Value), mainDataGridView.DataSource, nameof(Domain.PageCountMultiplier));
 
         }
@@ -235,19 +257,45 @@ namespace XSearch_WinForms
         /// </summary>
         private void removeDomainButton_Click(object sender, EventArgs e)
         {
-            if (CurrentRowIndex < 0)
+            foreach (DataGridViewRow row in mainDataGridView.SelectedRows)
             {
-                return;
+                sessionDomains.RemoveAt(row.Index);
             }
-            sessionDomains.RemoveAt(CurrentRowIndex);
+
+        }
+
+        private void enableDomainButton_Click(object sender, EventArgs e)
+        {
+            ToggleSelectedDomains();
         }
 
         /// <summary>
-        /// Enables the currently selected domain for searching.
+        /// Toggles the currently selected domain as active for searching.
         /// </summary>
-        private void enableDomainButton_Click(object sender, EventArgs e)
+        private void ToggleSelectedDomains()
         {
-            sessionDomains[CurrentRowIndex].Active = !sessionDomains[CurrentRowIndex].Active;
+            // Final state we're going to set all buttons to.
+            bool newToggleState = false;
+
+            List<Domain> domainsToToggle = new List<Domain>();
+
+            // Determine toggling behavior.
+            foreach (DataGridViewRow row in mainDataGridView.SelectedRows)
+            {
+                domainsToToggle.Add(sessionDomains[row.Index]);
+
+                // If any of the rows are inactive, we should enable all.
+                if (sessionDomains[row.Index].Active == false)
+                {
+                    newToggleState = true;
+                }
+            }
+
+            // Perform actual toggle.
+            foreach (Domain domain in domainsToToggle)
+            {
+                domain.Active = newToggleState;
+            }
         }
 
         /// <summary>
@@ -408,6 +456,24 @@ namespace XSearch_WinForms
             }
 
             BindData();
+        }
+
+        /// <summary>
+        /// Handles domain hotkeys.
+        /// </summary>
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // TODO: Replace hard references with a dictionary, linked to keybindings customizable in the settings menu. Here, keys are the name of the setting and values are the Key
+
+            // Quick enable/disable domains.
+            if (keyData == (Keys.Space))
+            {
+                ToggleSelectedDomains();
+                return true;
+            }
+
+            // Allow default handling of keystrokes if our shortcuts weren't used.
+            return base.ProcessCmdKey(ref msg, keyData);
         }
     }
 }

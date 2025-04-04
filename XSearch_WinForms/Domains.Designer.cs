@@ -244,7 +244,7 @@
             clearDomainsButton.Padding = new Padding(5, 0, 0, 0);
             clearDomainsButton.Size = new Size(165, 36);
             clearDomainsButton.TabIndex = 8;
-            clearDomainsButton.Text = "  Clear domains";
+            clearDomainsButton.Text = "  Clear all domains";
             clearDomainsButton.TextImageRelation = TextImageRelation.ImageBeforeText;
             clearDomainsButton.UseVisualStyleBackColor = true;
             clearDomainsButton.Click += clearDomainsButton_Click;
@@ -298,7 +298,7 @@
             enableDomainButton.Padding = new Padding(5, 0, 0, 0);
             enableDomainButton.Size = new Size(165, 36);
             enableDomainButton.TabIndex = 5;
-            enableDomainButton.Text = "  Enable domain";
+            enableDomainButton.Text = "  Toggle active";
             enableDomainButton.TextImageRelation = TextImageRelation.ImageBeforeText;
             enableDomainButton.UseVisualStyleBackColor = true;
             enableDomainButton.Click += enableDomainButton_Click;
