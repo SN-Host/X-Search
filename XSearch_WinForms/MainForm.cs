@@ -68,6 +68,8 @@ namespace XSearch_WinForms
             Domains = new Domains(this);
             Settings = new Settings();
 
+            LoadSettings();
+
             // Frame workspace by default.
             ChangeFrame(workspaceButton, Workspace, Workspace.controlPanel, Workspace.Text);
 
@@ -79,6 +81,12 @@ namespace XSearch_WinForms
 
             // Handle events for new search results.
             Program.CurrentSession.Searcher.OnNewSearchResults += OnNewSearchResults;
+        }
+
+        public void LoadSettings()
+        {
+            Settings.ShowTooltips = Properties.Settings.Default.ShowTooltips;
+            Program.CurrentSession.Searcher.RunHeadless = Properties.Settings.Default.UseHeadlessBrowsing;
         }
 
         /// <summary>

@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace XSearch_Lib
 {
+    // TODO: Confirm deprecated, then remove
     /// <summary>
     /// Holds data on search pages queried during pulls.
     /// </summary>
+    /*
     public class SearchPage
     {
         public string Url { get; set; }
@@ -21,4 +23,5 @@ namespace XSearch_Lib
             Domain = domain;
         }
     }
+    */
 }

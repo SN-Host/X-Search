@@ -200,6 +200,8 @@ namespace XSearch_Lib
         /// </summary>
         public async Task PullSearch()
         {
+
+
             // Do not pull if requirements aren't satisfied.
             if (!PullRequirementsSatisfied())
             {
@@ -543,7 +545,7 @@ namespace XSearch_Lib
                 // If we still didn't find any listings on the load search, try pressing any buttons we're commanded to at this point.
                 if (linksToCheck.Count == 0)
                 {
-                    linksToCheck = ProcessDomainNoSearchResultsXpath(domain, driver);
+                    linksToCheck = ProcessDomainNoSearchResultsXpath(domain, driver).Where(x => !visitedHrefs.Contains(x.GetAttribute("href"))).ToList();
                 }
                 
                 // Ensure current search page handle is updated, as we may have changed pages.

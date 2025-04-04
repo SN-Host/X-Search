@@ -26,11 +26,30 @@ namespace XSearch_WinForms
 {
     public partial class Settings : Form
     {
+
+        /// <summary>
+        /// Gets or sets whether the UI tooltips are shown or not.
+        /// </summary>
+        public bool ShowTooltips { get; set; } = true;
+
         public Settings()
         {
             InitializeComponent();
 
             headlessCheckBox.DataBindings.Add(nameof(headlessCheckBox.Checked), Program.CurrentSession.Searcher, nameof(SessionSearcher.RunHeadless));
+            toggleTooltipsCheckBox.DataBindings.Add(nameof(toggleTooltipsCheckBox.Checked), this, nameof(ShowTooltips));
+        }
+
+        private void headlessCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.UseHeadlessBrowsing = headlessCheckBox.Checked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void toggleTooltipsCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.ShowTooltips = toggleTooltipsCheckBox.Checked;
+            Properties.Settings.Default.Save();
         }
     }
 }

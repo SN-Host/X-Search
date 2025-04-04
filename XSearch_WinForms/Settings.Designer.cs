@@ -46,7 +46,6 @@
             mainSettingsContainerPanel.Dock = DockStyle.Fill;
             mainSettingsContainerPanel.Location = new Point(0, 0);
             mainSettingsContainerPanel.Name = "mainSettingsContainerPanel";
-            mainSettingsContainerPanel.Padding = new Padding(20);
             mainSettingsContainerPanel.Size = new Size(670, 533);
             mainSettingsContainerPanel.TabIndex = 0;
             // 
@@ -55,43 +54,45 @@
             toggleTooltipsCheckBox.AutoSize = true;
             toggleTooltipsCheckBox.Dock = DockStyle.Top;
             toggleTooltipsCheckBox.Font = new Font("Segoe UI Variable Small Semilig", 11.25F);
-            toggleTooltipsCheckBox.Location = new Point(20, 84);
+            toggleTooltipsCheckBox.Location = new Point(0, 64);
             toggleTooltipsCheckBox.Name = "toggleTooltipsCheckBox";
             toggleTooltipsCheckBox.Padding = new Padding(3);
-            toggleTooltipsCheckBox.Size = new Size(630, 30);
+            toggleTooltipsCheckBox.Size = new Size(670, 30);
             toggleTooltipsCheckBox.TabIndex = 1;
             toggleTooltipsCheckBox.Text = "Toggle tooltips";
             toggleTooltipsCheckBox.UseVisualStyleBackColor = true;
+            toggleTooltipsCheckBox.CheckedChanged += toggleTooltipsCheckBox_CheckedChanged;
             // 
             // headlessCheckBox
             // 
             headlessCheckBox.AutoSize = true;
             headlessCheckBox.Dock = DockStyle.Top;
             headlessCheckBox.Font = new Font("Segoe UI Variable Small Semilig", 11.25F);
-            headlessCheckBox.Location = new Point(20, 54);
+            headlessCheckBox.Location = new Point(0, 34);
             headlessCheckBox.Name = "headlessCheckBox";
             headlessCheckBox.Padding = new Padding(3);
-            headlessCheckBox.Size = new Size(630, 30);
+            headlessCheckBox.Size = new Size(670, 30);
             headlessCheckBox.TabIndex = 0;
             headlessCheckBox.Text = "Headless browsing";
             headlessCheckBox.UseVisualStyleBackColor = true;
+            headlessCheckBox.CheckedChanged += headlessCheckBox_CheckedChanged;
             // 
             // generallSetttingsDividerLineLabel
             // 
             generallSetttingsDividerLineLabel.BackColor = Color.FromArgb(50, 50, 100);
             generallSetttingsDividerLineLabel.Dock = DockStyle.Top;
-            generallSetttingsDividerLineLabel.Location = new Point(20, 53);
+            generallSetttingsDividerLineLabel.Location = new Point(0, 33);
             generallSetttingsDividerLineLabel.Name = "generallSetttingsDividerLineLabel";
-            generallSetttingsDividerLineLabel.Size = new Size(630, 1);
+            generallSetttingsDividerLineLabel.Size = new Size(670, 1);
             generallSetttingsDividerLineLabel.TabIndex = 2;
             // 
             // generalSettingsLabel
             // 
             generalSettingsLabel.Dock = DockStyle.Top;
             generalSettingsLabel.Font = new Font("Segoe UI Variable Text Semibold", 12F, FontStyle.Bold);
-            generalSettingsLabel.Location = new Point(20, 20);
+            generalSettingsLabel.Location = new Point(0, 0);
             generalSettingsLabel.Name = "generalSettingsLabel";
-            generalSettingsLabel.Size = new Size(630, 33);
+            generalSettingsLabel.Size = new Size(670, 33);
             generalSettingsLabel.TabIndex = 3;
             generalSettingsLabel.Text = "General settings";
             // 
