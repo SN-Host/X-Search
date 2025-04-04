@@ -149,6 +149,11 @@ namespace XSearch_WinForms
         /// </summary>
         private void mainDataGridView_SelectionChanged(object sender, EventArgs e)
         {
+            UpdateWebPreview();
+        }
+
+        private void UpdateWebPreview()
+        {
             if (!PagePreviewActive())
             {
                 return;
@@ -175,6 +180,8 @@ namespace XSearch_WinForms
                 pagePreview = new PagePreview();
             }
             pagePreview.Show();
+
+            UpdateWebPreview();
         }
 
         /// <summary>
