@@ -3,7 +3,6 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 using HtmlAgilityPack;
-using static XSearch_Lib.SearchHandler;
 using static XSearch_Lib.XSearch_Strings;
 
 namespace XSearch_Lib

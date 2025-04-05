@@ -466,6 +466,7 @@
             Padding = new Padding(15);
             SizeGripStyle = SizeGripStyle.Show;
             Text = "X-Search";
+            FormClosing += MainForm_FormClosing;
             infoPanel.ResumeLayout(false);
             toolsContainerPanel.ResumeLayout(false);
             statusContainerPanel.ResumeLayout(false);

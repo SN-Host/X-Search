@@ -43,6 +43,8 @@
             searchTextBox = new TextBox();
             statusImages = new ImageList(components);
             controlPanel = new Panel();
+            quickLoadButton = new Button();
+            quickSaveButton = new Button();
             loadSessionButton = new Button();
             saveSessionButton = new Button();
             clearAllButton = new Button();
@@ -70,7 +72,7 @@
             dataGridViewPanel.Location = new Point(165, 0);
             dataGridViewPanel.Name = "dataGridViewPanel";
             dataGridViewPanel.Padding = new Padding(10, 0, 10, 10);
-            dataGridViewPanel.Size = new Size(619, 361);
+            dataGridViewPanel.Size = new Size(619, 415);
             dataGridViewPanel.TabIndex = 3;
             // 
             // mainDataGridView
@@ -108,10 +110,9 @@
             mainDataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             mainDataGridView.ShowCellErrors = false;
             mainDataGridView.ShowRowErrors = false;
-            mainDataGridView.Size = new Size(599, 312);
+            mainDataGridView.Size = new Size(599, 366);
             mainDataGridView.TabIndex = 2;
             mainDataGridView.VirtualMode = true;
-            mainDataGridView.CellContentClick += mainDataGridView_CellContentClick;
             mainDataGridView.CellFormatting += mainDataGridView_CellFormatting;
             mainDataGridView.CellValueNeeded += mainDataGridView_CellValueNeeded;
             mainDataGridView.SelectionChanged += mainDataGridView_SelectionChanged;
@@ -191,6 +192,8 @@
             // controlPanel
             // 
             controlPanel.AutoScroll = true;
+            controlPanel.Controls.Add(quickLoadButton);
+            controlPanel.Controls.Add(quickSaveButton);
             controlPanel.Controls.Add(loadSessionButton);
             controlPanel.Controls.Add(saveSessionButton);
             controlPanel.Controls.Add(clearAllButton);
@@ -204,9 +207,47 @@
             controlPanel.Location = new Point(0, 0);
             controlPanel.Margin = new Padding(0);
             controlPanel.Name = "controlPanel";
-            controlPanel.Size = new Size(165, 361);
+            controlPanel.Size = new Size(165, 415);
             controlPanel.TabIndex = 2;
             controlPanel.Visible = false;
+            // 
+            // quickLoadButton
+            // 
+            quickLoadButton.Dock = DockStyle.Top;
+            quickLoadButton.FlatAppearance.BorderSize = 0;
+            quickLoadButton.FlatStyle = FlatStyle.Flat;
+            quickLoadButton.Font = new Font("Segoe UI Variable Text", 10F);
+            quickLoadButton.Image = Properties.Resources.placeholder_25x25_dark;
+            quickLoadButton.ImageAlign = ContentAlignment.MiddleLeft;
+            quickLoadButton.Location = new Point(0, 360);
+            quickLoadButton.Name = "quickLoadButton";
+            quickLoadButton.Padding = new Padding(5, 0, 0, 0);
+            quickLoadButton.Size = new Size(165, 36);
+            quickLoadButton.TabIndex = 14;
+            quickLoadButton.Text = "  Quick load";
+            quickLoadButton.TextImageRelation = TextImageRelation.ImageBeforeText;
+            mainToolTip.SetToolTip(quickLoadButton, "Loads the autosave file.");
+            quickLoadButton.UseVisualStyleBackColor = true;
+            quickLoadButton.Click += quickLoadButton_Click;
+            // 
+            // quickSaveButton
+            // 
+            quickSaveButton.Dock = DockStyle.Top;
+            quickSaveButton.FlatAppearance.BorderSize = 0;
+            quickSaveButton.FlatStyle = FlatStyle.Flat;
+            quickSaveButton.Font = new Font("Segoe UI Variable Text", 10F);
+            quickSaveButton.Image = Properties.Resources.placeholder_25x25_dark;
+            quickSaveButton.ImageAlign = ContentAlignment.MiddleLeft;
+            quickSaveButton.Location = new Point(0, 324);
+            quickSaveButton.Name = "quickSaveButton";
+            quickSaveButton.Padding = new Padding(5, 0, 0, 0);
+            quickSaveButton.Size = new Size(165, 36);
+            quickSaveButton.TabIndex = 13;
+            quickSaveButton.Text = "  Quick save";
+            quickSaveButton.TextImageRelation = TextImageRelation.ImageBeforeText;
+            mainToolTip.SetToolTip(quickSaveButton, "Triggers an autosave. This will overwrite the previous autosave.");
+            quickSaveButton.UseVisualStyleBackColor = true;
+            quickSaveButton.Click += quickSaveButton_Click;
             // 
             // loadSessionButton
             // 
@@ -396,7 +437,7 @@
             AutoScaleDimensions = new SizeF(96F, 96F);
             AutoScaleMode = AutoScaleMode.Dpi;
             BackColor = Color.FromArgb(250, 250, 255);
-            ClientSize = new Size(784, 361);
+            ClientSize = new Size(784, 415);
             Controls.Add(dataGridViewPanel);
             Controls.Add(controlPanel);
             DoubleBuffered = true;
@@ -429,13 +470,15 @@
         private Panel searchPanel;
         private TextBox searchTextBox;
         private Button cancelPullButton;
-        private OpenFileDialog sessionOpenFileDialog;
-        private SaveFileDialog sessionSaveFileDialog;
         private DataGridViewImageColumn statusDataGridViewColumn;
         private DataGridViewTextBoxColumn domainDataGridViewColumn;
         private DataGridViewTextBoxColumn titleDataGridViewColumn;
         private DataGridViewTextBoxColumn urlDataGridViewColumn;
         private DataGridViewTextBoxColumn RetrievalTimeString;
         private ToolTip mainToolTip;
+        internal OpenFileDialog sessionOpenFileDialog;
+        internal SaveFileDialog sessionSaveFileDialog;
+        private Button quickLoadButton;
+        private Button quickSaveButton;
     }
 }

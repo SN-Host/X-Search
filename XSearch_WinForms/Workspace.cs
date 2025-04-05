@@ -326,6 +326,11 @@ namespace XSearch_WinForms
         /// </summary>
         private void clearListingButton_Click(object sender, EventArgs e)
         {
+            if (CurrentRowIndex < 0)
+            {
+                return;
+            }
+
             DialogResult clear = MessageBox.Show($"Clear {SearchListings[CurrentRowIndex].Title} of domain {SearchListings[CurrentRowIndex].DomainName}?", "Clear listing?", MessageBoxButtons.YesNo);
 
             if (clear == DialogResult.Yes)
@@ -460,9 +465,14 @@ namespace XSearch_WinForms
             }
         }
 
-        private void mainDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void quickSaveButton_Click(object sender, EventArgs e)
         {
+            mainForm.TryAutoSaveOrLoad(loading: false, forced: true);
+        }
 
+        private void quickLoadButton_Click(object sender, EventArgs e)
+        {
+            mainForm.TryAutoSaveOrLoad(loading: true, forced: true);
         }
     }
 }

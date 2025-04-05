@@ -21,23 +21,54 @@ using Microsoft.Web.WebView2.Core;
 using System.Diagnostics;
 using static System.Windows.Forms.LinkLabel;
 using System.Reflection;
+using static XSearch_WinForms.WinformsUIUtilities;
 
 namespace XSearch_WinForms
 {
     public partial class Settings : Form
     {
+        public static readonly string DefaultAutoSavePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..\\AutoSaves"));
+        public static readonly string DefaultAutoSaveSessionFileName = "LastSession.xssp";
+        public static readonly string DefaultAutoSaveDomainProfileFileName = "LastDomainProfile.xsdp";
+
+        /// <summary>
+        /// Gets or sets whether X-Search runs its webdrivers in headless mode or not.
+        /// </summary>
+        public bool RunHeadless
+        {
+            get
+            {
+                return Program.CurrentSession.Searcher.RunHeadless;
+            }
+            set
+            {
+                Program.CurrentSession.Searcher.RunHeadless = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets whether the UI tooltips are shown or not.
         /// </summary>
         public bool ShowTooltips { get; set; } = true;
 
+        /// <summary>
+        /// Gets or sets whether the application should be automatically saving/loading or not.
+        /// </summary>
+        public bool AutoSave { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets the path the application should generate autosave files to.
+        /// </summary>
+        public string AutoSavePath { get; set; } = string.Empty;
+
         public Settings()
         {
             InitializeComponent();
 
-            headlessCheckBox.DataBindings.Add(nameof(headlessCheckBox.Checked), Program.CurrentSession.Searcher, nameof(SessionSearcher.RunHeadless));
+            headlessCheckBox.DataBindings.Add(nameof(headlessCheckBox.Checked), this, nameof(RunHeadless));
             toggleTooltipsCheckBox.DataBindings.Add(nameof(toggleTooltipsCheckBox.Checked), this, nameof(ShowTooltips));
+            autoSaveCheckBox.DataBindings.Add(nameof(autoSaveCheckBox.Checked), this, nameof(AutoSave));
+            autoSavePathTextBox.DataBindings.Add(nameof(autoSavePathTextBox.Text), this, nameof(AutoSavePath));
         }
 
         private void headlessCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -52,12 +83,27 @@ namespace XSearch_WinForms
             Properties.Settings.Default.Save();
         }
 
+        private void autoSaveCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.AutoSave = autoSaveCheckBox.Checked;
+            Properties.Settings.Default.Save();
+        }
+
+        /// <summary>
+        /// Prevents tooltips from showing up if they're disabled.
+        /// </summary>
         private void mainToolTip_Popup(object sender, PopupEventArgs e)
         {
             if (Properties.Settings.Default.ShowTooltips == false)
             {
                 e.Cancel = true;
             }
+        }
+
+        private void autoSavePathTextBox_TextChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.AutoSaveCustomPath = autoSavePathTextBox.Text;
+            Properties.Settings.Default.Save();
         }
     }
 }

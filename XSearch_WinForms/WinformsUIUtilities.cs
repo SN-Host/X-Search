@@ -11,6 +11,13 @@ namespace XSearch_WinForms
     /// </summary>
     internal class WinformsUIUtilities
     {
+        // CONSTANTS //
+
+        /// <summary>
+        /// Default hover time for tooltips.
+        /// </summary>
+        private static int TOOLTIP_HOVERTIME = 5000;
+
         /// <summary>
         /// Frames a form inside a panel.
         /// </summary>
@@ -48,6 +55,26 @@ namespace XSearch_WinForms
             newPanel.Dock = DockStyle.Fill;
             newPanel.BringToFront();
             newPanel.Show();
+        }
+
+        /// <summary>
+        /// General handler for tooltips over invalid textboxes.
+        /// </summary>
+        internal static async void HandleTooltipsForInvalidTextBox(ToolTip errorTooltip, bool shouldShowToolTip, TextBox textbox, string? title = null, string? body = null)
+        {
+            if (!shouldShowToolTip)
+            {
+                errorTooltip.Hide(textbox);
+                textbox.BackColor = MainForm.DefaultFieldEntryColor;
+            }
+            else
+            {
+                errorTooltip.ToolTipTitle = title;
+                errorTooltip.Show(body, textbox, 0, (int)(-textbox.Height * 1.75), TOOLTIP_HOVERTIME);
+                textbox.BackColor = MainForm.InvalidFieldEntryColor;
+                await Task.Delay(TOOLTIP_HOVERTIME);
+                textbox.BackColor = MainForm.DefaultFieldEntryColor;
+            }
         }
     }
 }

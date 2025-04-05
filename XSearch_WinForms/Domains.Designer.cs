@@ -625,12 +625,12 @@
         private Panel xpathButtonsPanel;
         private Button deleteXpathButton;
         private Button addNewXpathButton;
-        private SaveFileDialog domainsSaveFileDialog;
-        private OpenFileDialog domainsOpenFileDialog;
         private DataGridViewCheckBoxColumn activeDataGridViewColumn;
         private DataGridViewTextBoxColumn domainLabelDataGridViewColumn;
         private DataGridViewTextBoxColumn searchUrlPatternDataGridViewColumn;
         private DataGridViewTextBoxColumn listingUrlPatternDataGridViewColumn;
         private ToolTip mainToolTip;
+        internal SaveFileDialog domainsSaveFileDialog;
+        internal OpenFileDialog domainsOpenFileDialog;
     }
 }

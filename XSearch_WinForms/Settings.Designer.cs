@@ -31,17 +31,24 @@
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Settings));
             mainSettingsContainerPanel = new Panel();
+            autoSavePathPanel = new Panel();
+            autoSavePathTextBox = new TextBox();
+            autoSavePathLabel = new Label();
+            autoSaveCheckBox = new CheckBox();
             toggleTooltipsCheckBox = new CheckBox();
             headlessCheckBox = new CheckBox();
             generallSetttingsDividerLineLabel = new Label();
             generalSettingsLabel = new Label();
             mainToolTip = new ToolTip(components);
+            errorToolTip = new ToolTip(components);
             mainSettingsContainerPanel.SuspendLayout();
+            autoSavePathPanel.SuspendLayout();
             SuspendLayout();
             // 
             // mainSettingsContainerPanel
             // 
             mainSettingsContainerPanel.BackColor = Color.FromArgb(250, 250, 255);
+            mainSettingsContainerPanel.Controls.Add(autoSavePathPanel);
             mainSettingsContainerPanel.Controls.Add(toggleTooltipsCheckBox);
             mainSettingsContainerPanel.Controls.Add(headlessCheckBox);
             mainSettingsContainerPanel.Controls.Add(generallSetttingsDividerLineLabel);
@@ -51,6 +58,53 @@
             mainSettingsContainerPanel.Name = "mainSettingsContainerPanel";
             mainSettingsContainerPanel.Size = new Size(670, 533);
             mainSettingsContainerPanel.TabIndex = 0;
+            // 
+            // autoSavePathPanel
+            // 
+            autoSavePathPanel.Controls.Add(autoSavePathTextBox);
+            autoSavePathPanel.Controls.Add(autoSavePathLabel);
+            autoSavePathPanel.Controls.Add(autoSaveCheckBox);
+            autoSavePathPanel.Dock = DockStyle.Top;
+            autoSavePathPanel.Location = new Point(0, 94);
+            autoSavePathPanel.Name = "autoSavePathPanel";
+            autoSavePathPanel.Size = new Size(670, 30);
+            autoSavePathPanel.TabIndex = 4;
+            // 
+            // autoSavePathTextBox
+            // 
+            autoSavePathTextBox.Dock = DockStyle.Fill;
+            autoSavePathTextBox.Location = new Point(292, 0);
+            autoSavePathTextBox.Name = "autoSavePathTextBox";
+            autoSavePathTextBox.Size = new Size(378, 27);
+            autoSavePathTextBox.TabIndex = 1;
+            autoSavePathTextBox.TextChanged += autoSavePathTextBox_TextChanged;
+            // 
+            // autoSavePathLabel
+            // 
+            autoSavePathLabel.Dock = DockStyle.Left;
+            autoSavePathLabel.Font = new Font("Segoe UI Variable Small Semilig", 11.25F);
+            autoSavePathLabel.Location = new Point(162, 0);
+            autoSavePathLabel.Name = "autoSavePathLabel";
+            autoSavePathLabel.Size = new Size(130, 30);
+            autoSavePathLabel.TabIndex = 0;
+            autoSavePathLabel.Text = "Custom path:";
+            autoSavePathLabel.TextAlign = ContentAlignment.MiddleRight;
+            mainToolTip.SetToolTip(autoSavePathLabel, resources.GetString("autoSavePathLabel.ToolTip"));
+            // 
+            // autoSaveCheckBox
+            // 
+            autoSaveCheckBox.AutoSize = true;
+            autoSaveCheckBox.Dock = DockStyle.Left;
+            autoSaveCheckBox.Font = new Font("Segoe UI Variable Small Semilig", 11.25F);
+            autoSaveCheckBox.Location = new Point(0, 0);
+            autoSaveCheckBox.Name = "autoSaveCheckBox";
+            autoSaveCheckBox.Padding = new Padding(3);
+            autoSaveCheckBox.Size = new Size(162, 30);
+            autoSaveCheckBox.TabIndex = 5;
+            autoSaveCheckBox.Text = "Autosave/autoload";
+            mainToolTip.SetToolTip(autoSaveCheckBox, "When enabled, X-Search will periodically save your current session and domain profile information, loading whatever was last saved on startup.");
+            autoSaveCheckBox.UseVisualStyleBackColor = true;
+            autoSaveCheckBox.CheckedChanged += autoSaveCheckBox_CheckedChanged;
             // 
             // toggleTooltipsCheckBox
             // 
@@ -119,6 +173,8 @@
             Text = "Settings";
             mainSettingsContainerPanel.ResumeLayout(false);
             mainSettingsContainerPanel.PerformLayout();
+            autoSavePathPanel.ResumeLayout(false);
+            autoSavePathPanel.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -130,5 +186,10 @@
         private CheckBox headlessCheckBox;
         private Label generalSettingsLabel;
         private ToolTip mainToolTip;
+        private Panel autoSavePathPanel;
+        private TextBox autoSavePathTextBox;
+        private Label autoSavePathLabel;
+        private CheckBox autoSaveCheckBox;
+        private ToolTip errorToolTip;
     }
 }

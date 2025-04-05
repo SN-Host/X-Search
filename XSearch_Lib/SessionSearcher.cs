@@ -6,8 +6,8 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.DevTools.V131.Memory;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Support.Extensions;
 using OpenQA.Selenium.Support.UI;
-using static XSearch_Lib.SearchHandler;
 using static XSearch_Lib.XSearch_Strings;
 
 namespace XSearch_Lib
@@ -83,14 +83,6 @@ namespace XSearch_Lib
         public SessionSearcher(Session session)
         {
             Session = session;
-        }
-
-        ~SessionSearcher()
-        {
-            foreach (IWebDriver driver in webDrivers)
-            {
-                TerminateDriver(driver);
-            }
         }
 
         // PROPERTIES //
@@ -224,7 +216,7 @@ namespace XSearch_Lib
                 allTasks.Add(
                     Task.Run(() =>
                     {
-                        OnNewSearchUpdateLog(this, new SearchLogArgs($"Creating FireFox driver for domain {domain.Label}."));
+                        OnNewSearchUpdateLog(this, new SearchLogArgs($"Creating driver for domain {domain.Label}."));
                         IWebDriver driver = CreateFirefoxDriver();
                         //IWebDriver driver = CreateChromeDriver();
 
@@ -268,17 +260,17 @@ namespace XSearch_Lib
         /// </summary>
         public FirefoxDriver CreateFirefoxDriver()
         {
-            FirefoxOptions ffOptions = new FirefoxOptions();
+            FirefoxOptions options = new FirefoxOptions();
 
             if (RunHeadless)
             {
-                ffOptions.AddArgument("-headless");
+                options.AddArgument("-headless");
             }
 
             FirefoxDriverService ffDriverService = FirefoxDriverService.CreateDefaultService();
             ffDriverService.HideCommandPromptWindow = true;
 
-            FirefoxDriver driver = new FirefoxDriver(ffDriverService, ffOptions);
+            FirefoxDriver driver = new FirefoxDriver(ffDriverService, options);
 
             webDrivers.Add(driver);
 
@@ -287,17 +279,25 @@ namespace XSearch_Lib
 
         public ChromeDriver CreateChromeDriver()
         {
-            ChromeOptions cOptions = new ChromeOptions();
+            ChromeOptions options = new ChromeOptions();
 
             if (RunHeadless)
             {
-                cOptions.AddArgument("-headless");
+                options.AddArgument("-headless");
             }
+
+            options.AddArgument("--disable-blink-features=AutomationControlled");
+
+            options.AddExcludedArgument("enable-automation");
+
+            options.AddAdditionalChromeOption("useAutomationExtension", false);
 
             ChromeDriverService cDriverService = ChromeDriverService.CreateDefaultService();
             cDriverService.HideCommandPromptWindow = true;
 
-            ChromeDriver driver = new ChromeDriver(cDriverService, cOptions);
+            ChromeDriver driver = new ChromeDriver(cDriverService, options);
+
+            driver.ExecuteScript("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})");
 
             webDrivers.Add(driver);
 
@@ -474,10 +474,13 @@ namespace XSearch_Lib
                     {
                         IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
 
+                        js.ExecuteScript("window.open(arguments[0]);", linkToCheck.GetAttribute("href"));
+
+                        /*
                         // Focus --> Control + Enter is important because it's much more consistent than MoveToElement and Click.
                         // Any site with reasonable accessibility should respond to it.
 
-                        js.ExecuteScript("arguments[0].focus();", linksToCheck[0]);
+                        js.ExecuteScript("arguments[0].focus();", linkToCheck);
 
                         new Actions(driver)
                         .KeyDown(Keys.LeftControl)
@@ -486,6 +489,7 @@ namespace XSearch_Lib
                         .KeyUp(Keys.LeftControl)
                         .Build()
                         .Perform();
+                        */
 
                         IList<string> otherWindowHandles = new List<string>(driver.WindowHandles).Where(x => x != currentPageSearchHandle).ToList();
                         foreach (string windowHandle in otherWindowHandles)

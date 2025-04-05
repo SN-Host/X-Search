@@ -4,12 +4,21 @@ using System.IO;
 using static XSearch_WinForms.Workspace;
 using System.ComponentModel;
 using XSearch_Lib;
+using OpenQA.Selenium.DevTools.V131.Network;
 
 namespace XSearch_WinForms
 {
 
     public partial class MainForm : Form
     {
+
+        // CONSTANTS // 
+
+        /// <summary>
+        /// Defaults to five minutes.
+        /// </summary>
+        private static readonly int autosaveInterval = 5000 * 300;
+
         // FIELDS //
 
         /// <summary>
@@ -85,8 +94,92 @@ namespace XSearch_WinForms
 
         public void LoadSettings()
         {
-            Settings.ShowTooltips = Properties.Settings.Default.ShowTooltips;
             Program.CurrentSession.Searcher.RunHeadless = Properties.Settings.Default.UseHeadlessBrowsing;
+            Settings.ShowTooltips = Properties.Settings.Default.ShowTooltips;
+            Settings.AutoSave = Properties.Settings.Default.AutoSave;
+
+            if (Properties.Settings.Default.AutoSave)
+            {
+                TryAutoSaveOrLoad(loading: true);
+            }
+        }
+
+        public void TryAutoSaveOrLoad(bool loading = true, bool forced = false)
+        {
+            if (!Settings.AutoSave && !forced)
+            {
+                return;
+            }
+
+            string path = Settings.DefaultAutoSavePath;
+
+            if (!string.IsNullOrEmpty(Settings.AutoSavePath))
+            {
+                path = Settings.AutoSavePath;
+            }
+
+            TryAutoSaveOrLoadSession(path, loading);
+            TryAutoSaveOrLoadDomainProfile(path, Domains.SearchUrlPatternRejected, loading);
+        }
+
+        public void TryAutoSaveOrLoadSession(string path, bool loading = true)
+        {
+            string expectedSessionPath = path + $"\\{Settings.DefaultAutoSaveSessionFileName}";
+            bool fileExists = File.Exists(expectedSessionPath);
+
+            if (!fileExists && loading == true)
+            {
+                MessageBox.Show($"No autosave file found at {expectedSessionPath}", "Session autoload failed");
+                return;
+            }
+
+            Directory.CreateDirectory(path);
+
+            if (loading)
+            {
+                Stream sessionLoader = File.OpenRead(expectedSessionPath);
+                Program.CurrentSession.LoadFromFile(sessionLoader);
+            }
+            else
+            {
+                if (fileExists)
+                {
+                    File.SetAttributes(expectedSessionPath, FileAttributes.Normal);
+                    File.Delete(expectedSessionPath);
+                }
+                Stream sessionSaver = File.OpenWrite(expectedSessionPath);
+                Program.CurrentSession.SaveToFile(sessionSaver);
+            }
+        }
+
+        public void TryAutoSaveOrLoadDomainProfile(string path, Action<Domain, ErrorReportArgs> onSearchUrlPatternRejected, bool loading = true)
+        {
+            string expectedDomainProfilePath = path + $"\\{Settings.DefaultAutoSaveDomainProfileFileName}";
+            bool fileExists = File.Exists(expectedDomainProfilePath);
+
+            if (!fileExists && loading == true)
+            {
+                MessageBox.Show($"No autosave file found at {expectedDomainProfilePath}", "Domain profile autoload failed");
+                return;
+            }
+
+            Directory.CreateDirectory(path);
+
+            if (loading)
+            {
+                Stream domainProfileLoader = File.OpenRead(expectedDomainProfilePath);
+                Program.CurrentSession.DomainProfile.LoadFromFile(domainProfileLoader, onSearchUrlPatternRejected);
+            }
+            else
+            {
+                if (fileExists)
+                {
+                    File.SetAttributes(expectedDomainProfilePath, FileAttributes.Normal);
+                    File.Delete(expectedDomainProfilePath);
+                }
+                Stream domainProfileSaver = File.OpenWrite(expectedDomainProfilePath);
+                Program.CurrentSession.DomainProfile.SaveToFile(domainProfileSaver, expectedDomainProfilePath);
+            }
         }
 
         /// <summary>
@@ -205,12 +298,23 @@ namespace XSearch_WinForms
 
         }
 
+        /// <summary>
+        /// Prevents tooltips from showing up if they're disabled.
+        /// </summary>
         private void mainToolTip_Popup(object sender, PopupEventArgs e)
         {
             if (Properties.Settings.Default.ShowTooltips == false)
             {
                 e.Cancel = true;
             }
+        }
+
+        /// <summary>
+        /// Autosaves session and domain data on form close.
+        /// </summary>
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            TryAutoSaveOrLoad(loading: false);
         }
     }
 }

@@ -46,7 +46,10 @@ namespace XSearch_WinForms
             //await Task.Run(delegate { session.Searcher.PullSearch(); });
             await session.Searcher.PullSearch();
         }
-
+        
+        /// <summary>
+        /// Prevents tooltips from showing up if they're disabled.
+        /// </summary>
         private void mainToolTip_Popup(object sender, PopupEventArgs e)
         {
             if (Properties.Settings.Default.ShowTooltips == false)

@@ -46,5 +46,29 @@ namespace XSearch_WinForms.Properties {
                 this["ShowTooltips"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AutoSave {
+            get {
+                return ((bool)(this["AutoSave"]));
+            }
+            set {
+                this["AutoSave"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AutoSaveCustomPath {
+            get {
+                return ((string)(this["AutoSaveCustomPath"]));
+            }
+            set {
+                this["AutoSaveCustomPath"] = value;
+            }
+        }
     }
 }
