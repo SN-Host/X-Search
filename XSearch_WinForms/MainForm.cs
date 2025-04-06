@@ -198,7 +198,7 @@ namespace XSearch_WinForms
             {
                 // Insert the new listing and ensure it is sorted correctly.
                 Program.CurrentSession.SearchListings.Insert(0, sl);
-                Program.CurrentSession.ChangeStatusAtListingIndex(0, sl.Status);
+                Program.CurrentSession.ChangeListingStatus(sl, sl.Status);
             }
         }
 

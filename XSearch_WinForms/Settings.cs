@@ -27,7 +27,7 @@ namespace XSearch_WinForms
 {
     public partial class Settings : Form
     {
-        public static readonly string DefaultAutoSavePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..\\AutoSaves"));
+        public static readonly string DefaultAutoSavePath = Path.GetFullPath(Path.Combine(Application.ExecutablePath, "..\\AutoSaves"));
         public static readonly string DefaultAutoSaveSessionFileName = "LastSession.xssp";
         public static readonly string DefaultAutoSaveDomainProfileFileName = "LastDomainProfile.xsdp";
 

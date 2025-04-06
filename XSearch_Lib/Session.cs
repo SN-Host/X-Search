@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Net;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -51,17 +52,10 @@ namespace XSearch_Lib
         [XmlIgnore]
         public SessionSearcher Searcher { get; set; }
 
-        public void ChangeStatusAtListingIndex(int index, ListingStatus newStatus, bool resort = true)
+        public void ChangeListingStatus(SearchListing listingToSort, ListingStatus newStatus, bool resort = true)
         {
-            // Early exit if an invalid index was given.
-            if (index < 0 || index > SearchListings.Count - 1)
-            {
-                return;
-            }
-
             // Find item for status change.
             // TODO: Split into a method inside SearchListing for cleanliness.
-            SearchListing listingToSort = SearchListings[index];
             listingToSort.Status = newStatus;
             listingToSort.StatusId = newStatus.StatusId;
 
@@ -70,11 +64,12 @@ namespace XSearch_Lib
             {
                 return;
             }
-            
-            // TODO: Reconsider sort approaches.
 
-            // Remove the status to be changed from the list.
-            SearchListings.RemoveAt(index);
+            // TODO: Reconsider sort approaches; this is a bit slow.
+
+            // Remove the status to be changed from the list if we didn't already do so.
+            SearchListings.Remove(listingToSort);
+
             int newIndex = 0;
 
             while (newIndex < SearchListings.Count)
@@ -91,20 +86,6 @@ namespace XSearch_Lib
 
             // Do insertion.
             SearchListings.Insert(newIndex, listingToSort);
-        }
-
-        /// <summary>
-        /// Changes statuses for multiple SearchListings by index.
-        /// </summary>
-        /// <param name="indexes">The indexes of SearchListings to change.</param>
-        /// <param name="newStatus">The new status to apply.</param>
-        /// <param name="resort">Whether the items whose statuses have changed should be resorted.</param>
-        public void ChangeStatusAtListingIndexes(IEnumerable<int> indexes, ListingStatus newStatus, bool resort = true)
-        {
-            foreach (int index in indexes)
-            {
-                ChangeStatusAtListingIndex(index, newStatus, resort);
-            }
         }
         
         public void SaveToFile(Stream stream, bool saveDomainProfilePath = true)

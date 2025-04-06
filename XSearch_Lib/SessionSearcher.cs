@@ -476,6 +476,9 @@ namespace XSearch_Lib
 
                         js.ExecuteScript("window.open(arguments[0]);", linkToCheck.GetAttribute("href"));
 
+                        // Old link fetching method below; this was found less reliable than the above.
+                        // TODO: Remove once pushed to repo
+
                         /*
                         // Focus --> Control + Enter is important because it's much more consistent than MoveToElement and Click.
                         // Any site with reasonable accessibility should respond to it.

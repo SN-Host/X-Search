@@ -38,7 +38,6 @@ namespace XSearch_WinForms
 
         // PROPERTIES //
 
-
         /// <summary>
         /// The index of the currently selected row on the domain datagridview.
         /// </summary>
@@ -95,111 +94,6 @@ namespace XSearch_WinForms
                     column.Visible = false;
                 }
             }
-
-
-            // TODO: Remove for release
-            // For debug testing and demo purposes only because profiles are not currently implemented, I've added two default domains.
-            // See below for the long list of domains I attempted to add, but ran into problems with.
-            /*
-            Domain eBay = new Domain(SearchUrlPatternRejected)
-            {
-                Label = "Ebay",
-                ListingUrlPattern = $"/itm/",
-                SearchUrlPattern = $"https://www.ebay.com/sch/i.html?_nkw={Domain.URL_SEARCHTERM_PLACEHOLDER_PATTERN}&_pgn=1",
-                NoSearchResultsXpath = new BindingList<string>()
-                {
-                    "//nav/a[@class=\"pagination__next icon-link\"]"
-                }
-            };
-
-            Domain craigsList = new Domain(SearchUrlPatternRejected)
-            {
-                Label = "Craigslist",
-                ListingUrlPattern = $"/d/",
-                SearchUrlPattern = $"https://houston.craigslist.org/search/cta?query={Domain.URL_SEARCHTERM_PLACEHOLDER_PATTERN}#search=2~gallery~1",
-            };
-
-            Domain offerUp = new Domain(SearchUrlPatternRejected)
-            {
-                Label = "Offerup",
-                ListingUrlPattern = $"/item/detail/",
-                SearchUrlPattern = $"https://offerup.com/search?q={Domain.URL_SEARCHTERM_PLACEHOLDER_PATTERN}",
-            };
-
-            Domain carsCom = new Domain(SearchUrlPatternRejected)
-            {
-                Label = "Cars.com (Toyota vehicles)",
-                ListingUrlPattern = $"/vehicledetail/",
-                SearchUrlPattern = $"\r\nhttps://www.cars.com/shopping/results/?_unused_include_shippable=&_unused_keyword=&_unused_list_price_max=&_unused_list_price_min=&_unused_makes[]=&_unused_maximum_distance=&_unused_mileage_max=&_unused_models[]=&_unused_monthly_payment=&_unused_stock_type=&_unused_year_min=&_unused_zip=&dealer_id=&include_shippable=true&keyword=&list_price_max=&list_price_min=&makes[]=toyota&maximum_distance=50&mileage_max=&models[]={Domain.URL_SEARCHTERM_PLACEHOLDER_PATTERN}-{Domain.URL_SEARCHTERM_PLACEHOLDER_PATTERN}&monthly_payment=&page=1&page_size=20&sort=best_match_desc&stock_type=used&year_max=2010&year_min=&zip=77041",
-                NoSearchResultsXpath = new BindingList<string>()
-                {
-                    "//*[@id=\"next_paginate\"]"
-                }
-            };
-
-            Domain edmunds = new Domain(SearchUrlPatternRejected)
-            {
-                Label = "Edmunds (Toyota vehicles)",
-                ListingUrlPattern = $"/vin/",
-                SearchUrlPattern = $"https://www.edmunds.com/inventory/srp.html?inventorytype=used%2Ccpo&make=toyota&model={Domain.URL_SEARCHTERM_PLACEHOLDER_PATTERN}|{Domain.URL_SEARCHTERM_PLACEHOLDER_PATTERN}&pagenumber=1",
-                NoSearchResultsXpath = new BindingList<string>()
-                {
-                    "//nav/ul/li/a[@aria-label=\"Go to the next page\"]"
-                }
-            };
-
-            Domain fbMarketplace = new Domain(SearchUrlPatternRejected)
-            {
-                Label = "Facebook Marketplace",
-                ListingUrlPattern = $"/marketplace/item/",
-                SearchUrlPattern = $"https://www.facebook.com/marketplace/houston/search/?query={Domain.URL_SEARCHTERM_PLACEHOLDER_PATTERN}%20{Domain.URL_SEARCHTERM_PLACEHOLDER_PATTERN}&pagen=1",
-                NoSearchResultsXpath = new BindingList<string>()
-                {
-                    "//div[@aria-label=\"Close\"][@role=\"button\"]"
-                }
-            };
-
-            Program.CurrentSession.DomainProfile.Domains.Add(eBay);
-            Program.CurrentSession.DomainProfile.Domains.Add(craigsList);
-            Program.CurrentSession.DomainProfile.Domains.Add(offerUp);
-            Program.CurrentSession.DomainProfile.Domains.Add(carsCom);
-            Program.CurrentSession.DomainProfile.Domains.Add(edmunds);
-            Program.CurrentSession.DomainProfile.Domains.Add(fbMarketplace);
-
-            // Below are some examples of domains that immediately identify X-Search as a bot, and are thus currently unscrapable.
-            */
-            Domain indeed = new Domain(SearchUrlPatternRejected)
-            {
-                Label = "Indeed.com",
-                ListingUrlPattern = @"/viewjob?",
-                SearchUrlPattern = $"https://www.indeed.com/jobs?q={Domain.URL_SEARCHTERM_PLACEHOLDER_PATTERN}&l=houston%2C+tx&radius=35&vjk=74f724e50cbcc7b3&start=",
-            };
-
-            Domain linkedin = new Domain(SearchUrlPatternRejected)
-            {
-                Label = "Linkedin",
-                ListingUrlPattern = $"/jobs/view/",
-                SearchUrlPattern = $"https://www.linkedin.com/jobs/search?keywords={Domain.URL_SEARCHTERM_PLACEHOLDER_PATTERN}&location=Houston&geoId=103743442&position=1&pageNum=1",
-            };
-
-            Domain autotempest = new Domain(SearchUrlPatternRejected)
-            {
-                Label = "Autotempest",
-                ListingUrlPattern = $"/details/",
-                SearchUrlPattern = $"https://www.autotempest.com/results?make={Domain.URL_SEARCHTERM_PLACEHOLDER_PATTERN}&model={Domain.URL_SEARCHTERM_PLACEHOLDER_PATTERN}&zip=77041&radius=50",
-            };
-
-            Domain zillow = new Domain(SearchUrlPatternRejected)
-            {
-                Label = "Zillow",
-                ListingUrlPattern = $"/homedetails/",
-                SearchUrlPattern = $"https://www.zillow.com/houston-tx-77041/1_p/?searchQueryState=%7B%22pagination%22%3A%7B%22currentPage%22%3A2%7D%2C%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3A-95.66721740551758%2C%22east%22%3A-95.46637359448242%2C%22south%22%3A29.805973092052174%2C%22north%22%3A29.94053580720247%7D%2C%22regionSelection%22%3A%5B%7B%22regionId%22%3A91690%2C%22regionType%22%3A7%7D%5D%2C%22filterState%22%3A%7B%22sort%22%3A%7B%22value%22%3A%22globalrelevanceex%22%7D%2C%22beds%22%3A%7B%22min%22%3A2%7D%2C%22baths%22%3A%7B%22min%22%3A2%7D%7D%2C%22isListVisible%22%3Atrue%2C%22mapZoom%22%3A13%2C%22usersSearchTerm%22%3A%22Houston%20TX%2077041%22%7D",
-            };
-
-            Program.CurrentSession.DomainProfile.Domains.Add(indeed);
-            Program.CurrentSession.DomainProfile.Domains.Add(linkedin);
-            Program.CurrentSession.DomainProfile.Domains.Add(autotempest);
-            Program.CurrentSession.DomainProfile.Domains.Add(zillow);
         }
 
         public void BindData()
@@ -295,7 +189,7 @@ namespace XSearch_WinForms
                 domainsToToggle.Add(sessionDomains[row.Index]);
 
                 // If any of the rows are inactive, we should enable all.
-                if (sessionDomains[row.Index].Active == false)
+                if (newToggleState == false && !sessionDomains[row.Index].Active)
                 {
                     newToggleState = true;
                 }
@@ -414,7 +308,7 @@ namespace XSearch_WinForms
         {
             domainsSaveFileDialog.FileName = $"New Domain Profile {DateTime.Now.ToString("MM'-'dd'-'yyyy")}";
 
-            string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..\\Domains"));
+            string path = Path.GetFullPath(Path.Combine(Application.ExecutablePath, "..\\Domains"));
             Directory.CreateDirectory(path);
 
             domainsSaveFileDialog.InitialDirectory = path;
@@ -430,7 +324,7 @@ namespace XSearch_WinForms
 
         private void loadDomainsButton_Click(object sender, EventArgs e)
         {
-            string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..\\Domains"));
+            string path = Path.GetFullPath(Path.Combine(Application.ExecutablePath, "..\\Domains"));
             Directory.CreateDirectory(path);
 
             domainsOpenFileDialog.InitialDirectory = path;

@@ -226,7 +226,7 @@ namespace XSearch_WinForms
         /// </summary>
         private void crossButton_Click(object sender, EventArgs e)
         {
-            CurrentSession.ChangeStatusAtListingIndexes(CurrentlySelectedRowIndices, CrossedStatus);
+            CrossOrUncrossSelectedRows(forcedStatus: CrossedStatus);
         }
 
         /// <summary>
@@ -234,7 +234,7 @@ namespace XSearch_WinForms
         /// </summary>
         private void uncrossButton_Click(object sender, EventArgs e)
         {
-            CurrentSession.ChangeStatusAtListingIndexes(CurrentlySelectedRowIndices, UnevaluatedStatus);
+            CrossOrUncrossSelectedRows(forcedStatus: UnevaluatedStatus);
         }
 
         /// <summary>
@@ -252,20 +252,7 @@ namespace XSearch_WinForms
             // Quick crossing/uncrossing functionality.
             if (keyData == (Keys.Space | Keys.Control))
             {
-                foreach (int index in CurrentlySelectedRowIndices)
-                {
-                    // TODO: We want to add this data checking to make it a property of a status definition.
-                    // They should have a method that runs to determine how they interact with other statuses, or maybe sets of lists.
-                    // Then we can bake it into ChangeStatusAtListingIndex.
-                    if (SearchListings[index].Status == UnevaluatedStatus)
-                    {
-                        CurrentSession.ChangeStatusAtListingIndex(index, CrossedStatus);
-                    }
-                    else
-                    {
-                        CurrentSession.ChangeStatusAtListingIndex(index, UnevaluatedStatus);
-                    }
-                }
+                CrossOrUncrossSelectedRows();
 
                 return true;
             }
@@ -283,6 +270,28 @@ namespace XSearch_WinForms
 
             // Allow default handling of keystrokes if our shortcuts weren't used.
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        public void CrossOrUncrossSelectedRows(ListingStatus? forcedStatus = null)
+        {
+            List<SearchListing> listingsToChange = new List<SearchListing>();
+            ListingStatus newStatus = forcedStatus == null ? UnevaluatedStatus : forcedStatus;
+
+            foreach (int index in CurrentlySelectedRowIndices)
+            {
+                listingsToChange.Add(SearchListings[index]);
+
+                // If we're not forcing a status and any of the listings are uncrossed, we should cross all.
+                if (forcedStatus == null && SearchListings[index].Status == UnevaluatedStatus)
+                {
+                    newStatus = CrossedStatus;
+                }
+            }
+
+            foreach (SearchListing listing in listingsToChange)
+            {
+                CurrentSession.ChangeListingStatus(listing, newStatus);
+            }
         }
 
         /// <summary>
@@ -435,7 +444,7 @@ namespace XSearch_WinForms
         {
             sessionSaveFileDialog.FileName = $"New Session {DateTime.Now.ToString("MM'-'dd'-'yyyy")}";
 
-            string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..\\Sessions"));
+            string path = Path.GetFullPath(Path.Combine(Application.ExecutablePath, "..\\Sessions"));
             Directory.CreateDirectory(path);
 
             sessionSaveFileDialog.InitialDirectory = path;
@@ -451,7 +460,7 @@ namespace XSearch_WinForms
 
         private void loadSessionButton_Click(object sender, EventArgs e)
         {
-            string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..\\Sessions"));
+            string path = Path.GetFullPath(Path.Combine(Application.ExecutablePath, "..\\Sessions"));
             Directory.CreateDirectory(path);
 
             sessionOpenFileDialog.InitialDirectory = path;
