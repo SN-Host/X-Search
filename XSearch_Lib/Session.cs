@@ -65,7 +65,7 @@ namespace XSearch_Lib
                 return;
             }
 
-            // TODO: Reconsider sort approaches; this is a bit slow.
+            // TODO: Reconsider sort approaches, this is a bit slow.
 
             // Remove the status to be changed from the list if we didn't already do so.
             SearchListings.Remove(listingToSort);

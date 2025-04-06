@@ -51,15 +51,30 @@ namespace XSearch_Lib
         /// Placeholder pattern for search URL page count.
         /// Largely deprecated.
         /// </summary>
-        public const string DomainUrl_PageCount_PlaceholderPattern = "<<pageCount>>";
+        public static readonly string DomainUrl_PageCount_PlaceholderPattern = "<<pageCount>>";
 
         /// <summary>
         /// Placeholder pattern for search URL search term.
         /// </summary>
-        public const string DomainUrl_SearchTerm_PlaceholderPattern = "<<searchTerm>>";
+        public static readonly string DomainUrl_SearchTerm_PlaceholderPattern = "<<searchTerm>>";
 
-        public const string Tooltip_Title_Generic_Error = "Invalid tooltip title";
-        public const string Tooltip_Body_Generic_Error = "Invalid tooltip body text.";
+        /// <summary>
+        /// Generic title for any error-handling tooltips that weren't given a more specific title.
+        /// </summary>
+        public static readonly string Tooltip_Title_Generic_Error = "Invalid tooltip title";
 
+        /// <summary>
+        /// Generic body for any error-handling tooltips that weren't given a more specific body.
+        /// </summary>
+        public static readonly string Tooltip_Body_Generic_Error = "Invalid tooltip body text.";
+
+        /// <summary>
+        /// Defines the placeholder patterns expected by search patterns.
+        /// Used to be larger and a strict requirement, but is now merely a suggestion for flexibility.
+        /// </summary>
+        public static readonly HashSet<string> RequiredSearchPlaceholderPatterns =
+        [
+            DomainUrl_SearchTerm_PlaceholderPattern
+        ];
     }
 }

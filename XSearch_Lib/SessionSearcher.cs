@@ -476,24 +476,6 @@ namespace XSearch_Lib
 
                         js.ExecuteScript("window.open(arguments[0]);", linkToCheck.GetAttribute("href"));
 
-                        // Old link fetching method below; this was found less reliable than the above.
-                        // TODO: Remove once pushed to repo
-
-                        /*
-                        // Focus --> Control + Enter is important because it's much more consistent than MoveToElement and Click.
-                        // Any site with reasonable accessibility should respond to it.
-
-                        js.ExecuteScript("arguments[0].focus();", linkToCheck);
-
-                        new Actions(driver)
-                        .KeyDown(Keys.LeftControl)
-                        .KeyDown(Keys.Enter)
-                        .KeyUp(Keys.Enter)
-                        .KeyUp(Keys.LeftControl)
-                        .Build()
-                        .Perform();
-                        */
-
                         IList<string> otherWindowHandles = new List<string>(driver.WindowHandles).Where(x => x != currentPageSearchHandle).ToList();
                         foreach (string windowHandle in otherWindowHandles)
                         {
@@ -662,7 +644,8 @@ namespace XSearch_Lib
                         d => !string.IsNullOrEmpty(d.Title) && !string.IsNullOrEmpty(d.Url));
 
                     title = driver.Title;
-                    // TODO: On some domains, like the Steam workshop, the listing ID is part of the query. How can we ensure these get in?
+
+                    // TODO: On some domains, like the Steam workshop, the listing ID is part of the query. We should address this eventually.
                     url = new Uri(driver.Url).GetLeftPart(UriPartial.Path);
 
                     // Make sure we escape the loop.

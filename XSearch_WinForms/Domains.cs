@@ -300,7 +300,7 @@ namespace XSearch_WinForms
                 return;
             }
             selectedDomain.NoSearchResultsXpath.RemoveAt(xpathEditorComboBox.SelectedIndex);
-            // TODO: Make a method for these control calls and call them within the handlers instead of calling the handlers directly
+
             xpathEditorComboBox_SelectedIndexChanged(sender, e);
         }
 

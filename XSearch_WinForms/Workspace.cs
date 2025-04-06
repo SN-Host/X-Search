@@ -137,7 +137,6 @@ namespace XSearch_WinForms
 
         /// <summary>
         /// Checks if the pull search menu is active.
-        /// TODO: Replace with a nullable prop, most likely.
         /// </summary>
         public bool PullSearchWindowActive()
         {
@@ -301,7 +300,6 @@ namespace XSearch_WinForms
         {
             if (this.mainDataGridView.Columns[e.ColumnIndex] is DataGridViewImageColumn)
             {
-                // TODO: Replace with WindowsFormsApplication1.Properties.Resources refs
                 string imagePath = (e.Value ?? string.Empty).ToString().Trim();
                 if (!string.IsNullOrEmpty(imagePath))
                 {

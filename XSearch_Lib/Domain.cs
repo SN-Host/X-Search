@@ -1,51 +1,11 @@
-﻿using System;
-using System.ComponentModel;
-using System.Data;
-using System.Net.Mail;
-using System.Text;
+﻿using System.ComponentModel;
 using System.Text.RegularExpressions;
-using System.Xml.Serialization;
 using static XSearch_Lib.XSearch_Strings;
 
 namespace XSearch_Lib
 {
     public class Domain : INotifyPropertyChanged
     {
-
-        // CONSTANTS //
-
-        // TODO: Convert to readonly props as part of a static class. https://stackoverflow.com/questions/1724025/whats-the-best-way-to-store-a-group-of-constants-that-my-program-uses
-
-        /// <summary>
-        /// Placeholder pattern for search URL page count.
-        /// Largely deprecated.
-        /// </summary>
-        public const string URL_PAGECOUNT_PLACEHOLDER_PATTERN = "<<pageCount>>";
-
-        /// <summary>
-        /// Placeholder pattern for search URL search term.
-        /// </summary>
-        public const string URL_SEARCHTERM_PLACEHOLDER_PATTERN = "<<searchTerm>>";
-
-        /// <summary>
-        /// Generic title for any error-handling tooltips that weren't given a more specific title.
-        /// </summary>
-        public const string TOOLTIP_TITLE_GENERIC_ERROR = "Invalid tooltip title";
-
-        /// <summary>
-        /// Generic body for any error-handling tooltips that weren't given a more specific body.
-        /// </summary>
-        public const string TOOLTIP_BODY_GENERIC_ERROR = "Invalid tooltip body text.";
-
-        /// <summary>
-        /// Defines the placeholder patterns expected by search patterns.
-        /// Used to be larger and a strict requirement, but is now merely a suggestion for flexibility.
-        /// </summary>
-        private static readonly HashSet<string> RequiredSearchPlaceholderPatterns =
-        [
-            URL_SEARCHTERM_PLACEHOLDER_PATTERN
-        ];
-
         // FIELDS //
 
         /// <summary>
@@ -189,7 +149,7 @@ namespace XSearch_Lib
             string[] delimitedTerms = searchTerm.Split(" ");
 
             // Determine the count of search term placeholders in the search URL pattern given for this domain.
-            int placeholdersInUrl = Regex.Matches(resolvedSearchUrl, URL_SEARCHTERM_PLACEHOLDER_PATTERN).Count;
+            int placeholdersInUrl = Regex.Matches(resolvedSearchUrl, DomainUrl_SearchTerm_PlaceholderPattern).Count;
 
             // Placeholder count must match the count of the delimited terms for delimited substitution.
             // Otherwise, we will simply use the whole search term for every placeholder.
@@ -199,7 +159,7 @@ namespace XSearch_Lib
             }
 
             // Replace each instance of the placeholder pattern with delimited search terms of the appropriate index.
-            string escape = Regex.Escape(URL_SEARCHTERM_PLACEHOLDER_PATTERN);
+            string escape = Regex.Escape(DomainUrl_SearchTerm_PlaceholderPattern);
             int termIndex = 0;
             string result = Regex.Replace(SearchUrlPattern, escape, (m) => delimitedTerms[termIndex + 1 >= delimitedTerms.Length ? termIndex : termIndex++]);
 

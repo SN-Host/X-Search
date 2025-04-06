@@ -134,7 +134,6 @@ namespace XSearch_Lib
                 {
                     tooltipTitle += tooltipTitle == string.Empty ? TOOLTIP_TITLE_WARNING_NOPLACEHOLDER : ", " + TOOLTIP_TITLE_WARNING_NOPLACEHOLDER;
 
-                    // TODO: Replace with constant?
                     string tmpTooltipText = string.Format("You must include the placeholder pattern {0}.", placeholderPattern);
 
                     // Change tooltip string if this pattern allows invalid inputs.
