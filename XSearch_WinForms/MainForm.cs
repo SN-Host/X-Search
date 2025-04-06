@@ -5,20 +5,14 @@ using static XSearch_WinForms.Workspace;
 using System.ComponentModel;
 using XSearch_Lib;
 using OpenQA.Selenium.DevTools.V131.Network;
+using System.Diagnostics;
+using System;
 
 namespace XSearch_WinForms
 {
 
     public partial class MainForm : Form
     {
-
-        // CONSTANTS // 
-
-        /// <summary>
-        /// Defaults to five minutes.
-        /// </summary>
-        private static readonly int autosaveInterval = 5000 * 300;
-
         // FIELDS //
 
         /// <summary>
@@ -250,10 +244,6 @@ namespace XSearch_WinForms
         /// <summary>
         /// Frames a child form in the main form's viewport.
         /// </summary>
-        /// <param name="button">The button this request is coming from.</param>
-        /// <param name="form">The form to frame.</param>
-        /// <param name="controlPanel">The panel from the child form containing its toolbox options.</param>
-        /// <param name="frameLabelText">The text to change frameLabel to.</param>
         public void ChangeFrame(Button button, Form form, Panel controlPanel, string frameLabelText)
         {
             WinformsUIUtilities.FrameForm(framingPanel, ref currentFramedForm, form);
@@ -266,36 +256,28 @@ namespace XSearch_WinForms
             frameLabel.Text = frameLabelText;
         }
 
-        /// <summary>
-        /// Changes the framed menu to the workspace.
-        /// </summary>
         private void workspaceButton_Click(object sender, EventArgs e)
         {
             ChangeFrame((Button)sender, Workspace, Workspace.controlPanel, Workspace.Text);
         }
 
-        /// <summary>
-        /// Changes the framed menu to the domains menu.
-        /// </summary>
         private void domainsButton_Click(object sender, EventArgs e)
         {
             ChangeFrame((Button)sender, Domains, Domains.controlPanel, Domains.Text);
         }
 
-        /// <summary>
-        /// Will provide program settings in the future.
-        /// </summary>
         private void settingsButton_Click(object sender, EventArgs e)
         {
             ChangeFrame((Button)sender, Settings, new Panel(), Settings.Text);
         }
 
         /// <summary>
-        /// Will link to documentation in the future.
+        /// Links to user documentation.
+        /// TODO: Open a file instead if the server can't be reached.
         /// </summary>
         private void helpButton_Click(object sender, EventArgs e)
         {
-
+            Process.Start(new ProcessStartInfo("https://github.com/SN-Host/X-Search/blob/master/README.md") { UseShellExecute = true });
         }
 
         /// <summary>

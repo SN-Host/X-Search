@@ -310,7 +310,6 @@
             // 
             helpButton.BackColor = Color.FromArgb(250, 250, 255);
             helpButton.Dock = DockStyle.Top;
-            helpButton.Enabled = false;
             helpButton.FlatAppearance.BorderSize = 0;
             helpButton.FlatStyle = FlatStyle.Flat;
             helpButton.Font = new Font("Segoe UI Variable Text", 10F);
