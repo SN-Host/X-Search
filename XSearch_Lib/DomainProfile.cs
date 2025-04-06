@@ -25,19 +25,9 @@ namespace XSearch_Lib
 		[XmlIgnore]
 		public IEnumerable<Domain> ActiveDomains => Domains.Where(x => x.Active);
 
-		public string GetNewIdForDomain(Domain domain)
-		{
-			string newId = domain.GetHashCode().ToString();
-
-			// If the ID is already used in the domain, come up with a new one.
-			while (Domains.Where(x => x.DomainId == newId).Count() > 0)
-			{
-				// What to do here to modify the hash code, if anything?
-			}
-
-			return newId;
-		}
-
+        /// <summary>
+        /// Serializes a domain profile to XML given a stream.
+        /// </summary>
 		public void SaveToFile(Stream stream, string filePath)
 		{
 			LastFilePath = filePath;
@@ -49,6 +39,9 @@ namespace XSearch_Lib
 			stream.Close();
         }
 
+        /// <summary>
+        /// Deserializes a domain profile from XML given a stream.
+        /// </summary>
         public void LoadFromFile(Stream stream, Action<Domain, ErrorReportArgs> onSearchUrlPatternRejected)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(DomainProfile));
@@ -72,31 +65,6 @@ namespace XSearch_Lib
             }
 
             stream.Close();
-        }
-
-        /// <summary>
-        /// Load an entire domain profile from a file.
-        /// <seealso cref="LoadFromFile(Stream, Action{Domain, ErrorReportArgs})">LoadFromFile</seealso> was preferred because it allowed manual control over copied data and prevented dangling references.
-        /// </summary>
-        public static DomainProfile? TryGetDomainProfileFromStream(Stream stream, Action<Domain, ErrorReportArgs> onSearchUrlPatternRejected)
-        {
-            XmlSerializer serializer = new XmlSerializer(typeof(DomainProfile));
-
-            DomainProfile? profile = serializer.Deserialize(stream) as DomainProfile;
-
-            if (profile == null)
-            {
-                return profile;
-            }
-
-            foreach (Domain domain in profile.Domains)
-            {
-				domain.OnSearchUrlPatternRejected += (sender, e) => onSearchUrlPatternRejected(sender, e);
-            }
-
-            stream.Close();
-
-            return profile;
         }
     }
 }

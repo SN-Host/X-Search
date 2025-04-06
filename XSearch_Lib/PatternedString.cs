@@ -94,8 +94,6 @@ namespace XSearch_Lib
         /// <summary>
         /// Default predicate for checking validity of an entered string's validity for this pattern.
         /// </summary>
-        /// <param name="rawPattern"></param>
-        /// <returns></returns>
         private bool DefaultPatternPredicate(string rawPattern)
         {
             bool validated = true;

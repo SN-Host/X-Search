@@ -22,6 +22,11 @@ namespace XSearch_Lib
         /// For items yet to be evaluated. Highest sort priority.
         /// </summary>
         public static ListingStatus UnevaluatedStatus = new ListingStatus("O", "O", 1, nameof(UnevaluatedStatus));
+        
+        /// <summary>
+        /// Used in resolving Status IDs between sessions.
+        /// </summary>
+        public static Dictionary<string, ListingStatus> IdToStatus = new Dictionary<string, ListingStatus>();
 
         static CommonStatus()
         {
@@ -29,7 +34,6 @@ namespace XSearch_Lib
             IdToStatus.Add(UnevaluatedStatus.StatusId, UnevaluatedStatus);
         }
 
-        public static Dictionary<string, ListingStatus> IdToStatus = new Dictionary<string, ListingStatus>();
 
     }
 }
