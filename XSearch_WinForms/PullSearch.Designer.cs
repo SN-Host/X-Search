@@ -34,6 +34,7 @@
             controlContainerPanel = new Panel();
             searchTermContainerPanel = new Panel();
             pullSearchButton = new Button();
+            mainImageList = new ImageList(components);
             pageCountPanel = new Panel();
             resultsPerDomainNumericUpDown = new NumericUpDown();
             pageCountLabel = new Label();
@@ -58,7 +59,7 @@
             editorPanel.Location = new Point(0, 0);
             editorPanel.Name = "editorPanel";
             editorPanel.Padding = new Padding(5);
-            editorPanel.Size = new Size(502, 159);
+            editorPanel.Size = new Size(502, 177);
             editorPanel.TabIndex = 7;
             // 
             // controlContainerPanel
@@ -68,7 +69,7 @@
             controlContainerPanel.Location = new Point(5, 35);
             controlContainerPanel.Name = "controlContainerPanel";
             controlContainerPanel.Padding = new Padding(5);
-            controlContainerPanel.Size = new Size(492, 119);
+            controlContainerPanel.Size = new Size(492, 137);
             controlContainerPanel.TabIndex = 7;
             // 
             // searchTermContainerPanel
@@ -80,27 +81,35 @@
             searchTermContainerPanel.Dock = DockStyle.Fill;
             searchTermContainerPanel.Location = new Point(5, 5);
             searchTermContainerPanel.Name = "searchTermContainerPanel";
-            searchTermContainerPanel.Size = new Size(482, 109);
+            searchTermContainerPanel.Size = new Size(482, 127);
             searchTermContainerPanel.TabIndex = 14;
             // 
             // pullSearchButton
             // 
-            pullSearchButton.BackColor = Color.FromArgb(200, 200, 240);
+            pullSearchButton.BackColor = Color.FromArgb(250, 250, 255);
             pullSearchButton.Dock = DockStyle.Top;
             pullSearchButton.FlatAppearance.BorderSize = 0;
             pullSearchButton.FlatStyle = FlatStyle.Flat;
             pullSearchButton.Font = new Font("Segoe UI Variable Display", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            pullSearchButton.Image = Properties.Resources.placeholder_25x25_dark;
             pullSearchButton.ImageAlign = ContentAlignment.MiddleRight;
+            pullSearchButton.ImageKey = "PullIcon.png";
+            pullSearchButton.ImageList = mainImageList;
             pullSearchButton.Location = new Point(0, 70);
             pullSearchButton.Name = "pullSearchButton";
             pullSearchButton.Padding = new Padding(5, 0, 0, 0);
-            pullSearchButton.Size = new Size(482, 36);
+            pullSearchButton.Size = new Size(482, 54);
             pullSearchButton.TabIndex = 22;
             pullSearchButton.Text = "   Pull now";
             pullSearchButton.TextImageRelation = TextImageRelation.ImageBeforeText;
             pullSearchButton.UseVisualStyleBackColor = false;
             pullSearchButton.Click += pullSearchButton_Click;
+            // 
+            // mainImageList
+            // 
+            mainImageList.ColorDepth = ColorDepth.Depth32Bit;
+            mainImageList.ImageStream = (ImageListStreamer)resources.GetObject("mainImageList.ImageStream");
+            mainImageList.TransparentColor = Color.Transparent;
+            mainImageList.Images.SetKeyName(0, "PullIcon.png");
             // 
             // pageCountPanel
             // 
@@ -200,7 +209,7 @@
             AutoScaleDimensions = new SizeF(96F, 96F);
             AutoScaleMode = AutoScaleMode.Dpi;
             BackColor = Color.FromArgb(250, 250, 255);
-            ClientSize = new Size(502, 159);
+            ClientSize = new Size(502, 177);
             Controls.Add(editorPanel);
             Font = new Font("Segoe UI Variable Text Semibold", 11.25F, FontStyle.Bold);
             ForeColor = Color.FromArgb(50, 50, 100);
@@ -237,5 +246,6 @@
         private NumericUpDown resultsPerDomainNumericUpDown;
         private Button pullSearchButton;
         private ToolTip mainToolTip;
+        private ImageList mainImageList;
     }
 }

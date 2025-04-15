@@ -223,10 +223,10 @@ namespace XSearch_WinForms
         /// <summary>
         /// Changes a button's color to imply selection.
         /// </summary>
-        public void ApplySelectedButtonColor(Button curSelection, ref Button oldSelection, Color newColor, Color? possibleDefaultColor = null)
+        public void ApplySelectedButtonColor(Button curSelection, ref Button oldSelection, Color newColor, Color? defaultColorOverride = null)
         {
             // Use class default if parameter wasn't given.
-            if (possibleDefaultColor is not Color defaultColor)
+            if (defaultColorOverride is not Color defaultColor)
             {
                 defaultColor = DefaultButtonColor;
             }
@@ -250,7 +250,7 @@ namespace XSearch_WinForms
             WinformsUIUtilities.FramePanel(selectionSettingsPanel, controlPanel);
 
             // Ensure the button the request came from is highlighted.
-            ApplySelectedButtonColor(button, ref selectedMainMenuButton, SelectedButtonColor);
+            //ApplySelectedButtonColor(button, ref selectedMainMenuButton, SelectedButtonColor);
 
             // Change frameLabel's text to reflect the frame change.
             frameLabel.Text = frameLabelText;

@@ -294,7 +294,7 @@ namespace XSearch_WinForms
         }
 
         /// <summary>
-        /// Allows strings to be used as resource paths for the purposes of displaying status images.
+        /// Allows strings to be used as resource paths for the purposes of displaying image columns.
         /// </summary>
         private void mainDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
@@ -303,7 +303,7 @@ namespace XSearch_WinForms
                 string imagePath = (e.Value ?? string.Empty).ToString().Trim();
                 if (!string.IsNullOrEmpty(imagePath))
                 {
-                    e.Value = XSearch_WinForms.Properties.Resources.ResourceManager.GetObject(imagePath);
+                    e.Value = Properties.Resources.ResourceManager.GetObject(imagePath);
                 }
             }
         }
@@ -329,33 +329,25 @@ namespace XSearch_WinForms
         }
 
         /// <summary>
-        /// Clears a listing at the selected index.
+        /// Clears listings at selected indexes.
         /// </summary>
         private void clearListingButton_Click(object sender, EventArgs e)
         {
-            if (CurrentRowIndex < 0)
+            int count = mainDataGridView.SelectedRows.Count;
+
+            if (count <= 0)
             {
                 return;
             }
 
-            DialogResult clear = MessageBox.Show($"Clear {SearchListings[CurrentRowIndex].Title} of domain {SearchListings[CurrentRowIndex].DomainName}?", "Clear listing?", MessageBoxButtons.YesNo);
+            DialogResult clear = MessageBox.Show($"Clear {count} {(count > 1 ? "listings" : "listing")}? \n(Note: Clearing listings will cause X-Search to pull them again later!)", "Clear listings?", MessageBoxButtons.YesNo);
 
             if (clear == DialogResult.Yes)
             {
-                SearchListings.RemoveAt(CurrentRowIndex);
-            }
-        }
-
-        /// <summary>
-        /// Clears all listings.
-        /// </summary>
-        private void clearAllButton_Click(object sender, EventArgs e)
-        {
-            DialogResult clear = MessageBox.Show($"Clear all listings?", "Clear listings?", MessageBoxButtons.YesNo);
-
-            if (clear == DialogResult.Yes)
-            {
-                SearchListings.Clear();
+                foreach (DataGridViewRow row in mainDataGridView.SelectedRows)
+                {
+                    SearchListings.RemoveAt(row.Index);
+                }
             }
         }
 

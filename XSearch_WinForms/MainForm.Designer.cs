@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             infoPanel = new Panel();
             toolsContainerPanel = new Panel();
             selectionSettingsPanel = new Panel();
@@ -49,6 +50,7 @@
             controlPanel = new Panel();
             indexContainerPanel = new Panel();
             helpButton = new Button();
+            mainImageList = new ImageList(components);
             settingsButton = new Button();
             domainsButton = new Button();
             workspaceButton = new Button();
@@ -90,21 +92,22 @@
             toolsContainerPanel.Controls.Add(selectionSettingsPanel);
             toolsContainerPanel.Controls.Add(workspaceToolLabel);
             toolsContainerPanel.Dock = DockStyle.Fill;
-            toolsContainerPanel.Location = new Point(0, 205);
+            toolsContainerPanel.Location = new Point(0, 241);
             toolsContainerPanel.Margin = new Padding(0);
             toolsContainerPanel.Name = "toolsContainerPanel";
             toolsContainerPanel.Padding = new Padding(0, 5, 0, 5);
-            toolsContainerPanel.Size = new Size(190, 260);
+            toolsContainerPanel.Size = new Size(190, 224);
             toolsContainerPanel.TabIndex = 2;
             // 
             // selectionSettingsPanel
             // 
             selectionSettingsPanel.BackColor = Color.FromArgb(250, 250, 255);
+            selectionSettingsPanel.BackgroundImageLayout = ImageLayout.Stretch;
             selectionSettingsPanel.Dock = DockStyle.Fill;
             selectionSettingsPanel.Location = new Point(0, 35);
             selectionSettingsPanel.Margin = new Padding(0);
             selectionSettingsPanel.Name = "selectionSettingsPanel";
-            selectionSettingsPanel.Size = new Size(190, 220);
+            selectionSettingsPanel.Size = new Size(190, 184);
             selectionSettingsPanel.TabIndex = 0;
             // 
             // workspaceToolLabel
@@ -135,6 +138,8 @@
             // statusPanel
             // 
             statusPanel.BackColor = Color.FromArgb(250, 250, 255);
+            statusPanel.BackgroundImage = Properties.Resources.BG2;
+            statusPanel.BackgroundImageLayout = ImageLayout.Stretch;
             statusPanel.Controls.Add(statusReportPanel);
             statusPanel.Controls.Add(searchProgressPanel);
             statusPanel.Controls.Add(rowInfoPanel);
@@ -148,6 +153,7 @@
             // statusReportPanel
             // 
             statusReportPanel.AutoScroll = true;
+            statusReportPanel.BackColor = Color.FromArgb(250, 250, 255);
             statusReportPanel.Controls.Add(statusReportLabel);
             statusReportPanel.Controls.Add(currentStatusHeader);
             statusReportPanel.Dock = DockStyle.Fill;
@@ -187,6 +193,7 @@
             // 
             // searchProgressPanel
             // 
+            searchProgressPanel.BackColor = Color.FromArgb(250, 250, 255);
             searchProgressPanel.Controls.Add(searchProgressLabel);
             searchProgressPanel.Controls.Add(searchProgressHeaderLabel);
             searchProgressPanel.Dock = DockStyle.Bottom;
@@ -222,6 +229,7 @@
             // 
             // rowInfoPanel
             // 
+            rowInfoPanel.BackColor = Color.FromArgb(250, 250, 255);
             rowInfoPanel.Controls.Add(rowInfoLabel);
             rowInfoPanel.Controls.Add(rowInfoHeaderLabel);
             rowInfoPanel.Dock = DockStyle.Bottom;
@@ -277,7 +285,7 @@
             controlContainerPanel.Margin = new Padding(0);
             controlContainerPanel.Name = "controlContainerPanel";
             controlContainerPanel.Padding = new Padding(0, 0, 0, 5);
-            controlContainerPanel.Size = new Size(190, 205);
+            controlContainerPanel.Size = new Size(190, 241);
             controlContainerPanel.TabIndex = 0;
             // 
             // controlPanel
@@ -289,12 +297,14 @@
             controlPanel.Dock = DockStyle.Fill;
             controlPanel.Location = new Point(0, 0);
             controlPanel.Name = "controlPanel";
-            controlPanel.Size = new Size(190, 200);
+            controlPanel.Size = new Size(190, 236);
             controlPanel.TabIndex = 0;
             // 
             // indexContainerPanel
             // 
             indexContainerPanel.AutoScroll = true;
+            indexContainerPanel.BackColor = Color.FromArgb(250, 250, 255);
+            indexContainerPanel.BackgroundImageLayout = ImageLayout.Stretch;
             indexContainerPanel.Controls.Add(helpButton);
             indexContainerPanel.Controls.Add(settingsButton);
             indexContainerPanel.Controls.Add(domainsButton);
@@ -303,7 +313,7 @@
             indexContainerPanel.Location = new Point(0, 39);
             indexContainerPanel.Name = "indexContainerPanel";
             indexContainerPanel.Padding = new Padding(0, 10, 0, 10);
-            indexContainerPanel.Size = new Size(190, 161);
+            indexContainerPanel.Size = new Size(190, 197);
             indexContainerPanel.TabIndex = 1;
             // 
             // helpButton
@@ -313,18 +323,31 @@
             helpButton.FlatAppearance.BorderSize = 0;
             helpButton.FlatStyle = FlatStyle.Flat;
             helpButton.Font = new Font("Segoe UI Variable Text", 10F);
-            helpButton.Image = Properties.Resources.placeholder_25x25_dark;
             helpButton.ImageAlign = ContentAlignment.MiddleLeft;
-            helpButton.Location = new Point(0, 118);
+            helpButton.ImageKey = "HelpIcon.png";
+            helpButton.ImageList = mainImageList;
+            helpButton.Location = new Point(0, 145);
             helpButton.Name = "helpButton";
             helpButton.Padding = new Padding(5, 0, 0, 0);
-            helpButton.Size = new Size(190, 36);
+            helpButton.Size = new Size(190, 45);
             helpButton.TabIndex = 7;
             helpButton.Text = "   Help";
             helpButton.TextImageRelation = TextImageRelation.ImageBeforeText;
             mainToolTip.SetToolTip(helpButton, "View X-Search documentation and support.");
             helpButton.UseVisualStyleBackColor = false;
             helpButton.Click += helpButton_Click;
+            // 
+            // mainImageList
+            // 
+            mainImageList.ColorDepth = ColorDepth.Depth32Bit;
+            mainImageList.ImageStream = (ImageListStreamer)resources.GetObject("mainImageList.ImageStream");
+            mainImageList.TransparentColor = Color.Transparent;
+            mainImageList.Images.SetKeyName(0, "DomainsIcon.png");
+            mainImageList.Images.SetKeyName(1, "WorkspaceIcon.png");
+            mainImageList.Images.SetKeyName(2, "SettingsIcon.png");
+            mainImageList.Images.SetKeyName(3, "HelpIcon.png");
+            mainImageList.Images.SetKeyName(4, "Test.png");
+            mainImageList.Images.SetKeyName(5, "BG.png");
             // 
             // settingsButton
             // 
@@ -333,12 +356,13 @@
             settingsButton.FlatAppearance.BorderSize = 0;
             settingsButton.FlatStyle = FlatStyle.Flat;
             settingsButton.Font = new Font("Segoe UI Variable Text", 10F);
-            settingsButton.Image = Properties.Resources.placeholder_25x25_dark;
             settingsButton.ImageAlign = ContentAlignment.MiddleLeft;
-            settingsButton.Location = new Point(0, 82);
+            settingsButton.ImageKey = "SettingsIcon.png";
+            settingsButton.ImageList = mainImageList;
+            settingsButton.Location = new Point(0, 100);
             settingsButton.Name = "settingsButton";
             settingsButton.Padding = new Padding(5, 0, 0, 0);
-            settingsButton.Size = new Size(190, 36);
+            settingsButton.Size = new Size(190, 45);
             settingsButton.TabIndex = 6;
             settingsButton.Text = "   Settings";
             settingsButton.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -353,12 +377,13 @@
             domainsButton.FlatAppearance.BorderSize = 0;
             domainsButton.FlatStyle = FlatStyle.Flat;
             domainsButton.Font = new Font("Segoe UI Variable Text", 10F);
-            domainsButton.Image = Properties.Resources.placeholder_25x25_dark;
             domainsButton.ImageAlign = ContentAlignment.MiddleLeft;
-            domainsButton.Location = new Point(0, 46);
+            domainsButton.ImageKey = "DomainsIcon.png";
+            domainsButton.ImageList = mainImageList;
+            domainsButton.Location = new Point(0, 55);
             domainsButton.Name = "domainsButton";
             domainsButton.Padding = new Padding(5, 0, 0, 0);
-            domainsButton.Size = new Size(190, 36);
+            domainsButton.Size = new Size(190, 45);
             domainsButton.TabIndex = 3;
             domainsButton.Text = "   Domains";
             domainsButton.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -373,12 +398,13 @@
             workspaceButton.FlatAppearance.BorderSize = 0;
             workspaceButton.FlatStyle = FlatStyle.Flat;
             workspaceButton.Font = new Font("Segoe UI Variable Text", 10F);
-            workspaceButton.Image = Properties.Resources.placeholder_25x25_dark;
             workspaceButton.ImageAlign = ContentAlignment.MiddleLeft;
+            workspaceButton.ImageKey = "WorkspaceIcon.png";
+            workspaceButton.ImageList = mainImageList;
             workspaceButton.Location = new Point(0, 10);
             workspaceButton.Name = "workspaceButton";
             workspaceButton.Padding = new Padding(5, 0, 0, 0);
-            workspaceButton.Size = new Size(190, 36);
+            workspaceButton.Size = new Size(190, 45);
             workspaceButton.TabIndex = 2;
             workspaceButton.Text = "   Workspace";
             workspaceButton.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -412,6 +438,7 @@
             // workspaceContainerPanel
             // 
             workspaceContainerPanel.BackColor = Color.FromArgb(250, 250, 255);
+            workspaceContainerPanel.BackgroundImage = Properties.Resources.BG2;
             workspaceContainerPanel.Controls.Add(framingPanel);
             workspaceContainerPanel.Controls.Add(frameLabel);
             workspaceContainerPanel.Dock = DockStyle.Fill;
@@ -423,6 +450,7 @@
             // framingPanel
             // 
             framingPanel.BackColor = Color.FromArgb(250, 250, 255);
+            framingPanel.BackgroundImageLayout = ImageLayout.Stretch;
             framingPanel.Dock = DockStyle.Fill;
             framingPanel.Location = new Point(0, 39);
             framingPanel.Name = "framingPanel";
@@ -436,6 +464,7 @@
             frameLabel.Dock = DockStyle.Top;
             frameLabel.Font = new Font("Segoe UI Variable Text Light", 15F, FontStyle.Bold);
             frameLabel.ForeColor = Color.FromArgb(250, 250, 255);
+            frameLabel.ImageKey = "BG2.png";
             frameLabel.Location = new Point(0, 0);
             frameLabel.Name = "frameLabel";
             frameLabel.Size = new Size(676, 39);
@@ -459,7 +488,7 @@
             Controls.Add(infoPanel);
             DoubleBuffered = true;
             Font = new Font("Segoe UI Variable Text Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            ForeColor = Color.FromArgb(50, 50, 100);
+            ForeColor = Color.FromArgb(0, 0, 20);
             Margin = new Padding(5);
             Name = "MainForm";
             Padding = new Padding(15);
@@ -516,5 +545,6 @@
         private Label rowInfoHeaderLabel;
         internal Label rowInfoLabel;
         private ToolTip mainToolTip;
+        private ImageList mainImageList;
     }
 }

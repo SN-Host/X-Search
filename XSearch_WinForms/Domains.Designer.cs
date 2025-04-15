@@ -40,6 +40,7 @@
             listingUrlPatternDataGridViewColumn = new DataGridViewTextBoxColumn();
             controlPanel = new Panel();
             loadDomainsButton = new Button();
+            mainImageList = new ImageList(components);
             saveDomainsButton = new Button();
             removeDomainButton = new Button();
             addNewDomainButton = new Button();
@@ -191,12 +192,13 @@
             loadDomainsButton.FlatAppearance.BorderSize = 0;
             loadDomainsButton.FlatStyle = FlatStyle.Flat;
             loadDomainsButton.Font = new Font("Segoe UI Variable Text", 10F);
-            loadDomainsButton.Image = Properties.Resources.placeholder_25x25_dark;
             loadDomainsButton.ImageAlign = ContentAlignment.MiddleLeft;
-            loadDomainsButton.Location = new Point(0, 144);
+            loadDomainsButton.ImageKey = "LoadIcon.png";
+            loadDomainsButton.ImageList = mainImageList;
+            loadDomainsButton.Location = new Point(0, 180);
             loadDomainsButton.Name = "loadDomainsButton";
             loadDomainsButton.Padding = new Padding(5, 0, 0, 0);
-            loadDomainsButton.Size = new Size(165, 36);
+            loadDomainsButton.Size = new Size(165, 45);
             loadDomainsButton.TabIndex = 7;
             loadDomainsButton.Text = "  Load domains";
             loadDomainsButton.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -204,18 +206,30 @@
             loadDomainsButton.UseVisualStyleBackColor = true;
             loadDomainsButton.Click += loadDomainsButton_Click;
             // 
+            // mainImageList
+            // 
+            mainImageList.ColorDepth = ColorDepth.Depth32Bit;
+            mainImageList.ImageStream = (ImageListStreamer)resources.GetObject("mainImageList.ImageStream");
+            mainImageList.TransparentColor = Color.Transparent;
+            mainImageList.Images.SetKeyName(0, "ToggleDomainIcon.png");
+            mainImageList.Images.SetKeyName(1, "RemoveDomainIcon.png");
+            mainImageList.Images.SetKeyName(2, "AddDomainIcon.png");
+            mainImageList.Images.SetKeyName(3, "SaveIcon.png");
+            mainImageList.Images.SetKeyName(4, "LoadIcon.png");
+            // 
             // saveDomainsButton
             // 
             saveDomainsButton.Dock = DockStyle.Top;
             saveDomainsButton.FlatAppearance.BorderSize = 0;
             saveDomainsButton.FlatStyle = FlatStyle.Flat;
             saveDomainsButton.Font = new Font("Segoe UI Variable Text", 10F);
-            saveDomainsButton.Image = Properties.Resources.placeholder_25x25_dark;
             saveDomainsButton.ImageAlign = ContentAlignment.MiddleLeft;
-            saveDomainsButton.Location = new Point(0, 108);
+            saveDomainsButton.ImageKey = "SaveIcon.png";
+            saveDomainsButton.ImageList = mainImageList;
+            saveDomainsButton.Location = new Point(0, 135);
             saveDomainsButton.Name = "saveDomainsButton";
             saveDomainsButton.Padding = new Padding(5, 0, 0, 0);
-            saveDomainsButton.Size = new Size(165, 36);
+            saveDomainsButton.Size = new Size(165, 45);
             saveDomainsButton.TabIndex = 6;
             saveDomainsButton.Text = "  Save domains";
             saveDomainsButton.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -229,12 +243,13 @@
             removeDomainButton.FlatAppearance.BorderSize = 0;
             removeDomainButton.FlatStyle = FlatStyle.Flat;
             removeDomainButton.Font = new Font("Segoe UI Variable Text", 10F);
-            removeDomainButton.Image = Properties.Resources.placeholder_25x25_dark;
             removeDomainButton.ImageAlign = ContentAlignment.MiddleLeft;
-            removeDomainButton.Location = new Point(0, 72);
+            removeDomainButton.ImageKey = "RemoveDomainIcon.png";
+            removeDomainButton.ImageList = mainImageList;
+            removeDomainButton.Location = new Point(0, 90);
             removeDomainButton.Name = "removeDomainButton";
             removeDomainButton.Padding = new Padding(5, 0, 0, 0);
-            removeDomainButton.Size = new Size(165, 36);
+            removeDomainButton.Size = new Size(165, 45);
             removeDomainButton.TabIndex = 4;
             removeDomainButton.Text = "  Remove domain";
             removeDomainButton.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -248,12 +263,13 @@
             addNewDomainButton.FlatAppearance.BorderSize = 0;
             addNewDomainButton.FlatStyle = FlatStyle.Flat;
             addNewDomainButton.Font = new Font("Segoe UI Variable Text", 10F);
-            addNewDomainButton.Image = Properties.Resources.placeholder_25x25_dark;
             addNewDomainButton.ImageAlign = ContentAlignment.MiddleLeft;
-            addNewDomainButton.Location = new Point(0, 36);
+            addNewDomainButton.ImageKey = "AddDomainIcon.png";
+            addNewDomainButton.ImageList = mainImageList;
+            addNewDomainButton.Location = new Point(0, 45);
             addNewDomainButton.Name = "addNewDomainButton";
             addNewDomainButton.Padding = new Padding(5, 0, 0, 0);
-            addNewDomainButton.Size = new Size(165, 36);
+            addNewDomainButton.Size = new Size(165, 45);
             addNewDomainButton.TabIndex = 3;
             addNewDomainButton.Text = "  Add domain";
             addNewDomainButton.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -267,12 +283,13 @@
             enableDomainButton.FlatAppearance.BorderSize = 0;
             enableDomainButton.FlatStyle = FlatStyle.Flat;
             enableDomainButton.Font = new Font("Segoe UI Variable Text", 10F);
-            enableDomainButton.Image = Properties.Resources.placeholder_25x25_dark;
             enableDomainButton.ImageAlign = ContentAlignment.MiddleLeft;
+            enableDomainButton.ImageKey = "ToggleDomainIcon.png";
+            enableDomainButton.ImageList = mainImageList;
             enableDomainButton.Location = new Point(0, 0);
             enableDomainButton.Name = "enableDomainButton";
             enableDomainButton.Padding = new Padding(5, 0, 0, 0);
-            enableDomainButton.Size = new Size(165, 36);
+            enableDomainButton.Size = new Size(165, 45);
             enableDomainButton.TabIndex = 5;
             enableDomainButton.Text = "  Toggle active";
             enableDomainButton.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -632,5 +649,6 @@
         private ToolTip mainToolTip;
         internal SaveFileDialog domainsSaveFileDialog;
         internal OpenFileDialog domainsOpenFileDialog;
+        private ImageList mainImageList;
     }
 }

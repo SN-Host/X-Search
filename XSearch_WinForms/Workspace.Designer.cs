@@ -44,10 +44,10 @@
             statusImages = new ImageList(components);
             controlPanel = new Panel();
             quickLoadButton = new Button();
+            mainImageList = new ImageList(components);
             quickSaveButton = new Button();
             loadSessionButton = new Button();
             saveSessionButton = new Button();
-            clearAllButton = new Button();
             clearListingButton = new Button();
             webPreviewButton = new Button();
             uncrossButton = new Button();
@@ -72,7 +72,7 @@
             dataGridViewPanel.Location = new Point(165, 0);
             dataGridViewPanel.Name = "dataGridViewPanel";
             dataGridViewPanel.Padding = new Padding(10, 0, 10, 10);
-            dataGridViewPanel.Size = new Size(619, 415);
+            dataGridViewPanel.Size = new Size(619, 498);
             dataGridViewPanel.TabIndex = 3;
             // 
             // mainDataGridView
@@ -110,7 +110,7 @@
             mainDataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             mainDataGridView.ShowCellErrors = false;
             mainDataGridView.ShowRowErrors = false;
-            mainDataGridView.Size = new Size(599, 366);
+            mainDataGridView.Size = new Size(599, 449);
             mainDataGridView.TabIndex = 2;
             mainDataGridView.VirtualMode = true;
             mainDataGridView.CellFormatting += mainDataGridView_CellFormatting;
@@ -196,7 +196,6 @@
             controlPanel.Controls.Add(quickSaveButton);
             controlPanel.Controls.Add(loadSessionButton);
             controlPanel.Controls.Add(saveSessionButton);
-            controlPanel.Controls.Add(clearAllButton);
             controlPanel.Controls.Add(clearListingButton);
             controlPanel.Controls.Add(webPreviewButton);
             controlPanel.Controls.Add(uncrossButton);
@@ -207,7 +206,7 @@
             controlPanel.Location = new Point(0, 0);
             controlPanel.Margin = new Padding(0);
             controlPanel.Name = "controlPanel";
-            controlPanel.Size = new Size(165, 415);
+            controlPanel.Size = new Size(165, 498);
             controlPanel.TabIndex = 2;
             controlPanel.Visible = false;
             // 
@@ -217,12 +216,13 @@
             quickLoadButton.FlatAppearance.BorderSize = 0;
             quickLoadButton.FlatStyle = FlatStyle.Flat;
             quickLoadButton.Font = new Font("Segoe UI Variable Text", 10F);
-            quickLoadButton.Image = Properties.Resources.placeholder_25x25_dark;
             quickLoadButton.ImageAlign = ContentAlignment.MiddleLeft;
-            quickLoadButton.Location = new Point(0, 360);
+            quickLoadButton.ImageKey = "QuickLoadIcon.png";
+            quickLoadButton.ImageList = mainImageList;
+            quickLoadButton.Location = new Point(0, 405);
             quickLoadButton.Name = "quickLoadButton";
             quickLoadButton.Padding = new Padding(5, 0, 0, 0);
-            quickLoadButton.Size = new Size(165, 36);
+            quickLoadButton.Size = new Size(165, 45);
             quickLoadButton.TabIndex = 14;
             quickLoadButton.Text = "  Quick load";
             quickLoadButton.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -230,18 +230,35 @@
             quickLoadButton.UseVisualStyleBackColor = true;
             quickLoadButton.Click += quickLoadButton_Click;
             // 
+            // mainImageList
+            // 
+            mainImageList.ColorDepth = ColorDepth.Depth32Bit;
+            mainImageList.ImageStream = (ImageListStreamer)resources.GetObject("mainImageList.ImageStream");
+            mainImageList.TransparentColor = Color.Transparent;
+            mainImageList.Images.SetKeyName(0, "PullIcon.png");
+            mainImageList.Images.SetKeyName(1, "CancelPullIcon.png");
+            mainImageList.Images.SetKeyName(2, "CrossIcon.png");
+            mainImageList.Images.SetKeyName(3, "UncrossIcon.png");
+            mainImageList.Images.SetKeyName(4, "WebPreviewIcon.png");
+            mainImageList.Images.SetKeyName(5, "DeleteIcon.png");
+            mainImageList.Images.SetKeyName(6, "LoadIcon.png");
+            mainImageList.Images.SetKeyName(7, "QuickLoadIcon.png");
+            mainImageList.Images.SetKeyName(8, "QuickSaveIcon.png");
+            mainImageList.Images.SetKeyName(9, "SaveIcon.png");
+            // 
             // quickSaveButton
             // 
             quickSaveButton.Dock = DockStyle.Top;
             quickSaveButton.FlatAppearance.BorderSize = 0;
             quickSaveButton.FlatStyle = FlatStyle.Flat;
             quickSaveButton.Font = new Font("Segoe UI Variable Text", 10F);
-            quickSaveButton.Image = Properties.Resources.placeholder_25x25_dark;
             quickSaveButton.ImageAlign = ContentAlignment.MiddleLeft;
-            quickSaveButton.Location = new Point(0, 324);
+            quickSaveButton.ImageKey = "QuickSaveIcon.png";
+            quickSaveButton.ImageList = mainImageList;
+            quickSaveButton.Location = new Point(0, 360);
             quickSaveButton.Name = "quickSaveButton";
             quickSaveButton.Padding = new Padding(5, 0, 0, 0);
-            quickSaveButton.Size = new Size(165, 36);
+            quickSaveButton.Size = new Size(165, 45);
             quickSaveButton.TabIndex = 13;
             quickSaveButton.Text = "  Quick save";
             quickSaveButton.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -255,12 +272,13 @@
             loadSessionButton.FlatAppearance.BorderSize = 0;
             loadSessionButton.FlatStyle = FlatStyle.Flat;
             loadSessionButton.Font = new Font("Segoe UI Variable Text", 10F);
-            loadSessionButton.Image = Properties.Resources.placeholder_25x25_dark;
             loadSessionButton.ImageAlign = ContentAlignment.MiddleLeft;
-            loadSessionButton.Location = new Point(0, 288);
+            loadSessionButton.ImageKey = "LoadIcon.png";
+            loadSessionButton.ImageList = mainImageList;
+            loadSessionButton.Location = new Point(0, 315);
             loadSessionButton.Name = "loadSessionButton";
             loadSessionButton.Padding = new Padding(5, 0, 0, 0);
-            loadSessionButton.Size = new Size(165, 36);
+            loadSessionButton.Size = new Size(165, 45);
             loadSessionButton.TabIndex = 9;
             loadSessionButton.Text = "  Load session";
             loadSessionButton.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -274,12 +292,13 @@
             saveSessionButton.FlatAppearance.BorderSize = 0;
             saveSessionButton.FlatStyle = FlatStyle.Flat;
             saveSessionButton.Font = new Font("Segoe UI Variable Text", 10F);
-            saveSessionButton.Image = Properties.Resources.placeholder_25x25_dark;
             saveSessionButton.ImageAlign = ContentAlignment.MiddleLeft;
-            saveSessionButton.Location = new Point(0, 252);
+            saveSessionButton.ImageKey = "SaveIcon.png";
+            saveSessionButton.ImageList = mainImageList;
+            saveSessionButton.Location = new Point(0, 270);
             saveSessionButton.Name = "saveSessionButton";
             saveSessionButton.Padding = new Padding(5, 0, 0, 0);
-            saveSessionButton.Size = new Size(165, 36);
+            saveSessionButton.Size = new Size(165, 45);
             saveSessionButton.TabIndex = 8;
             saveSessionButton.Text = "  Save session";
             saveSessionButton.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -287,37 +306,19 @@
             saveSessionButton.UseVisualStyleBackColor = true;
             saveSessionButton.Click += saveSessionButton_Click;
             // 
-            // clearAllButton
-            // 
-            clearAllButton.Dock = DockStyle.Top;
-            clearAllButton.FlatAppearance.BorderSize = 0;
-            clearAllButton.FlatStyle = FlatStyle.Flat;
-            clearAllButton.Font = new Font("Segoe UI Variable Text", 10F);
-            clearAllButton.Image = Properties.Resources.placeholder_25x25_dark;
-            clearAllButton.ImageAlign = ContentAlignment.MiddleLeft;
-            clearAllButton.Location = new Point(0, 216);
-            clearAllButton.Name = "clearAllButton";
-            clearAllButton.Padding = new Padding(5, 0, 0, 0);
-            clearAllButton.Size = new Size(165, 36);
-            clearAllButton.TabIndex = 7;
-            clearAllButton.Text = "  Clear all listings";
-            clearAllButton.TextImageRelation = TextImageRelation.ImageBeforeText;
-            mainToolTip.SetToolTip(clearAllButton, resources.GetString("clearAllButton.ToolTip"));
-            clearAllButton.UseVisualStyleBackColor = true;
-            clearAllButton.Click += clearAllButton_Click;
-            // 
             // clearListingButton
             // 
             clearListingButton.Dock = DockStyle.Top;
             clearListingButton.FlatAppearance.BorderSize = 0;
             clearListingButton.FlatStyle = FlatStyle.Flat;
             clearListingButton.Font = new Font("Segoe UI Variable Text", 10F);
-            clearListingButton.Image = Properties.Resources.placeholder_25x25_dark;
             clearListingButton.ImageAlign = ContentAlignment.MiddleLeft;
-            clearListingButton.Location = new Point(0, 180);
+            clearListingButton.ImageKey = "DeleteIcon.png";
+            clearListingButton.ImageList = mainImageList;
+            clearListingButton.Location = new Point(0, 225);
             clearListingButton.Name = "clearListingButton";
             clearListingButton.Padding = new Padding(5, 0, 0, 0);
-            clearListingButton.Size = new Size(165, 36);
+            clearListingButton.Size = new Size(165, 45);
             clearListingButton.TabIndex = 11;
             clearListingButton.Text = "  Clear listing";
             clearListingButton.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -331,12 +332,13 @@
             webPreviewButton.FlatAppearance.BorderSize = 0;
             webPreviewButton.FlatStyle = FlatStyle.Flat;
             webPreviewButton.Font = new Font("Segoe UI Variable Text", 10F);
-            webPreviewButton.Image = Properties.Resources.placeholder_25x25_dark;
             webPreviewButton.ImageAlign = ContentAlignment.MiddleLeft;
-            webPreviewButton.Location = new Point(0, 144);
+            webPreviewButton.ImageKey = "WebPreviewIcon.png";
+            webPreviewButton.ImageList = mainImageList;
+            webPreviewButton.Location = new Point(0, 180);
             webPreviewButton.Name = "webPreviewButton";
             webPreviewButton.Padding = new Padding(5, 0, 0, 0);
-            webPreviewButton.Size = new Size(165, 36);
+            webPreviewButton.Size = new Size(165, 45);
             webPreviewButton.TabIndex = 4;
             webPreviewButton.Text = "  Web preview";
             webPreviewButton.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -350,12 +352,13 @@
             uncrossButton.FlatAppearance.BorderSize = 0;
             uncrossButton.FlatStyle = FlatStyle.Flat;
             uncrossButton.Font = new Font("Segoe UI Variable Text", 10F);
-            uncrossButton.Image = Properties.Resources.placeholder_25x25_dark;
             uncrossButton.ImageAlign = ContentAlignment.MiddleLeft;
-            uncrossButton.Location = new Point(0, 108);
+            uncrossButton.ImageKey = "UncrossIcon.png";
+            uncrossButton.ImageList = mainImageList;
+            uncrossButton.Location = new Point(0, 135);
             uncrossButton.Name = "uncrossButton";
             uncrossButton.Padding = new Padding(5, 0, 0, 0);
-            uncrossButton.Size = new Size(165, 36);
+            uncrossButton.Size = new Size(165, 45);
             uncrossButton.TabIndex = 6;
             uncrossButton.Text = "  Uncross";
             uncrossButton.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -369,12 +372,13 @@
             crossButton.FlatAppearance.BorderSize = 0;
             crossButton.FlatStyle = FlatStyle.Flat;
             crossButton.Font = new Font("Segoe UI Variable Text", 10F);
-            crossButton.Image = Properties.Resources.placeholder_25x25_dark;
             crossButton.ImageAlign = ContentAlignment.MiddleLeft;
-            crossButton.Location = new Point(0, 72);
+            crossButton.ImageKey = "CrossIcon.png";
+            crossButton.ImageList = mainImageList;
+            crossButton.Location = new Point(0, 90);
             crossButton.Name = "crossButton";
             crossButton.Padding = new Padding(5, 0, 0, 0);
-            crossButton.Size = new Size(165, 36);
+            crossButton.Size = new Size(165, 45);
             crossButton.TabIndex = 5;
             crossButton.Text = "  Cross";
             crossButton.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -388,12 +392,13 @@
             cancelPullButton.FlatAppearance.BorderSize = 0;
             cancelPullButton.FlatStyle = FlatStyle.Flat;
             cancelPullButton.Font = new Font("Segoe UI Variable Text", 10F);
-            cancelPullButton.Image = Properties.Resources.placeholder_25x25_dark;
             cancelPullButton.ImageAlign = ContentAlignment.MiddleLeft;
-            cancelPullButton.Location = new Point(0, 36);
+            cancelPullButton.ImageKey = "CancelPullIcon.png";
+            cancelPullButton.ImageList = mainImageList;
+            cancelPullButton.Location = new Point(0, 45);
             cancelPullButton.Name = "cancelPullButton";
             cancelPullButton.Padding = new Padding(5, 0, 0, 0);
-            cancelPullButton.Size = new Size(165, 36);
+            cancelPullButton.Size = new Size(165, 45);
             cancelPullButton.TabIndex = 12;
             cancelPullButton.Text = "  Cancel pull";
             cancelPullButton.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -407,12 +412,13 @@
             pullSearchButton.FlatAppearance.BorderSize = 0;
             pullSearchButton.FlatStyle = FlatStyle.Flat;
             pullSearchButton.Font = new Font("Segoe UI Variable Text", 10F);
-            pullSearchButton.Image = Properties.Resources.placeholder_25x25_dark;
             pullSearchButton.ImageAlign = ContentAlignment.MiddleLeft;
+            pullSearchButton.ImageKey = "PullIcon.png";
+            pullSearchButton.ImageList = mainImageList;
             pullSearchButton.Location = new Point(0, 0);
             pullSearchButton.Name = "pullSearchButton";
             pullSearchButton.Padding = new Padding(5, 0, 0, 0);
-            pullSearchButton.Size = new Size(165, 36);
+            pullSearchButton.Size = new Size(165, 45);
             pullSearchButton.TabIndex = 10;
             pullSearchButton.Text = "  Pull search";
             pullSearchButton.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -437,7 +443,7 @@
             AutoScaleDimensions = new SizeF(96F, 96F);
             AutoScaleMode = AutoScaleMode.Dpi;
             BackColor = Color.FromArgb(250, 250, 255);
-            ClientSize = new Size(784, 415);
+            ClientSize = new Size(784, 498);
             Controls.Add(dataGridViewPanel);
             Controls.Add(controlPanel);
             DoubleBuffered = true;
@@ -462,7 +468,6 @@
         private Button webPreviewButton;
         private Button crossButton;
         private Button uncrossButton;
-        private Button clearAllButton;
         private Button saveSessionButton;
         private Button loadSessionButton;
         private Button pullSearchButton;
@@ -480,5 +485,6 @@
         internal SaveFileDialog sessionSaveFileDialog;
         private Button quickLoadButton;
         private Button quickSaveButton;
+        private ImageList mainImageList;
     }
 }

@@ -63,6 +63,56 @@ namespace XSearch_WinForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap BG {
+            get {
+                object obj = ResourceManager.GetObject("BG", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap BG2 {
+            get {
+                object obj = ResourceManager.GetObject("BG2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap CrossedBubbleBig {
+            get {
+                object obj = ResourceManager.GetObject("CrossedBubbleBig", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap CrossedStatusBubble {
+            get {
+                object obj = ResourceManager.GetObject("CrossedStatusBubble", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap CrossStatus {
+            get {
+                object obj = ResourceManager.GetObject("CrossStatus", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap daybg {
             get {
                 object obj = ResourceManager.GetObject("daybg", resourceCulture);
@@ -86,6 +136,36 @@ namespace XSearch_WinForms.Properties {
         internal static System.Drawing.Bitmap placeholder_25x25_dark {
             get {
                 object obj = ResourceManager.GetObject("placeholder 25x25 dark", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap UnevalStatus {
+            get {
+                object obj = ResourceManager.GetObject("UnevalStatus", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap UnevaluatedBubbleBig {
+            get {
+                object obj = ResourceManager.GetObject("UnevaluatedBubbleBig", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap UnevaluatedStatusBubble {
+            get {
+                object obj = ResourceManager.GetObject("UnevaluatedStatusBubble", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
