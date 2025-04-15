@@ -89,10 +89,10 @@
             // 
             dataGridViewPanel.Controls.Add(mainDataGridView);
             dataGridViewPanel.Dock = DockStyle.Fill;
-            dataGridViewPanel.Location = new Point(165, 0);
+            dataGridViewPanel.Location = new Point(201, 0);
             dataGridViewPanel.Name = "dataGridViewPanel";
             dataGridViewPanel.Padding = new Padding(10);
-            dataGridViewPanel.Size = new Size(817, 420);
+            dataGridViewPanel.Size = new Size(781, 420);
             dataGridViewPanel.TabIndex = 5;
             // 
             // mainDataGridView
@@ -130,7 +130,7 @@
             mainDataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             mainDataGridView.ShowCellErrors = false;
             mainDataGridView.ShowRowErrors = false;
-            mainDataGridView.Size = new Size(797, 400);
+            mainDataGridView.Size = new Size(761, 400);
             mainDataGridView.TabIndex = 2;
             mainDataGridView.SelectionChanged += mainDataGridView_SelectionChanged;
             // 
@@ -182,7 +182,7 @@
             controlPanel.Location = new Point(0, 0);
             controlPanel.Margin = new Padding(0);
             controlPanel.Name = "controlPanel";
-            controlPanel.Size = new Size(165, 655);
+            controlPanel.Size = new Size(201, 655);
             controlPanel.TabIndex = 4;
             controlPanel.Visible = false;
             // 
@@ -191,14 +191,14 @@
             loadDomainsButton.Dock = DockStyle.Top;
             loadDomainsButton.FlatAppearance.BorderSize = 0;
             loadDomainsButton.FlatStyle = FlatStyle.Flat;
-            loadDomainsButton.Font = new Font("Segoe UI Variable Text", 10F);
+            loadDomainsButton.Font = new Font("Segoe UI Variable Text Semibold", 10F, FontStyle.Bold);
             loadDomainsButton.ImageAlign = ContentAlignment.MiddleLeft;
             loadDomainsButton.ImageKey = "LoadIcon.png";
             loadDomainsButton.ImageList = mainImageList;
             loadDomainsButton.Location = new Point(0, 180);
             loadDomainsButton.Name = "loadDomainsButton";
             loadDomainsButton.Padding = new Padding(5, 0, 0, 0);
-            loadDomainsButton.Size = new Size(165, 45);
+            loadDomainsButton.Size = new Size(201, 45);
             loadDomainsButton.TabIndex = 7;
             loadDomainsButton.Text = "  Load domains";
             loadDomainsButton.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -222,14 +222,14 @@
             saveDomainsButton.Dock = DockStyle.Top;
             saveDomainsButton.FlatAppearance.BorderSize = 0;
             saveDomainsButton.FlatStyle = FlatStyle.Flat;
-            saveDomainsButton.Font = new Font("Segoe UI Variable Text", 10F);
+            saveDomainsButton.Font = new Font("Segoe UI Variable Text Semibold", 10F, FontStyle.Bold);
             saveDomainsButton.ImageAlign = ContentAlignment.MiddleLeft;
             saveDomainsButton.ImageKey = "SaveIcon.png";
             saveDomainsButton.ImageList = mainImageList;
             saveDomainsButton.Location = new Point(0, 135);
             saveDomainsButton.Name = "saveDomainsButton";
             saveDomainsButton.Padding = new Padding(5, 0, 0, 0);
-            saveDomainsButton.Size = new Size(165, 45);
+            saveDomainsButton.Size = new Size(201, 45);
             saveDomainsButton.TabIndex = 6;
             saveDomainsButton.Text = "  Save domains";
             saveDomainsButton.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -242,14 +242,14 @@
             removeDomainButton.Dock = DockStyle.Top;
             removeDomainButton.FlatAppearance.BorderSize = 0;
             removeDomainButton.FlatStyle = FlatStyle.Flat;
-            removeDomainButton.Font = new Font("Segoe UI Variable Text", 10F);
+            removeDomainButton.Font = new Font("Segoe UI Variable Text Semibold", 10F, FontStyle.Bold);
             removeDomainButton.ImageAlign = ContentAlignment.MiddleLeft;
             removeDomainButton.ImageKey = "RemoveDomainIcon.png";
             removeDomainButton.ImageList = mainImageList;
             removeDomainButton.Location = new Point(0, 90);
             removeDomainButton.Name = "removeDomainButton";
             removeDomainButton.Padding = new Padding(5, 0, 0, 0);
-            removeDomainButton.Size = new Size(165, 45);
+            removeDomainButton.Size = new Size(201, 45);
             removeDomainButton.TabIndex = 4;
             removeDomainButton.Text = "  Remove domain";
             removeDomainButton.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -262,14 +262,14 @@
             addNewDomainButton.Dock = DockStyle.Top;
             addNewDomainButton.FlatAppearance.BorderSize = 0;
             addNewDomainButton.FlatStyle = FlatStyle.Flat;
-            addNewDomainButton.Font = new Font("Segoe UI Variable Text", 10F);
+            addNewDomainButton.Font = new Font("Segoe UI Variable Text Semibold", 10F, FontStyle.Bold);
             addNewDomainButton.ImageAlign = ContentAlignment.MiddleLeft;
             addNewDomainButton.ImageKey = "AddDomainIcon.png";
             addNewDomainButton.ImageList = mainImageList;
             addNewDomainButton.Location = new Point(0, 45);
             addNewDomainButton.Name = "addNewDomainButton";
             addNewDomainButton.Padding = new Padding(5, 0, 0, 0);
-            addNewDomainButton.Size = new Size(165, 45);
+            addNewDomainButton.Size = new Size(201, 45);
             addNewDomainButton.TabIndex = 3;
             addNewDomainButton.Text = "  Add domain";
             addNewDomainButton.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -282,14 +282,14 @@
             enableDomainButton.Dock = DockStyle.Top;
             enableDomainButton.FlatAppearance.BorderSize = 0;
             enableDomainButton.FlatStyle = FlatStyle.Flat;
-            enableDomainButton.Font = new Font("Segoe UI Variable Text", 10F);
+            enableDomainButton.Font = new Font("Segoe UI Variable Text Semibold", 10F, FontStyle.Bold);
             enableDomainButton.ImageAlign = ContentAlignment.MiddleLeft;
             enableDomainButton.ImageKey = "ToggleDomainIcon.png";
             enableDomainButton.ImageList = mainImageList;
             enableDomainButton.Location = new Point(0, 0);
             enableDomainButton.Name = "enableDomainButton";
             enableDomainButton.Padding = new Padding(5, 0, 0, 0);
-            enableDomainButton.Size = new Size(165, 45);
+            enableDomainButton.Size = new Size(201, 45);
             enableDomainButton.TabIndex = 5;
             enableDomainButton.Text = "  Toggle active";
             enableDomainButton.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -302,10 +302,10 @@
             editorPanel.Controls.Add(controlContainerPanel);
             editorPanel.Controls.Add(domainEditorHeaderLabel);
             editorPanel.Dock = DockStyle.Bottom;
-            editorPanel.Location = new Point(165, 420);
+            editorPanel.Location = new Point(201, 420);
             editorPanel.Name = "editorPanel";
             editorPanel.Padding = new Padding(5);
-            editorPanel.Size = new Size(817, 235);
+            editorPanel.Size = new Size(781, 235);
             editorPanel.TabIndex = 6;
             // 
             // controlContainerPanel
@@ -315,7 +315,7 @@
             controlContainerPanel.Location = new Point(5, 35);
             controlContainerPanel.Name = "controlContainerPanel";
             controlContainerPanel.Padding = new Padding(5);
-            controlContainerPanel.Size = new Size(807, 195);
+            controlContainerPanel.Size = new Size(771, 195);
             controlContainerPanel.TabIndex = 7;
             // 
             // domainFieldsPanel
@@ -328,7 +328,7 @@
             domainFieldsPanel.Dock = DockStyle.Fill;
             domainFieldsPanel.Location = new Point(5, 5);
             domainFieldsPanel.Name = "domainFieldsPanel";
-            domainFieldsPanel.Size = new Size(797, 185);
+            domainFieldsPanel.Size = new Size(761, 185);
             domainFieldsPanel.TabIndex = 14;
             // 
             // xpathEditorPanel
@@ -341,7 +341,7 @@
             xpathEditorPanel.Location = new Point(0, 111);
             xpathEditorPanel.Name = "xpathEditorPanel";
             xpathEditorPanel.Padding = new Padding(5);
-            xpathEditorPanel.Size = new Size(797, 64);
+            xpathEditorPanel.Size = new Size(761, 64);
             xpathEditorPanel.TabIndex = 20;
             // 
             // xpathEditorTextBox
@@ -350,7 +350,7 @@
             xpathEditorTextBox.Font = new Font("Segoe UI", 10F);
             xpathEditorTextBox.Location = new Point(172, 32);
             xpathEditorTextBox.Name = "xpathEditorTextBox";
-            xpathEditorTextBox.Size = new Size(620, 25);
+            xpathEditorTextBox.Size = new Size(584, 25);
             xpathEditorTextBox.TabIndex = 11;
             xpathEditorTextBox.KeyUp += xpathEditorTextBox_KeyUp;
             // 
@@ -361,7 +361,7 @@
             xpathEditorContainerPanelTop.Dock = DockStyle.Top;
             xpathEditorContainerPanelTop.Location = new Point(172, 5);
             xpathEditorContainerPanelTop.Name = "xpathEditorContainerPanelTop";
-            xpathEditorContainerPanelTop.Size = new Size(620, 27);
+            xpathEditorContainerPanelTop.Size = new Size(584, 27);
             xpathEditorContainerPanelTop.TabIndex = 6;
             // 
             // xpathEditorComboBox
@@ -371,7 +371,7 @@
             xpathEditorComboBox.FormattingEnabled = true;
             xpathEditorComboBox.Location = new Point(0, 0);
             xpathEditorComboBox.Name = "xpathEditorComboBox";
-            xpathEditorComboBox.Size = new Size(465, 25);
+            xpathEditorComboBox.Size = new Size(429, 25);
             xpathEditorComboBox.TabIndex = 11;
             xpathEditorComboBox.SelectedIndexChanged += xpathEditorComboBox_SelectedIndexChanged;
             // 
@@ -380,7 +380,7 @@
             xpathButtonsPanel.Controls.Add(deleteXpathButton);
             xpathButtonsPanel.Controls.Add(addNewXpathButton);
             xpathButtonsPanel.Dock = DockStyle.Right;
-            xpathButtonsPanel.Location = new Point(465, 0);
+            xpathButtonsPanel.Location = new Point(429, 0);
             xpathButtonsPanel.Name = "xpathButtonsPanel";
             xpathButtonsPanel.Padding = new Padding(5, 0, 5, 3);
             xpathButtonsPanel.Size = new Size(155, 27);
@@ -444,7 +444,7 @@
             listingUrlPanel.Location = new Point(0, 74);
             listingUrlPanel.Name = "listingUrlPanel";
             listingUrlPanel.Padding = new Padding(5);
-            listingUrlPanel.Size = new Size(797, 37);
+            listingUrlPanel.Size = new Size(761, 37);
             listingUrlPanel.TabIndex = 19;
             // 
             // listingUrlTextBox
@@ -453,7 +453,7 @@
             listingUrlTextBox.Font = new Font("Segoe UI", 10F);
             listingUrlTextBox.Location = new Point(172, 5);
             listingUrlTextBox.Name = "listingUrlTextBox";
-            listingUrlTextBox.Size = new Size(620, 25);
+            listingUrlTextBox.Size = new Size(584, 25);
             listingUrlTextBox.TabIndex = 4;
             // 
             // listingUrlLabel
@@ -480,7 +480,7 @@
             searchUrlPanel.Location = new Point(0, 37);
             searchUrlPanel.Name = "searchUrlPanel";
             searchUrlPanel.Padding = new Padding(5);
-            searchUrlPanel.Size = new Size(797, 37);
+            searchUrlPanel.Size = new Size(761, 37);
             searchUrlPanel.TabIndex = 17;
             // 
             // searchUrlTextBox
@@ -489,7 +489,7 @@
             searchUrlTextBox.Font = new Font("Segoe UI", 10F);
             searchUrlTextBox.Location = new Point(172, 5);
             searchUrlTextBox.Name = "searchUrlTextBox";
-            searchUrlTextBox.Size = new Size(620, 25);
+            searchUrlTextBox.Size = new Size(584, 25);
             searchUrlTextBox.TabIndex = 5;
             searchUrlTextBox.KeyUp += searchUrlTextBox_KeyUp;
             // 
@@ -517,7 +517,7 @@
             labelPanel.Location = new Point(0, 0);
             labelPanel.Name = "labelPanel";
             labelPanel.Padding = new Padding(5);
-            labelPanel.Size = new Size(797, 37);
+            labelPanel.Size = new Size(761, 37);
             labelPanel.TabIndex = 16;
             // 
             // labelTextBox
@@ -526,7 +526,7 @@
             labelTextBox.Font = new Font("Segoe UI", 10F);
             labelTextBox.Location = new Point(172, 5);
             labelTextBox.Name = "labelTextBox";
-            labelTextBox.Size = new Size(620, 25);
+            labelTextBox.Size = new Size(584, 25);
             labelTextBox.TabIndex = 5;
             // 
             // labelLabel
@@ -552,7 +552,7 @@
             domainEditorHeaderLabel.Location = new Point(5, 5);
             domainEditorHeaderLabel.Name = "domainEditorHeaderLabel";
             domainEditorHeaderLabel.Padding = new Padding(5);
-            domainEditorHeaderLabel.Size = new Size(807, 30);
+            domainEditorHeaderLabel.Size = new Size(771, 30);
             domainEditorHeaderLabel.TabIndex = 9;
             domainEditorHeaderLabel.Text = "Domain editor";
             domainEditorHeaderLabel.TextAlign = ContentAlignment.MiddleCenter;
@@ -584,6 +584,7 @@
             Controls.Add(editorPanel);
             Controls.Add(controlPanel);
             DoubleBuffered = true;
+            Font = new Font("Segoe UI Variable Text Semibold", 11.25F, FontStyle.Bold);
             Name = "Domains";
             Text = "Domains";
             dataGridViewPanel.ResumeLayout(false);

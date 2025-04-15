@@ -94,6 +94,10 @@ namespace XSearch_WinForms
                     column.Visible = false;
                 }
             }
+
+            // Update image sizes based on client DPI, since Windows Forms is not good at handling this automatically.
+            float uiScale = WinformsUIUtilities.CalculateUIScaleFromClientDPI(this);
+            WinformsUIUtilities.ResizeImageListForDPIChange(mainImageList, uiScale);
         }
 
         public void BindData()

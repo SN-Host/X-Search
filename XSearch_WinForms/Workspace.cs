@@ -97,12 +97,17 @@ namespace XSearch_WinForms
             // Ensure our DataGridView is linked to our session's search listings
             BindData();
 
-            //  Ensure double buffering is enabled.
+            // Ensure double buffering is enabled.
             // It's a private field, so we have to use reflection here.
             Type dgvType = mainDataGridView.GetType();
             PropertyInfo? pi = dgvType.GetProperty("DoubleBuffered",
                 BindingFlags.Instance | BindingFlags.NonPublic);
             pi?.SetValue(mainDataGridView, true, null);
+
+            // Update image sizes based on client DPI, since Windows Forms is not good at handling this automatically.
+            float uiScale = WinformsUIUtilities.CalculateUIScaleFromClientDPI(this);
+            WinformsUIUtilities.ResizeImageListForDPIChange(mainImageList, uiScale);
+            WinformsUIUtilities.ResizeImageListForDPIChange(statusImageList, uiScale);
         }
 
         public void BindData()
@@ -160,7 +165,6 @@ namespace XSearch_WinForms
         {
             UpdateWebPreview();
             UpdateRowInfo();
-
         }
 
         private void UpdateWebPreview()
@@ -300,10 +304,14 @@ namespace XSearch_WinForms
         {
             if (this.mainDataGridView.Columns[e.ColumnIndex] is DataGridViewImageColumn)
             {
-                string imagePath = (e.Value ?? string.Empty).ToString().Trim();
-                if (!string.IsNullOrEmpty(imagePath))
+                string imageName = (e.Value ?? string.Empty).ToString().Trim();
+                if (!string.IsNullOrEmpty(imageName))
                 {
-                    e.Value = Properties.Resources.ResourceManager.GetObject(imagePath);
+                    if (statusImageList.Images.ContainsKey($"{imageName}.png"))
+                    {
+                        e.Value = statusImageList.Images[$"{imageName}.png"];
+                        return;
+                    }
                 }
             }
         }

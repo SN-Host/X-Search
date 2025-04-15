@@ -7,6 +7,9 @@ using XSearch_Lib;
 using OpenQA.Selenium.DevTools.V131.Network;
 using System.Diagnostics;
 using System;
+using System.Security.Cryptography.Xml;
+using static System.Windows.Forms.ImageList;
+using System.Windows.Forms;
 
 namespace XSearch_WinForms
 {
@@ -23,29 +26,29 @@ namespace XSearch_WinForms
         /// <summary>
         /// Current option selected from the main menu for highlighting purposes.
         /// </summary>
-        private Button? selectedMainMenuButton;
+        private Button? currentIndexSelection;
+
+        /// <summary>
+        /// Original color before
+        /// </summary>
+        private Color? currentIndexSelectionOriginalColor;
 
         // PROPERTIES //
 
         /// <summary>
-        /// Default color for selected buttons.
+        /// Default color for the text of selected buttons.
         /// </summary>
-        public static Color SelectedButtonColor { get; set; } = Color.FromArgb(230, 230, 240);
-
-        /// <summary>
-        /// Default color for buttons.
-        /// </summary>
-        public static Color DefaultButtonColor { get; set; } = Color.FromArgb(250, 250, 255);
+        public static Color SelectedButtonTextColor => Color.FromArgb(150, 150, 200);
 
         /// <summary>
         /// Default color for field entry textboxes.
         /// </summary>
-        public static Color DefaultFieldEntryColor { get; set; } = Color.White;
+        public static Color DefaultFieldEntryColor => Color.White;
 
         /// <summary>
         /// Default color for invalid field entry textboxes.
         /// </summary>
-        public static Color InvalidFieldEntryColor { get; set; } = Color.FromArgb(255, 200, 200);
+        public static Color InvalidFieldEntryColor => Color.FromArgb(255, 200, 200);
 
         /// <summary>
         /// Active workspace pane instance.
@@ -84,8 +87,15 @@ namespace XSearch_WinForms
 
             // Handle events for new search results.
             Program.CurrentSession.Searcher.OnNewSearchResults += OnNewSearchResults;
+
+            // Update image sizes based on client DPI, since Windows Forms is not good at handling this automatically.
+            float uiScale = WinformsUIUtilities.CalculateUIScaleFromClientDPI(this);
+            WinformsUIUtilities.ResizeImageListForDPIChange(mainImageList, uiScale);
         }
 
+        /// <summary>
+        /// Ensures user config options and autosave/autoload functionality is respected on startup.
+        /// </summary>
         public void LoadSettings()
         {
             Program.CurrentSession.Searcher.RunHeadless = Properties.Settings.Default.UseHeadlessBrowsing;
@@ -98,6 +108,9 @@ namespace XSearch_WinForms
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void TryAutoSaveOrLoad(bool loading = true, bool forced = false)
         {
             if (!Settings.AutoSave && !forced)
@@ -220,25 +233,23 @@ namespace XSearch_WinForms
             MessageBox.Show(eArgs.ErrorText, eArgs.ErrorTitle);
         }
 
-        /// <summary>
-        /// Changes a button's color to imply selection.
-        /// </summary>
-        public void ApplySelectedButtonColor(Button curSelection, ref Button oldSelection, Color newColor, Color? defaultColorOverride = null)
+        public void IndexButtonSelected(Button selectedButton)
         {
-            // Use class default if parameter wasn't given.
-            if (defaultColorOverride is not Color defaultColor)
+            if (selectedButton == currentIndexSelection)
             {
-                defaultColor = DefaultButtonColor;
+                return;
             }
 
-            curSelection.BackColor = newColor;
-
-            if (oldSelection != null)
+            // Ensure the original index selection is reverted.
+            if (currentIndexSelection != null && currentIndexSelectionOriginalColor != null)
             {
-                oldSelection.BackColor = defaultColor;
+                currentIndexSelection.ForeColor = (Color)currentIndexSelectionOriginalColor;
             }
 
-            oldSelection = curSelection;
+            currentIndexSelection = selectedButton;
+            currentIndexSelectionOriginalColor = selectedButton.ForeColor;
+
+            selectedButton.ForeColor = SelectedButtonTextColor;
         }
 
         /// <summary>
@@ -251,6 +262,7 @@ namespace XSearch_WinForms
 
             // Ensure the button the request came from is highlighted.
             //ApplySelectedButtonColor(button, ref selectedMainMenuButton, SelectedButtonColor);
+            IndexButtonSelected(button);
 
             // Change frameLabel's text to reflect the frame change.
             frameLabel.Text = frameLabelText;

@@ -90,7 +90,7 @@
             pullSearchButton.Dock = DockStyle.Top;
             pullSearchButton.FlatAppearance.BorderSize = 0;
             pullSearchButton.FlatStyle = FlatStyle.Flat;
-            pullSearchButton.Font = new Font("Segoe UI Variable Display", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            pullSearchButton.Font = new Font("Segoe UI Variable Text Semibold", 10F, FontStyle.Bold);
             pullSearchButton.ImageAlign = ContentAlignment.MiddleRight;
             pullSearchButton.ImageKey = "PullIcon.png";
             pullSearchButton.ImageList = mainImageList;
@@ -214,6 +214,7 @@
             Font = new Font("Segoe UI Variable Text Semibold", 11.25F, FontStyle.Bold);
             ForeColor = Color.FromArgb(50, 50, 100);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(4);
             MaximizeBox = false;
             MinimizeBox = false;

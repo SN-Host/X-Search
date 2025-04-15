@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PagePreview));
             previewWebView = new Microsoft.Web.WebView2.WinForms.WebView2();
             ((System.ComponentModel.ISupportInitialize)previewWebView).BeginInit();
             SuspendLayout();
@@ -52,6 +53,7 @@
             ClientSize = new Size(800, 450);
             Controls.Add(previewWebView);
             DoubleBuffered = true;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "PagePreview";
             Text = "X-Search: Page Preview";
             ((System.ComponentModel.ISupportInitialize)previewWebView).EndInit();

@@ -57,6 +57,7 @@
             sessionOpenFileDialog = new OpenFileDialog();
             sessionSaveFileDialog = new SaveFileDialog();
             mainToolTip = new ToolTip(components);
+            statusImageList = new ImageList(components);
             dataGridViewPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)mainDataGridView).BeginInit();
             searchPanel.SuspendLayout();
@@ -215,7 +216,7 @@
             quickLoadButton.Dock = DockStyle.Top;
             quickLoadButton.FlatAppearance.BorderSize = 0;
             quickLoadButton.FlatStyle = FlatStyle.Flat;
-            quickLoadButton.Font = new Font("Segoe UI Variable Text", 10F);
+            quickLoadButton.Font = new Font("Segoe UI Variable Text Semibold", 10F, FontStyle.Bold);
             quickLoadButton.ImageAlign = ContentAlignment.MiddleLeft;
             quickLoadButton.ImageKey = "QuickLoadIcon.png";
             quickLoadButton.ImageList = mainImageList;
@@ -245,13 +246,17 @@
             mainImageList.Images.SetKeyName(7, "QuickLoadIcon.png");
             mainImageList.Images.SetKeyName(8, "QuickSaveIcon.png");
             mainImageList.Images.SetKeyName(9, "SaveIcon.png");
+            mainImageList.Images.SetKeyName(10, "X.png");
+            mainImageList.Images.SetKeyName(11, "O.png");
+            mainImageList.Images.SetKeyName(12, "UnevaluatedStatusBubble.png");
+            mainImageList.Images.SetKeyName(13, "CrossedStatusBubble.png");
             // 
             // quickSaveButton
             // 
             quickSaveButton.Dock = DockStyle.Top;
             quickSaveButton.FlatAppearance.BorderSize = 0;
             quickSaveButton.FlatStyle = FlatStyle.Flat;
-            quickSaveButton.Font = new Font("Segoe UI Variable Text", 10F);
+            quickSaveButton.Font = new Font("Segoe UI Variable Text Semibold", 10F, FontStyle.Bold);
             quickSaveButton.ImageAlign = ContentAlignment.MiddleLeft;
             quickSaveButton.ImageKey = "QuickSaveIcon.png";
             quickSaveButton.ImageList = mainImageList;
@@ -271,7 +276,7 @@
             loadSessionButton.Dock = DockStyle.Top;
             loadSessionButton.FlatAppearance.BorderSize = 0;
             loadSessionButton.FlatStyle = FlatStyle.Flat;
-            loadSessionButton.Font = new Font("Segoe UI Variable Text", 10F);
+            loadSessionButton.Font = new Font("Segoe UI Variable Text Semibold", 10F, FontStyle.Bold);
             loadSessionButton.ImageAlign = ContentAlignment.MiddleLeft;
             loadSessionButton.ImageKey = "LoadIcon.png";
             loadSessionButton.ImageList = mainImageList;
@@ -291,7 +296,7 @@
             saveSessionButton.Dock = DockStyle.Top;
             saveSessionButton.FlatAppearance.BorderSize = 0;
             saveSessionButton.FlatStyle = FlatStyle.Flat;
-            saveSessionButton.Font = new Font("Segoe UI Variable Text", 10F);
+            saveSessionButton.Font = new Font("Segoe UI Variable Text Semibold", 10F, FontStyle.Bold);
             saveSessionButton.ImageAlign = ContentAlignment.MiddleLeft;
             saveSessionButton.ImageKey = "SaveIcon.png";
             saveSessionButton.ImageList = mainImageList;
@@ -311,7 +316,7 @@
             clearListingButton.Dock = DockStyle.Top;
             clearListingButton.FlatAppearance.BorderSize = 0;
             clearListingButton.FlatStyle = FlatStyle.Flat;
-            clearListingButton.Font = new Font("Segoe UI Variable Text", 10F);
+            clearListingButton.Font = new Font("Segoe UI Variable Text Semibold", 10F, FontStyle.Bold);
             clearListingButton.ImageAlign = ContentAlignment.MiddleLeft;
             clearListingButton.ImageKey = "DeleteIcon.png";
             clearListingButton.ImageList = mainImageList;
@@ -331,7 +336,7 @@
             webPreviewButton.Dock = DockStyle.Top;
             webPreviewButton.FlatAppearance.BorderSize = 0;
             webPreviewButton.FlatStyle = FlatStyle.Flat;
-            webPreviewButton.Font = new Font("Segoe UI Variable Text", 10F);
+            webPreviewButton.Font = new Font("Segoe UI Variable Text Semibold", 10F, FontStyle.Bold);
             webPreviewButton.ImageAlign = ContentAlignment.MiddleLeft;
             webPreviewButton.ImageKey = "WebPreviewIcon.png";
             webPreviewButton.ImageList = mainImageList;
@@ -351,7 +356,7 @@
             uncrossButton.Dock = DockStyle.Top;
             uncrossButton.FlatAppearance.BorderSize = 0;
             uncrossButton.FlatStyle = FlatStyle.Flat;
-            uncrossButton.Font = new Font("Segoe UI Variable Text", 10F);
+            uncrossButton.Font = new Font("Segoe UI Variable Text Semibold", 10F, FontStyle.Bold);
             uncrossButton.ImageAlign = ContentAlignment.MiddleLeft;
             uncrossButton.ImageKey = "UncrossIcon.png";
             uncrossButton.ImageList = mainImageList;
@@ -371,7 +376,7 @@
             crossButton.Dock = DockStyle.Top;
             crossButton.FlatAppearance.BorderSize = 0;
             crossButton.FlatStyle = FlatStyle.Flat;
-            crossButton.Font = new Font("Segoe UI Variable Text", 10F);
+            crossButton.Font = new Font("Segoe UI Variable Text Semibold", 10F, FontStyle.Bold);
             crossButton.ImageAlign = ContentAlignment.MiddleLeft;
             crossButton.ImageKey = "CrossIcon.png";
             crossButton.ImageList = mainImageList;
@@ -391,7 +396,7 @@
             cancelPullButton.Dock = DockStyle.Top;
             cancelPullButton.FlatAppearance.BorderSize = 0;
             cancelPullButton.FlatStyle = FlatStyle.Flat;
-            cancelPullButton.Font = new Font("Segoe UI Variable Text", 10F);
+            cancelPullButton.Font = new Font("Segoe UI Variable Text Semibold", 10F, FontStyle.Bold);
             cancelPullButton.ImageAlign = ContentAlignment.MiddleLeft;
             cancelPullButton.ImageKey = "CancelPullIcon.png";
             cancelPullButton.ImageList = mainImageList;
@@ -411,7 +416,7 @@
             pullSearchButton.Dock = DockStyle.Top;
             pullSearchButton.FlatAppearance.BorderSize = 0;
             pullSearchButton.FlatStyle = FlatStyle.Flat;
-            pullSearchButton.Font = new Font("Segoe UI Variable Text", 10F);
+            pullSearchButton.Font = new Font("Segoe UI Variable Text Semibold", 10F, FontStyle.Bold);
             pullSearchButton.ImageAlign = ContentAlignment.MiddleLeft;
             pullSearchButton.ImageKey = "PullIcon.png";
             pullSearchButton.ImageList = mainImageList;
@@ -437,6 +442,14 @@
             sessionSaveFileDialog.Filter = "X-Search Session Files|*.xssp";
             sessionSaveFileDialog.InitialDirectory = "Sessions";
             sessionSaveFileDialog.Title = "Save session";
+            // 
+            // statusImageList
+            // 
+            statusImageList.ColorDepth = ColorDepth.Depth32Bit;
+            statusImageList.ImageStream = (ImageListStreamer)resources.GetObject("statusImageList.ImageStream");
+            statusImageList.TransparentColor = Color.Transparent;
+            statusImageList.Images.SetKeyName(0, "CrossedStatusBubble.png");
+            statusImageList.Images.SetKeyName(1, "UnevaluatedStatusBubble.png");
             // 
             // Workspace
             // 
@@ -486,5 +499,6 @@
         private Button quickLoadButton;
         private Button quickSaveButton;
         private ImageList mainImageList;
+        private ImageList statusImageList;
     }
 }

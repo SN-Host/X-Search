@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.ImageList;
 
 namespace XSearch_WinForms
 {
@@ -14,9 +15,15 @@ namespace XSearch_WinForms
         // CONSTANTS //
 
         /// <summary>
+        /// Native DPI of the screen WinForms was built and tested on.
+        /// This is necessary because Windows Forms is not all that great at scaling things like images and text on different monitors.
+        /// </summary>
+        public static int NativeDPI => 96;
+
+        /// <summary>
         /// Default hover time for tooltips.
         /// </summary>
-        private static int TOOLTIP_HOVERTIME = 5000;
+        private static int TooltipHoverTime => 5000;
 
         /// <summary>
         /// Frames a form inside a panel.
@@ -70,11 +77,53 @@ namespace XSearch_WinForms
             else
             {
                 errorTooltip.ToolTipTitle = title;
-                errorTooltip.Show(body, textbox, 0, (int)(-textbox.Height * 1.75), TOOLTIP_HOVERTIME);
+                errorTooltip.Show(body, textbox, 0, (int)(-textbox.Height * 1.75), TooltipHoverTime);
                 textbox.BackColor = MainForm.InvalidFieldEntryColor;
-                await Task.Delay(TOOLTIP_HOVERTIME);
+                await Task.Delay(TooltipHoverTime);
                 textbox.BackColor = MainForm.DefaultFieldEntryColor;
             }
+        }
+
+        internal static void ResizeImageListForDPIChange(ImageList imageList, float uiScale)
+        {
+            int newWidth = (int)(imageList.ImageSize.Width * uiScale);
+            int newHeight = (int)(imageList.ImageSize.Height * uiScale);
+
+            // Must re-add images after changing ImageList size or they will not draw properly due to the Handle for the image list being recreated.
+
+            Dictionary<string, Image> ogImages = new Dictionary<string, Image>();
+
+            foreach (string imgKey in imageList.Images.Keys)
+            {
+                ogImages.Add(imgKey, imageList.Images[imgKey]);
+            }
+
+            imageList.ImageSize = new Size(newWidth, newHeight);
+
+            imageList.Images.Clear();
+
+            foreach (string imgKey in ogImages.Keys)
+            {
+                imageList.Images.Add(imgKey, ogImages[imgKey]);
+            }
+        }
+
+        internal static float CalculateUIScaleFromClientDPI(Control client)
+        {
+            float scale = 1f;
+
+            Graphics g = client.CreateGraphics();
+
+            try
+            {
+                scale = g.DpiX / NativeDPI;
+            }
+            finally
+            {
+                g.Dispose();
+            }
+
+            return scale;
         }
     }
 }
