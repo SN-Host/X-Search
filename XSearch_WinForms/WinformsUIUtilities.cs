@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Windows.Forms.ImageList;
@@ -12,8 +13,6 @@ namespace XSearch_WinForms
     /// </summary>
     internal class WinformsUIUtilities
     {
-        // CONSTANTS //
-
         /// <summary>
         /// Native DPI of the screen WinForms was built and tested on.
         /// This is necessary because Windows Forms is not all that great at scaling things like images and text on different monitors.
@@ -24,6 +23,16 @@ namespace XSearch_WinForms
         /// Default hover time for tooltips.
         /// </summary>
         private static int TooltipHoverTime => 5000;
+
+        /// <summary>
+        /// Default color for field entry textboxes.
+        /// </summary>
+        public static Color DefaultFieldEntryColor => Color.White;
+
+        /// <summary>
+        /// Default color for invalid field entry textboxes.
+        /// </summary>
+        public static Color InvalidFieldEntryColor => Color.FromArgb(255, 200, 200);
 
         /// <summary>
         /// Frames a form inside a panel.
@@ -72,18 +81,21 @@ namespace XSearch_WinForms
             if (!shouldShowToolTip)
             {
                 errorTooltip.Hide(textbox);
-                textbox.BackColor = MainForm.DefaultFieldEntryColor;
+                textbox.BackColor = DefaultFieldEntryColor;
             }
             else
             {
                 errorTooltip.ToolTipTitle = title;
                 errorTooltip.Show(body, textbox, 0, (int)(-textbox.Height * 1.75), TooltipHoverTime);
-                textbox.BackColor = MainForm.InvalidFieldEntryColor;
+                textbox.BackColor = InvalidFieldEntryColor;
                 await Task.Delay(TooltipHoverTime);
-                textbox.BackColor = MainForm.DefaultFieldEntryColor;
+                textbox.BackColor = DefaultFieldEntryColor;
             }
         }
 
+        /// <summary>
+        /// Resizes all elements of an imageList to match a given scale.
+        /// </summary>
         internal static void ResizeImageListForDPIChange(ImageList imageList, float uiScale)
         {
             int newWidth = (int)(imageList.ImageSize.Width * uiScale);
@@ -108,6 +120,9 @@ namespace XSearch_WinForms
             }
         }
 
+        /// <summary>
+        /// Calculates a relative scale based on the current client's DPI for scaling certain UI elements.
+        /// </summary>
         internal static float CalculateUIScaleFromClientDPI(Control client)
         {
             float scale = 1f;
@@ -124,6 +139,23 @@ namespace XSearch_WinForms
             }
 
             return scale;
+        }
+
+        /// <summary>
+        /// Sets the double buffered property to true for the control passed in and all of its contained controls.
+        /// </summary>
+        public static void SetAllControlsDoubleBuffered(Control control)
+        {
+            // This prop is private and properly setting it through any other means can be difficult, so we need reflection.
+            Type controlType = control.GetType();
+            PropertyInfo? pi = controlType.GetProperty("DoubleBuffered",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            pi?.SetValue(control, true, null);
+
+            foreach (Control childControl in control.Controls)
+            {
+                SetAllControlsDoubleBuffered(childControl);
+            }
         }
     }
 }

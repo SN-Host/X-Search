@@ -69,6 +69,9 @@ namespace XSearch_WinForms
             toggleTooltipsCheckBox.DataBindings.Add(nameof(toggleTooltipsCheckBox.Checked), this, nameof(ShowTooltips));
             autoSaveCheckBox.DataBindings.Add(nameof(autoSaveCheckBox.Checked), this, nameof(AutoSave));
             autoSavePathTextBox.DataBindings.Add(nameof(autoSavePathTextBox.Text), this, nameof(AutoSavePath));
+
+            // Ensure that all of the form's controls are double buffered for optimized rendering.
+            WinformsUIUtilities.SetAllControlsDoubleBuffered(this);
         }
 
         private void headlessCheckBox_CheckedChanged(object sender, EventArgs e)

@@ -10,6 +10,9 @@ using System;
 using System.Security.Cryptography.Xml;
 using static System.Windows.Forms.ImageList;
 using System.Windows.Forms;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 namespace XSearch_WinForms
 {
@@ -17,6 +20,11 @@ namespace XSearch_WinForms
     public partial class MainForm : Form
     {
         // FIELDS //
+
+        /// <summary>
+        /// Index of topmost item in the current scroll position in the workspace DataGridView.
+        /// </summary>
+        public int CurScrollPos = 0;
 
         /// <summary>
         /// The form currently framed in the main viewport.
@@ -31,7 +39,12 @@ namespace XSearch_WinForms
         /// <summary>
         /// Original color before
         /// </summary>
-        private Color? currentIndexSelectionOriginalColor;
+        private Color? currentIndexSelectionOriginalColor; 
+        
+        [DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, bool wParam, IntPtr lParam);
+
+        private const int WM_SETREDRAW = 0x000B;
 
         // PROPERTIES //
 
@@ -39,16 +52,6 @@ namespace XSearch_WinForms
         /// Default color for the text of selected buttons.
         /// </summary>
         public static Color SelectedButtonTextColor => Color.FromArgb(150, 150, 200);
-
-        /// <summary>
-        /// Default color for field entry textboxes.
-        /// </summary>
-        public static Color DefaultFieldEntryColor => Color.White;
-
-        /// <summary>
-        /// Default color for invalid field entry textboxes.
-        /// </summary>
-        public static Color InvalidFieldEntryColor => Color.FromArgb(255, 200, 200);
 
         /// <summary>
         /// Active workspace pane instance.
@@ -68,6 +71,9 @@ namespace XSearch_WinForms
         public MainForm()
         {
             InitializeComponent();
+
+            // Ensure that all of the form's controls are double buffered for optimized rendering.
+            WinformsUIUtilities.SetAllControlsDoubleBuffered(this);
 
             // Initialize main program tabs.
             Workspace = new Workspace(this);
@@ -198,15 +204,36 @@ namespace XSearch_WinForms
             if (InvokeRequired)
             {
                 // Note to self: It doesn't seem that this call has much of a negative performance impact. It takes about 4ms to run, so marshalling the thread events back to the UI thread shouldn't be that big of a deal.
-                Invoke(new MethodInvoker(() => { OnNewSearchResults(searchListings); }));
+                Invoke(new System.Windows.Forms.MethodInvoker(() => { OnNewSearchResults(searchListings); }));
                 return;
             }
             foreach (SearchListing sl in searchListings)
             {
-                // Insert the new listing and ensure it is sorted correctly.
-                Program.CurrentSession.SearchListings.Insert(0, sl);
-                Program.CurrentSession.ChangeListingStatus(sl, sl.Status);
+                AddNewListing(sl);
             }
+        }
+
+
+        /// <summary>
+        /// Adds new search listings on the UI thread while preventing the datagridview from automatically scrolling to any selected listings when updated.
+        /// </summary>
+        private void AddNewListing(SearchListing sl)
+        {
+            DataGridView dgv = Workspace.mainDataGridView;
+
+            // Suspending rendering during updating is important to ensuring we don't see any flickering before the row index is restored.
+            SendMessage(dgv.Handle, WM_SETREDRAW, false, IntPtr.Zero);
+
+            int rowIndex = dgv.FirstDisplayedScrollingRowIndex;
+
+            // Insert the new listing and ensure it is sorted correctly.
+            Program.CurrentSession.SearchListings.Insert(0, sl);
+            Program.CurrentSession.ChangeListingStatus(sl, sl.Status);
+
+            dgv.FirstDisplayedScrollingRowIndex = rowIndex;
+
+            SendMessage(dgv.Handle, WM_SETREDRAW, true, IntPtr.Zero);
+            dgv.Refresh();
         }
 
         /// <summary>
@@ -217,7 +244,7 @@ namespace XSearch_WinForms
             // Ensure calls from other threads are handled properly.
             if (InvokeRequired)
             {
-                Invoke(new MethodInvoker(() => { UpdateSearchLog(searcher, sArgs); }));
+                Invoke(new System.Windows.Forms.MethodInvoker(() => { UpdateSearchLog(searcher, sArgs); }));
                 return;
             }
             currentStatusHeader.Text = $"{searcher.CurrentSearchTask}";
@@ -259,6 +286,8 @@ namespace XSearch_WinForms
         {
             WinformsUIUtilities.FrameForm(framingPanel, ref currentFramedForm, form);
             WinformsUIUtilities.FramePanel(selectionSettingsPanel, controlPanel);
+
+            currentFramedForm = form;
 
             // Ensure the button the request came from is highlighted.
             //ApplySelectedButtonColor(button, ref selectedMainMenuButton, SelectedButtonColor);
@@ -309,6 +338,20 @@ namespace XSearch_WinForms
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             TryAutoSaveOrLoad(loading: false);
+        }
+
+        private void MainForm_ResizeBegin(object sender, EventArgs e)
+        {
+            // Suspending drawing this way creates a bunch of ugly black boxes, but it is significantly more responsive than the alternative of SuspendLayout.
+            // Still unsure which implementation is better.
+            // The best implementation is really just not using Windows Forms for this UI.
+            SendMessage(Handle, WM_SETREDRAW, false, IntPtr.Zero);
+        }
+
+        private void MainForm_ResizeEnd(object sender, EventArgs e)
+        {
+            SendMessage(Handle, WM_SETREDRAW, true, IntPtr.Zero);
+            Refresh();
         }
     }
 }

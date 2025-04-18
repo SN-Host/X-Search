@@ -561,6 +561,8 @@
             SizeGripStyle = SizeGripStyle.Show;
             Text = "X-Search";
             FormClosing += MainForm_FormClosing;
+            ResizeBegin += MainForm_ResizeBegin;
+            ResizeEnd += MainForm_ResizeEnd;
             infoPanel.ResumeLayout(false);
             toolsContainerPanel.ResumeLayout(false);
             workspaceToolLabelPanel.ResumeLayout(false);

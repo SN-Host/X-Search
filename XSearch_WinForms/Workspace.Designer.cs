@@ -116,6 +116,7 @@
             mainDataGridView.VirtualMode = true;
             mainDataGridView.CellFormatting += mainDataGridView_CellFormatting;
             mainDataGridView.CellValueNeeded += mainDataGridView_CellValueNeeded;
+            mainDataGridView.Scroll += mainDataGridView_Scroll;
             mainDataGridView.SelectionChanged += mainDataGridView_SelectionChanged;
             // 
             // statusDataGridViewColumn
@@ -464,6 +465,8 @@
             ForeColor = Color.FromArgb(50, 50, 100);
             Name = "Workspace";
             Text = "Workspace";
+            ResizeBegin += Workspace_ResizeBegin;
+            ResizeEnd += Workspace_ResizeEnd;
             dataGridViewPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)mainDataGridView).EndInit();
             searchPanel.ResumeLayout(false);
@@ -476,7 +479,6 @@
         private Panel dataGridViewPanel;
         private ImageList statusImages;
         private Microsoft.Web.WebView2.WinForms.WebView2 webView21;
-        private DataGridView mainDataGridView;
         internal Panel controlPanel;
         private Button webPreviewButton;
         private Button crossButton;
@@ -500,5 +502,6 @@
         private Button quickSaveButton;
         private ImageList mainImageList;
         private ImageList statusImageList;
+        public DataGridView mainDataGridView;
     }
 }

@@ -22,6 +22,7 @@ using System.Diagnostics;
 using static System.Windows.Forms.LinkLabel;
 using System.Reflection;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
+using System.Runtime.InteropServices;
 
 namespace XSearch_WinForms
 {
@@ -89,6 +90,11 @@ namespace XSearch_WinForms
         {
             InitializeComponent();
 
+            Type controlType = mainDataGridView.GetType();
+            PropertyInfo? pi = controlType.GetProperty("DoubleBuffered",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            pi?.SetValue(mainDataGridView, true, null);
+
             // Do not autogenerate columns to ensure proper ordering.
             mainDataGridView.AutoGenerateColumns = false;
 
@@ -96,13 +102,6 @@ namespace XSearch_WinForms
 
             // Ensure our DataGridView is linked to our session's search listings
             BindData();
-
-            // Ensure double buffering is enabled.
-            // It's a private field, so we have to use reflection here.
-            Type dgvType = mainDataGridView.GetType();
-            PropertyInfo? pi = dgvType.GetProperty("DoubleBuffered",
-                BindingFlags.Instance | BindingFlags.NonPublic);
-            pi?.SetValue(mainDataGridView, true, null);
 
             // Update image sizes based on client DPI, since Windows Forms is not good at handling this automatically.
             float uiScale = WinformsUIUtilities.CalculateUIScaleFromClientDPI(this);
@@ -359,6 +358,9 @@ namespace XSearch_WinForms
             }
         }
 
+        /// <summary>
+        /// Cancels any ongoing pulls.
+        /// </summary>
         private void cancelPullButton_Click(object sender, EventArgs e)
         {
             if (!CurrentSession.Searcher.ShouldCancelPull && CurrentSession.Searcher.CurrentlyPulling)
@@ -371,6 +373,9 @@ namespace XSearch_WinForms
             }
         }
 
+        /// <summary>
+        /// Handles pulled listing searches.
+        /// </summary>
         private void searchTextBox_KeyUp(object sender, KeyEventArgs e)
         {
             mainDataGridView.ClearSelection();
@@ -405,6 +410,9 @@ namespace XSearch_WinForms
             }
         }
 
+        /// <summary>
+        /// Allows the workspace DataGridView to display image paths from ListingStatus objects.
+        /// </summary>
         private void mainDataGridView_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
         {
             if (e.RowIndex == mainDataGridView.RowCount - 1)
@@ -438,6 +446,9 @@ namespace XSearch_WinForms
             }
         }
 
+        /// <summary>
+        /// Handles saving using WinForms save file dialogs.
+        /// </summary>
         private void saveSessionButton_Click(object sender, EventArgs e)
         {
             sessionSaveFileDialog.FileName = $"New Session {DateTime.Now.ToString("MM'-'dd'-'yyyy")}";
@@ -456,6 +467,9 @@ namespace XSearch_WinForms
             }
         }
 
+        /// <summary>
+        /// Handles saving using WinForms open file dialogs.
+        /// </summary>
         private void loadSessionButton_Click(object sender, EventArgs e)
         {
             string path = Path.GetFullPath(Path.Combine(Application.ExecutablePath, "..\\Sessions"));
@@ -472,14 +486,41 @@ namespace XSearch_WinForms
             }
         }
 
+        /// <summary>
+        /// Quicksave button to force an autosave.
+        /// </summary>
         private void quickSaveButton_Click(object sender, EventArgs e)
         {
             mainForm.TryAutoSaveOrLoad(loading: false, forced: true);
         }
 
+        /// <summary>
+        /// Quickload button to force an autoload.
+        /// </summary>
         private void quickLoadButton_Click(object sender, EventArgs e)
         {
             mainForm.TryAutoSaveOrLoad(loading: true, forced: true);
+        }
+
+        /// <summary>
+        /// Helps prevent the workspace from lagging while being resized.
+        /// </summary>
+        private void Workspace_ResizeBegin(object sender, EventArgs e)
+        {
+            SuspendLayout();
+        }
+
+        /// <summary>
+        /// Helps prevent the workspace from lagging while being resized.
+        /// </summary>
+        private void Workspace_ResizeEnd(object sender, EventArgs e)
+        {
+            ResumeLayout();
+        }
+
+        private void mainDataGridView_Scroll(object sender, ScrollEventArgs e)
+        {
+            mainForm.CurScrollPos = e.NewValue;
         }
     }
 }

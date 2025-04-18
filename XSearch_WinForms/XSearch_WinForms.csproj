@@ -8,6 +8,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
 	<ApplicationHighDpiMode>SystemAware</ApplicationHighDpiMode>
 	<ForceDesignerDpiUnaware>true</ForceDesignerDpiUnaware>
+	<AssemblyVersion>0.1.0-beta</AssemblyVersion>
+	<FileVersion>0.1.0-beta</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

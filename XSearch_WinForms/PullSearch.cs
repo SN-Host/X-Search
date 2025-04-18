@@ -16,6 +16,9 @@ namespace XSearch_WinForms
         public PullSearch()
         {
             InitializeComponent();
+
+            // Ensure that all of the form's controls are double buffered for optimized rendering.
+            WinformsUIUtilities.SetAllControlsDoubleBuffered(this);
         }
 
         private void PullSearch_Load(object sender, EventArgs e)
