@@ -104,10 +104,6 @@ namespace XSearch_Lib
         }
         private string _currentSearchTask = Log_Header_Ready;
 
-        /// <summary>
-        /// Returns an integer from 0-100 representing current search progress.
-        /// Not currently functional; rework will come with Selenium move.
-        /// </summary>
         public string SearchProgress
         {
             get 
@@ -231,11 +227,13 @@ namespace XSearch_Lib
                             pullFailureNotes.Add(new ErrorReportArgs($"{domain.Label}:", "Encountered error page. Please verify Internet connection and try again."));
                             CurrentPullSuccessful = false;
                         }
-                        // Catch generic errors.
+                        // Catch generic errors. Left out because it was impeding troubleshooting.
+                        /*
                         catch (Exception ex)
                         {
                             OnNewSearchUpdateLog(this, new SearchLogArgs($"An uncaught exception occurred when processing {domain.Label}. Exception message follows: \n{ex.Message}"));
                         }
+                        */
                         finally
                         {
                             TerminateDriver(driver);
@@ -515,9 +513,6 @@ namespace XSearch_Lib
                 {
                     OnNewSearchUpdateLog(this, new SearchLogArgs($"No matching link elements found for {domain.Label}."));
                 }
-                /*
-                if (!ElementCompletelyVisible(driver, linksToCheck[i]))
-                {*/
 
                 driver.SwitchTo().Window(currentPageSearchHandle);
 
@@ -646,6 +641,8 @@ namespace XSearch_Lib
                     title = driver.Title;
 
                     // TODO: On some domains, like the Steam workshop, the listing ID is part of the query. We should address this eventually.
+                    // Same goes for Glassdoor.
+                    // Maybe just make this a toggleable for a given domain?
                     url = new Uri(driver.Url).GetLeftPart(UriPartial.Path);
 
                     // Make sure we escape the loop.

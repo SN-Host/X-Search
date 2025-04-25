@@ -17,7 +17,6 @@ using XSearch_Lib;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static XSearch_WinForms.Workspace;
 using TextBox = System.Windows.Forms.TextBox;
-using static XSearch_WinForms.WinformsUIUtilities;
 
 namespace XSearch_WinForms
 {
@@ -217,7 +216,7 @@ namespace XSearch_WinForms
                 return;
             }
 
-           HandleTooltipsForInvalidTextBox(errorTooltip, shouldShowToolTip, textbox, title, body);
+            WinformsUIUtilities.HandleTooltipsForInvalidTextBox(errorTooltip, shouldShowToolTip, textbox, title, body);
         }
 
         /// <summary>
@@ -352,7 +351,7 @@ namespace XSearch_WinForms
             // TODO: Replace hard references with a dictionary, linked to keybindings customizable in the settings menu. Here, keys are the name of the setting and values are the Key
 
             // Quick enable/disable domains.
-            if (keyData == (Keys.Space))
+            if (keyData == (Keys.Space | Keys.Control))
             {
                 ToggleSelectedDomains();
                 return true;

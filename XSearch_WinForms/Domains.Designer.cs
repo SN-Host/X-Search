@@ -65,6 +65,7 @@
             labelPanel = new Panel();
             labelTextBox = new TextBox();
             labelLabel = new Label();
+            domainEditorHeaderPanel = new Panel();
             domainEditorHeaderLabel = new Label();
             errorTooltip = new ToolTip(components);
             infoToolTip = new ToolTip(components);
@@ -83,6 +84,7 @@
             listingUrlPanel.SuspendLayout();
             searchUrlPanel.SuspendLayout();
             labelPanel.SuspendLayout();
+            domainEditorHeaderPanel.SuspendLayout();
             SuspendLayout();
             // 
             // dataGridViewPanel
@@ -300,7 +302,7 @@
             // editorPanel
             // 
             editorPanel.Controls.Add(controlContainerPanel);
-            editorPanel.Controls.Add(domainEditorHeaderLabel);
+            editorPanel.Controls.Add(domainEditorHeaderPanel);
             editorPanel.Dock = DockStyle.Bottom;
             editorPanel.Location = new Point(201, 420);
             editorPanel.Name = "editorPanel";
@@ -467,7 +469,7 @@
             listingUrlLabel.Padding = new Padding(5, 0, 5, 0);
             listingUrlLabel.Size = new Size(167, 27);
             listingUrlLabel.TabIndex = 3;
-            listingUrlLabel.Text = "Listing URL pattern:";
+            listingUrlLabel.Text = "Listing href pattern:";
             listingUrlLabel.TextAlign = ContentAlignment.TopRight;
             mainToolTip.SetToolTip(listingUrlLabel, "Regex escape pattern that should be designed to match any listing link from this domain.\r\n");
             // 
@@ -543,13 +545,24 @@
             labelLabel.TextAlign = ContentAlignment.TopRight;
             mainToolTip.SetToolTip(labelLabel, "Identifier for this domain for your own convenience.");
             // 
+            // domainEditorHeaderPanel
+            // 
+            domainEditorHeaderPanel.BackgroundImage = Properties.Resources.BG8;
+            domainEditorHeaderPanel.BackgroundImageLayout = ImageLayout.Stretch;
+            domainEditorHeaderPanel.Controls.Add(domainEditorHeaderLabel);
+            domainEditorHeaderPanel.Dock = DockStyle.Top;
+            domainEditorHeaderPanel.Location = new Point(5, 5);
+            domainEditorHeaderPanel.Name = "domainEditorHeaderPanel";
+            domainEditorHeaderPanel.Size = new Size(771, 30);
+            domainEditorHeaderPanel.TabIndex = 10;
+            // 
             // domainEditorHeaderLabel
             // 
-            domainEditorHeaderLabel.BackColor = Color.FromArgb(100, 100, 150);
-            domainEditorHeaderLabel.Dock = DockStyle.Top;
+            domainEditorHeaderLabel.BackColor = Color.Transparent;
+            domainEditorHeaderLabel.Dock = DockStyle.Fill;
             domainEditorHeaderLabel.Font = new Font("Segoe UI Variable Text Semibold", 11.25F, FontStyle.Bold);
-            domainEditorHeaderLabel.ForeColor = Color.FromArgb(250, 250, 255);
-            domainEditorHeaderLabel.Location = new Point(5, 5);
+            domainEditorHeaderLabel.ForeColor = Color.FromArgb(50, 50, 80);
+            domainEditorHeaderLabel.Location = new Point(0, 0);
             domainEditorHeaderLabel.Name = "domainEditorHeaderLabel";
             domainEditorHeaderLabel.Padding = new Padding(5);
             domainEditorHeaderLabel.Size = new Size(771, 30);
@@ -603,6 +616,7 @@
             searchUrlPanel.PerformLayout();
             labelPanel.ResumeLayout(false);
             labelPanel.PerformLayout();
+            domainEditorHeaderPanel.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -651,5 +665,6 @@
         internal SaveFileDialog domainsSaveFileDialog;
         internal OpenFileDialog domainsOpenFileDialog;
         private ImageList mainImageList;
+        private Panel domainEditorHeaderPanel;
     }
 }

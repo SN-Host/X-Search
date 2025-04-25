@@ -21,7 +21,6 @@ using Microsoft.Web.WebView2.Core;
 using System.Diagnostics;
 using static System.Windows.Forms.LinkLabel;
 using System.Reflection;
-using static XSearch_WinForms.WinformsUIUtilities;
 
 namespace XSearch_WinForms
 {

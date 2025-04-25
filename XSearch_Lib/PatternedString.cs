@@ -8,6 +8,8 @@ using System.Xml.Serialization;
 
 namespace XSearch_Lib
 {
+    // TODO: RequiredPlaceholderPatterns and AllowInvalidRawPatternSets are getting saved to domain profile files. They really shouldn't be.
+    // Consider making a subclass of PatternedString for domains so we can include static pattern matches when we replace the searchTerm functionality.
     public class PatternedString
     {
         // CONSTANTS //
