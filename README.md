@@ -1,6 +1,6 @@
 # X-Search
 <p >
-    <img src="Media/Quickstart/MainPreview.gif" alt="Main preview" width="600"/>
+    <img src="Media/MainPreview.gif" alt="Main preview" width="600"/>
 </p>
 
 X-Search (pronounced "cross search") is a tool for aggregating and decluttering search results from across the Internet.    
@@ -24,7 +24,10 @@ In X-Search, results are **persistent across sessions.** This is thanks to an ad
 - [Configuring new domains](Configuring%20new%20domains.md)
 
 ## Limitations
-- **X-Search is an honest web scraper.** Some domains really don't want that kind of traffic. This leaves them currently inacessible.
+
+- **X-Search is still young.** It is also my first major piece of independent software. Kindly expect and forgive technical issues as the project is refined over time.
+
+- **X-Search is an honest web scraper.** Some domains really don't want that kind of traffic. This leaves them currently inaccessible.
     - Known examples include:
         - Indeed.com
         - Zillow.com

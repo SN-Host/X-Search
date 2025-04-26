@@ -118,10 +118,12 @@ And there we have it - our **Starting URL** field for any Toyota-brand vehicles.
 Next we need a listing href pattern. Clicking on any of the listings our previous search returned gives us URLs like this:
 
 > ``https://www.edmunds.com/toyota/camry/2006/vin/4T1BE32K86U711677``
+
 > ``https://www.edmunds.com/toyota/camry/1999/vin/4T1BG28K7XU584787``
+
 > ``https://www.edmunds.com/toyota/camry/2005/vin/4T1BE30K65U584624``
 
-There's a few common patterns here, but the most generic and reliable seems to be `/vin/`. Let's run some XPath to verify that the underlying HTML listing elements reflect this convention. 
+There's a few common patterns here, but the most generic and reliable seems to be `/vin/`. But we should verify that the underlying HTML listing elements reflect this convention. Let's run some XPath on the source HTML of the search page. 
 
 `//a[contains(@href, "yourstring")]` (where `yourstring` is the working pattern) tends to work well:
 
@@ -159,7 +161,7 @@ Where...
 - ``aria-label`` is the name of an identifying attribute on the target element. Anything works, so long as it's unique and unlikely to change.
 - ``"Go to the next page"`` is the value of the identifying attribute.
 
-And that's our xpath field! Bear in mind that you might need to define more than one for other domains.
+And that's our **Post-search XPath** field! Bear in mind that you might need to define more than one for other domains.
 
 ## Testing your domain
 

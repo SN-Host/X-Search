@@ -1,42 +1,38 @@
 ﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
 using System.Xml.Serialization;
-using HtmlAgilityPack;
-using static XSearch_Lib.XSearch_Strings;
 
 namespace XSearch_Lib
 {
-	/// <summary>
-	/// Intended to hold information about domain profiles for saving/loading purposes.
-	/// </summary>
-	public class DomainProfile
-	{
-		/// <summary>
-		/// Previous save location of a domain profile, if any.
-		/// </summary>
-		public string? LastFilePath { get; set; } = null;
+    /// <summary>
+    /// Intended to hold information about domain profiles for saving/loading purposes.
+    /// </summary>
+    public class DomainProfile
+    {
+        /// <summary>
+        /// Previous save location of a domain profile, if any.
+        /// </summary>
+        public string? LastFilePath { get; set; } = null;
 
-		/// <summary>
-		/// Must be left public so DataGridViews can use this as a datasource.
-		/// </summary>
-		public BindingList<Domain> Domains { get; set; } = new BindingList<Domain>();
+        /// <summary>
+        /// Must be left public so DataGridViews can use this as a datasource.
+        /// </summary>
+        public BindingList<Domain> Domains { get; set; } = new BindingList<Domain>();
 
-		[XmlIgnore]
-		public IEnumerable<Domain> ActiveDomains => Domains.Where(x => x.Active);
+        [XmlIgnore]
+        public IEnumerable<Domain> ActiveDomains => Domains.Where(x => x.Active);
 
         /// <summary>
         /// Serializes a domain profile to XML given a stream.
         /// </summary>
 		public void SaveToFile(Stream stream, string filePath)
-		{
-			LastFilePath = filePath;
+        {
+            LastFilePath = filePath;
 
-			XmlSerializer serializer = new XmlSerializer(typeof(DomainProfile));
+            XmlSerializer serializer = new XmlSerializer(typeof(DomainProfile));
 
-			serializer.Serialize(stream, this);
+            serializer.Serialize(stream, this);
 
-			stream.Close();
+            stream.Close();
         }
 
         /// <summary>

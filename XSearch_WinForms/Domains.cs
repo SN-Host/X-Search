@@ -1,21 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Microsoft.Web.WebView2.Core;
+﻿using System.ComponentModel;
 using XSearch_Lib;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using static XSearch_WinForms.Workspace;
 using TextBox = System.Windows.Forms.TextBox;
 
 namespace XSearch_WinForms

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace XSearch_Lib
+﻿namespace XSearch_Lib
 {
- 
+
     /// <summary>
     /// Collection of built-in status types commom throughout the application.
     /// TODO: Consider replacing with a user modified system.

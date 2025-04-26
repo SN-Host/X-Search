@@ -1,13 +1,5 @@
-﻿using System;
-using System.ComponentModel;
-using System.Net;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 using System.Xml.Serialization;
-using HtmlAgilityPack;
-using static XSearch_Lib.XSearch_Strings;
 
 namespace XSearch_Lib
 {

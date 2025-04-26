@@ -1,18 +1,6 @@
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
-using System.Drawing.Drawing2D;
-using System.IO;
-using static XSearch_WinForms.Workspace;
-using System.ComponentModel;
 using XSearch_Lib;
-using OpenQA.Selenium.DevTools.V131.Network;
 using System.Diagnostics;
-using System;
-using System.Security.Cryptography.Xml;
-using static System.Windows.Forms.ImageList;
-using System.Windows.Forms;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Runtime.CompilerServices;
 
 namespace XSearch_WinForms
 {

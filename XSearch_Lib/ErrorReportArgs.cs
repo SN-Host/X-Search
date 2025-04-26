@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace XSearch_Lib
+﻿namespace XSearch_Lib
 {
     /// <summary>
     /// General purpose class for storing information about errors for event handlers.
