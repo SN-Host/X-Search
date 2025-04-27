@@ -4,7 +4,7 @@
 To get started with X-Search, you'll first need some domains to pull from. Let's open the Domains panel from the top left.
 
 <p>
-    <img src="Media/Quickstart/SelectingDomainsMenu.png" alt="Opening domains" width="200"/>
+    <img src="Media/Quickstart/SelectingDomainsMenu2.png" alt="Opening domains" width="200"/>
 </p>
 
 [Configuring your own domains](Configuring%20domains.md) is totally possible, but can get a bit complicated. You'll likely need to adjust the search URLs to suit your actual location and verify that you can resolve them in a browser.
